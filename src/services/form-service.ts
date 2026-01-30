@@ -1,5 +1,3 @@
-import { axiosApi } from "./api-root";
-
 interface SendParticipantData {
   documentId: string;
   values: {
@@ -9,12 +7,16 @@ interface SendParticipantData {
 }
 
 export async function handlePostFormParticipant({ documentId, values }: SendParticipantData) {
-  console.log("values: ", values);
-  console.log("values: ", import.meta.env.VITE_CONSUMER_KEY_BASE_TESTE);
-  console.log("documentId", documentId);
+  console.log(documentId);
 
-  const response = await axiosApi.post(`https://firebrick-kingfisher-525619.hostingersite.com/proxy.php`, { values });
-  const data = response.data();
-
-  return data;
+  await fetch("https://firebrick-kingfisher-525619.hostingersite.com/proxy.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(values),
+  })
+    .then((response) => response.json())
+    .then((result) => console.log(result))
+    .catch((error) => console.error("Erro:", error));
 }
