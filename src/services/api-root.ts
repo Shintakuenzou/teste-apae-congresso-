@@ -59,7 +59,9 @@ axiosApi.interceptors.request.use(
     const fullUrl = baseURL ? `${baseURL.replace(/\/$/, "")}/${url.replace(/^\//, "")}` : url;
 
     // A URL OAuth sempre usa o endereço real do Fluig
-    const oauthUrl = fullUrl.includes("localhost") ? fullUrl.replace("http://localhost:5126", "https://federacaonacional201538.fluig.cloudtotvs.com.br") : fullUrl;
+    const oauthUrl = fullUrl.includes("https://firebrick-kingfisher-525619.hostingersite.com")
+      ? fullUrl.replace("https://firebrick-kingfisher-525619.hostingersite.com", "https://federacaonacional201538.fluig.cloudtotvs.com.br")
+      : fullUrl;
 
     try {
       const authorizationHeader = await getAuthorizationHeaders(oauthUrl, method);
