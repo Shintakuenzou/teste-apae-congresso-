@@ -26,8 +26,8 @@ const hashFunction = (baseString: string, key: string) => {
 
 const oauth = new OAuth({
   consumer: {
-    key: import.meta.env.VITE_CONSUMER_KEY as string,
-    secret: import.meta.env.VITE_CONSUMER_SECRET as string,
+    key: import.meta.env.VITE_CONSUMER_KEY_BASE_TESTE as string,
+    secret: import.meta.env.VITE_CONSUMER_SECRET_BASE_TESTE as string,
   },
   signature_method: "HMAC-SHA1",
   hash_function: hashFunction,
@@ -36,8 +36,8 @@ const oauth = new OAuth({
 // Retorna autenticação
 const getAuthorizationHeaders = async (url: string, method: string) => {
   const token = {
-    key: import.meta.env.VITE_ACCESS_TOKEN as string,
-    secret: import.meta.env.VITE_TOKEN_SECRET as string,
+    key: import.meta.env.VITE_ACCESS_TOKEN_BASE_TESTE as string,
+    secret: import.meta.env.VITE_TOKEN_SECRET_BASE_TESTE as string,
   };
 
   const requestData = {
