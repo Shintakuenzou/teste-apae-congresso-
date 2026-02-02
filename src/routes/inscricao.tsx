@@ -14,33 +14,27 @@ import { CheckCircle, Mail, MapPinned, User, Lock, Briefcase, Heart, Loader2 } f
 import { handlePostFormParticipant } from "@/services/form-service";
 import { formatCPF } from "@/utils/format-cpf";
 import { formatPhone } from "@/utils/format-phone";
+import { DISABILITY_OPTIONS, escolaridades, estados, opcao_apoio, tamanhosCamisa } from "@/constants";
+import { fetchDataset } from "@/services/fetch-dataset";
+import type { AxiosError } from "axios";
+import axios from "axios";
+import { fetchCep } from "@/services/cep";
+import { formatCEO } from "@/utils/cep";
 
 export const Route = createFileRoute("/inscricao")({
   component: InscricaoPage,
 });
 
-const estados = ["AC", "AL", "AP", "AM", "BA", "CE", "DF", "ES", "GO", "MA", "MT", "MS", "MG", "PA", "PB", "PR", "PE", "PI", "RJ", "RN", "RS", "RO", "RR", "SC", "SP", "SE", "TO"];
-const escolaridades = [
-  "Ensino Fundamental Incompleto",
-  "Ensino Fundamental Completo",
-  "Ensino Medio Incompleto",
-  "Ensino Medio Completo",
-  "Ensino Superior Incompleto",
-  "Ensino Superior Completo",
-  "Pos-graduacao",
-  "Mestrado",
-  "Doutorado",
-];
-
-const tamanhosCamisa = ["PP", "P", "M", "G", "GG", "XG", "XGG"];
-
 // Schema de validação com Zod
 const formSchema = z.object({
+  criado_em: z.string(),
+  criado_por: z.string(),
   cpf: z.string().min(14, "CPF deve ter 11 dígitos").max(14),
   nome: z.string().min(2, "Nome deve ter pelo menos 2 caracteres"),
   sobrenome: z.string().min(2, "Sobrenome deve ter pelo menos 2 caracteres"),
   email: z.string().email("E-mail inválido"),
   dataNascimento: z.string().min(1, "Data de nascimento é obrigatória"),
+  cep: z.string().min(8, "CEP inválido"),
   uf: z.string().min(2, "Selecione um estado"),
   municipio: z.string().min(2, "Município é obrigatório"),
   telefone: z.string().min(14, "Telefone inválido"),
@@ -71,14 +65,19 @@ function InscricaoPage() {
     formState: { errors },
     getValues,
     reset,
+    watch,
+    setValue,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      criado_em: new Date(Date.now()).toLocaleDateString(),
+      criado_por: "",
       cpf: "",
       nome: "",
       sobrenome: "",
       email: "",
       dataNascimento: "",
+      cep: "",
       uf: "",
       municipio: "",
       telefone: "",
@@ -100,12 +99,14 @@ function InscricaoPage() {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     console.log("Dados enviados:", data);
+    const validCPF = await handleCheckExistingParticipant(data.cpf);
+    console.log("validCPF: ", validCPF);
 
     try {
       const response = await handlePostFormParticipant({
         documentId: import.meta.env.VITE_FORM_PARTICIPANTE as string,
         values: [
-          { fieldId: "cpf", value: data.cpf },
+          { fieldId: "cpf", value: data.cpf.replace(/\D/g, "") },
           { fieldId: "senha", value: data.senha },
           { fieldId: "nome", value: data.nome },
           { fieldId: "sobrenome", value: data.sobrenome },
@@ -131,7 +132,6 @@ function InscricaoPage() {
       setSubmitted(true);
     } catch (error) {
       console.log(error);
-      alert("Erro ao enviar inscricao. Tente novamente.");
     } finally {
       setIsSubmitting(false);
     }
@@ -166,6 +166,44 @@ function InscricaoPage() {
       </main>
     );
   }
+
+  const handleCheckExistingParticipant = async (cpf: string) => {
+    const formatCPF = cpf.replace(/\D/g, "");
+    try {
+      const response = await fetchDataset({
+        datasetId: "cadParticipanteCN",
+        constraints: [
+          {
+            fieldName: "cpf",
+            initialValue: formatCPF,
+            finalValue: formatCPF,
+            constraintType: "MUST",
+          },
+        ],
+      });
+
+      console.log("response existing participant: ", response);
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        console.error("Axios error submitting form data:", axiosError.response?.data || axiosError.message);
+        return;
+      }
+    }
+  };
+
+  const handlePopulateAddressFromCep = async (cep: string) => {
+    const formattedCep = cep.replace(/\D/g, "");
+    try {
+      const response = await fetchCep(formattedCep);
+      if (response) {
+        setValue("uf", response.uf);
+        setValue("municipio", response.localidade);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar endereco pelo CEP:", error);
+    }
+  };
 
   return (
     <main className="min-h-screen bg-background">
@@ -352,6 +390,26 @@ function InscricaoPage() {
 
                 <FieldSet className="w-full">
                   <FieldGroup className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <Field className="md:col-span-2">
+                      <FieldLabel htmlFor="cep">CEP *</FieldLabel>
+                      <Controller
+                        name="cep"
+                        control={control}
+                        render={({ field }) => (
+                          <Input
+                            id="cep"
+                            placeholder="00000-000"
+                            maxLength={9}
+                            {...field}
+                            onChange={(e) => field.onChange(formatCEO(e.target.value))}
+                            onBlur={(e) => handlePopulateAddressFromCep(e.target.value)}
+                            className="h-11"
+                          />
+                        )}
+                      />
+                      {errors.cep && <p className="text-sm text-destructive mt-1">{errors.cep.message}</p>}
+                    </Field>
+
                     <Field>
                       <FieldLabel htmlFor="uf">Estado (UF) *</FieldLabel>
                       <Controller
@@ -426,17 +484,19 @@ function InscricaoPage() {
                       />
                     </Field>
 
-                    <Field>
-                      <FieldLabel htmlFor="funcao">Função</FieldLabel>
-                      <Input id="funcao" placeholder="Sua funcao" {...register("funcao")} className="h-11" />
-                    </Field>
+                    {watch("presidente_apae") === "Nao" && (
+                      <Field>
+                        <FieldLabel htmlFor="funcao">Função</FieldLabel>
+                        <Input id="funcao" placeholder="Sua funcao" {...register("funcao")} className="h-11" />
+                      </Field>
+                    )}
 
                     <Field className="md:col-span-2">
                       <FieldLabel htmlFor="area_atuacao">Area de Atuação</FieldLabel>
                       <Input id="area_atuacao" placeholder="Qual sua area de atuacao?" {...register("area_atuacao")} className="h-11" />
                     </Field>
 
-                    <Field>
+                    <Field className="col-span-2">
                       <FieldLabel htmlFor="coordenacao">Coordenação</FieldLabel>
                       <Input id="coordenacao" placeholder="Coordenacao" {...register("coordenacao")} className="h-11" />
                     </Field>
@@ -481,12 +541,52 @@ function InscricaoPage() {
 
                     <Field>
                       <FieldLabel htmlFor="tipo_deficiencia">Tipo de Deficiencia</FieldLabel>
-                      <Input id="tipo_deficiencia" placeholder="Especifique, se aplicavel" {...register("tipo_deficiencia")} className="h-11" />
+
+                      <Controller
+                        name="tipo_deficiencia"
+                        control={control}
+                        render={({ field }) => (
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger id="tipo_deficiencia" className="!h-11 w-full">
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {DISABILITY_OPTIONS.map((option) => {
+                                return (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                );
+                              })}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
                     </Field>
 
                     <Field className="md:col-span-2">
                       <FieldLabel htmlFor="necessita_apoio">Necessita de Apoio Especial?</FieldLabel>
-                      <Input id="necessita_apoio" placeholder="Descreva se necessita de algum tipo de apoio" {...register("necessita_apoio")} className="h-11" />
+
+                      <Controller
+                        name="necessita_apoio"
+                        control={control}
+                        render={({ field }) => (
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger id="necessita_apoio" className="!h-11 w-full">
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {opcao_apoio.map((option) => {
+                                return (
+                                  <SelectItem key={option.value} value={option.value}>
+                                    {option.label}
+                                  </SelectItem>
+                                );
+                              })}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
                     </Field>
                   </FieldGroup>
                 </FieldSet>
