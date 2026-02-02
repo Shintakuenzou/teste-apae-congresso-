@@ -20,6 +20,8 @@ import type { AxiosError } from "axios";
 import axios from "axios";
 import { fetchCep } from "@/services/cep";
 import { formatCEO } from "@/utils/cep";
+import { toast } from "sonner";
+import { Toaster } from "@/components/ui/sonner";
 
 export const Route = createFileRoute("/inscricao")({
   component: InscricaoPage,
@@ -49,6 +51,8 @@ const formSchema = z.object({
   possui_deficiencia: z.string().optional(),
   tipo_deficiencia: z.string().optional(),
   necessita_apoio: z.string().optional(),
+  tipo_apoio: z.string().optional(),
+  outros_apoio: z.string().optional(),
   coordenacao: z.string().optional(),
 });
 
@@ -91,7 +95,9 @@ function InscricaoPage() {
       area_atuacao: "",
       possui_deficiencia: "",
       tipo_deficiencia: "",
-      necessita_apoio: "",
+      necessita_apoio: "Nao",
+      tipo_apoio: "",
+      outros_apoio: "",
       coordenacao: "",
     },
   });
@@ -99,8 +105,14 @@ function InscricaoPage() {
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
     console.log("Dados enviados:", data);
-    const validCPF = await handleCheckExistingParticipant(data.cpf);
-    console.log("validCPF: ", validCPF);
+
+    const existCpf = await handleCheckExistingParticipant(data.cpf);
+
+    if (existCpf && existCpf.items.length > 0) {
+      toast.error("CPF já cadastrado!");
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       const response = await handlePostFormParticipant({
@@ -124,6 +136,7 @@ function InscricaoPage() {
           { fieldId: "possui_deficiencia", value: data.possui_deficiencia || "" },
           { fieldId: "tipo_deficiencia", value: data.tipo_deficiencia || "" },
           { fieldId: "necessita_apoio", value: data.necessita_apoio || "" },
+          { fieldId: "tipo_apoio", value: data.tipo_apoio != "Outros" ? data.tipo_apoio || "" : data.outros_apoio || "" },
           { fieldId: "coordenacao", value: data.coordenacao || "" },
         ],
       });
@@ -181,8 +194,7 @@ function InscricaoPage() {
           },
         ],
       });
-
-      console.log("response existing participant: ", response);
+      return response;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError;
@@ -205,8 +217,41 @@ function InscricaoPage() {
     }
   };
 
+  const handlePopulateInfoFromCpf = async (cpf: string) => {
+    const formatCPF = cpf.replace(/\D/g, "");
+    console.log("cpf: ", formatCPF);
+
+    try {
+      const response = await fetchDataset({
+        datasetId: "dsConsultaCpfCadastrado",
+        constraints: [
+          {
+            fieldName: "cpf",
+            initialValue: formatCPF,
+            finalValue: formatCPF,
+            constraintType: "MUST",
+          },
+        ],
+      });
+      console.log(response);
+
+      if (response.items.length > 0) {
+        const participant = response.items[0];
+        const [firstName, lastName] = participant["nome"]?.toString().split(" ") as string[];
+        setValue("nome", firstName || "");
+        setValue("sobrenome", lastName || "");
+
+        setValue("dataNascimento", participant["data_nascimento"]?.toString() || "");
+      }
+    } catch (error: unknown) {
+      toast.warning("CPF nao encontrado no sistema.");
+      console.log("Error ao buscar dados pelo CPF: ", error);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-background">
+      <Toaster />
       <Header />
 
       <section className="pt-32 pb-20">
@@ -238,7 +283,15 @@ function InscricaoPage() {
                         name="cpf"
                         control={control}
                         render={({ field }) => (
-                          <Input id="cpf" placeholder="000.000.000-00" maxLength={14} {...field} onChange={(e) => field.onChange(formatCPF(e.target.value))} className="h-11" />
+                          <Input
+                            id="cpf"
+                            placeholder="000.000.000-00"
+                            maxLength={14}
+                            {...field}
+                            onChange={(e) => field.onChange(formatCPF(e.target.value))}
+                            onBlur={(e) => handlePopulateInfoFromCpf(e.target.value)}
+                            className="h-11"
+                          />
                         )}
                       />
                       {errors.cpf && <p className="text-sm text-destructive mt-1">{errors.cpf.message}</p>}
@@ -539,55 +592,92 @@ function InscricaoPage() {
                       />
                     </Field>
 
-                    <Field>
-                      <FieldLabel htmlFor="tipo_deficiencia">Tipo de Deficiencia</FieldLabel>
+                    {watch("possui_deficiencia") === "Sim" && (
+                      <>
+                        <Field>
+                          <FieldLabel htmlFor="tipo_deficiencia">Tipo de Deficiencia</FieldLabel>
 
-                      <Controller
-                        name="tipo_deficiencia"
-                        control={control}
-                        render={({ field }) => (
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <SelectTrigger id="tipo_deficiencia" className="!h-11 w-full">
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {DISABILITY_OPTIONS.map((option) => {
-                                return (
-                                  <SelectItem key={option.value} value={option.value}>
-                                    {option.label}
-                                  </SelectItem>
-                                );
-                              })}
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
-                    </Field>
+                          <Controller
+                            name="tipo_deficiencia"
+                            control={control}
+                            render={({ field }) => (
+                              <Select onValueChange={field.onChange} value={field.value}>
+                                <SelectTrigger id="tipo_deficiencia" className="!h-11 w-full">
+                                  <SelectValue placeholder="Selecione" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {DISABILITY_OPTIONS.map((option) => {
+                                    return (
+                                      <SelectItem key={option.value} value={option.value}>
+                                        {option.label}
+                                      </SelectItem>
+                                    );
+                                  })}
+                                </SelectContent>
+                              </Select>
+                            )}
+                          />
+                        </Field>
 
-                    <Field className="md:col-span-2">
-                      <FieldLabel htmlFor="necessita_apoio">Necessita de Apoio Especial?</FieldLabel>
+                        <Field>
+                          <FieldLabel htmlFor="necessita_apoio">Necessita de Apoio Especial?</FieldLabel>
 
-                      <Controller
-                        name="necessita_apoio"
-                        control={control}
-                        render={({ field }) => (
-                          <Select onValueChange={field.onChange} value={field.value}>
-                            <SelectTrigger id="necessita_apoio" className="!h-11 w-full">
-                              <SelectValue placeholder="Selecione" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {opcao_apoio.map((option) => {
-                                return (
-                                  <SelectItem key={option.value} value={option.value}>
-                                    {option.label}
-                                  </SelectItem>
-                                );
-                              })}
-                            </SelectContent>
-                          </Select>
-                        )}
-                      />
-                    </Field>
+                          <Controller
+                            name="necessita_apoio"
+                            control={control}
+                            render={({ field }) => (
+                              <Select onValueChange={field.onChange} value={field.value}>
+                                <SelectTrigger id="necessita_apoio" className="!h-11 w-full">
+                                  <SelectValue placeholder="Selecione" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  <SelectItem value="Sim">Sim</SelectItem>
+                                  <SelectItem value="Nao">Nao</SelectItem>
+                                </SelectContent>
+                              </Select>
+                            )}
+                          />
+                        </Field>
+                      </>
+                    )}
+
+                    {watch("necessita_apoio") === "Sim" && (
+                      <Field>
+                        <FieldLabel htmlFor="necessita_apoio">Tipo de apoio</FieldLabel>
+
+                        <Controller
+                          name="tipo_apoio"
+                          control={control}
+                          render={({ field }) => (
+                            <Select onValueChange={field.onChange} value={field.value}>
+                              <SelectTrigger id="tipo_apoio" className="!h-11 w-full">
+                                <SelectValue placeholder="Selecione" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {opcao_apoio.map((option) => {
+                                  return (
+                                    <SelectItem key={option.value} value={option.value}>
+                                      {option.label}
+                                    </SelectItem>
+                                  );
+                                })}
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
+                      </Field>
+                    )}
+
+                    {watch("tipo_apoio") === "Outros" && (
+                      <Field>
+                        <FieldLabel htmlFor="outros_apoio">Descreva o tipo de apoio</FieldLabel>
+                        <Controller
+                          name="outros_apoio"
+                          control={control}
+                          render={({ field }) => <Input id="outros_apoio" placeholder="Descreva o tipo de apoio" {...field} className="h-11" />}
+                        />
+                      </Field>
+                    )}
                   </FieldGroup>
                 </FieldSet>
               </CardContent>

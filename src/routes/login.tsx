@@ -184,7 +184,7 @@ export default function LoginPage() {
                     variant="outline"
                     className="w-full h-12 text-base font-semibold border-2 hover:bg-secondary/10 hover:border-secondary hover:text-secondary bg-transparent cursor-pointer"
                   >
-                    Fazer inscricao
+                    Faça inscrição
                   </Button>
                 </Link>
               </CardContent>
