@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, User, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { linkOptions } from "@tanstack/react-router";
+import LogoApae from "../../public/logo-apae.jpg";
 
 const navItems = linkOptions([
   {
@@ -34,7 +35,7 @@ export function Header() {
         <div className="flex h-18 items-center justify-between py-3">
           <a href="/" className="flex items-center gap-3 group">
             <div className="w-12 h-12 bg-primary-foreground rounded-full flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-              <img src="/public/logo-apae.jpg" className="size-12 object-cover rounded-full p-1" alt="logo apae" />
+              <img src={LogoApae} className="size-12 object-cover rounded-full p-1" alt="logo apae" />
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-bold leading-tight text-primary-foreground tracking-wide">APAE BRASIL</span>
