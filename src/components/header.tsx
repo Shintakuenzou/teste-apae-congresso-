@@ -34,7 +34,7 @@ export function Header() {
         <div className="flex h-18 items-center justify-between py-3">
           <a href="/" className="flex items-center gap-3 group">
             <div className="w-12 h-12 bg-primary-foreground rounded-full flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-              <span className="text-primary font-black text-lg">A</span>
+              <img src="/public/logo-apae.jpg" className="size-12 object-cover rounded-full p-1" alt="logo apae" />
             </div>
             <div className="flex flex-col">
               <span className="text-lg font-bold leading-tight text-primary-foreground tracking-wide">APAE BRASIL</span>

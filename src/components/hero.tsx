@@ -33,10 +33,10 @@ export function Hero() {
               size="lg"
               className="bg-secondary hover:bg-secondary/90 text-secondary-foreground text-lg px-8 h-14 font-semibold shadow-lg hover:shadow-xl transition-all group"
             >
-              <a href="/inscricao">
+              <Link to="/inscricao">
                 Garanta sua vaga
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-              </a>
+              </Link>
             </Button>
             <Button
               asChild
