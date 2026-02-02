@@ -16,7 +16,7 @@ export async function handlePostFormParticipant({ documentId, values }: SendPart
   console.log("documentId", documentId);
   try {
     const response = await axiosApi.post(`https://firebrick-kingfisher-525619.hostingersite.com/proxy.php`, { values });
-    const data = response.data;
+    const data = response;
 
     return data;
   } catch (error: unknown) {

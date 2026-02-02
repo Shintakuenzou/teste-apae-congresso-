@@ -57,11 +57,11 @@ export function Header() {
             <Button
               asChild
               size="lg"
-              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold shadow-md hover:shadow-lg transition-all flex items-center"
+              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold shadow-md hover:shadow-lg transition-all flex items-center uppercase"
             >
-              <Link to="/inscricao">
-                <User />
-                Login
+              <Link to="/login">
+                <User className="size-4" />
+                <span>Login</span>
               </Link>
             </Button>
           </div>

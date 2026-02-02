@@ -9,12 +9,19 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as QuemSomosRouteImport } from './routes/quem-somos'
 import { Route as PalestrasRouteImport } from './routes/palestras'
 import { Route as PalestrantesRouteImport } from './routes/palestrantes'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as InscricaoRouteImport } from './routes/inscricao'
 import { Route as IndexRouteImport } from './routes/index'
 
+const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
+  id: '/recuperar-senha',
+  path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const QuemSomosRoute = QuemSomosRouteImport.update({
   id: '/quem-somos',
   path: '/quem-somos',
@@ -28,6 +35,11 @@ const PalestrasRoute = PalestrasRouteImport.update({
 const PalestrantesRoute = PalestrantesRouteImport.update({
   id: '/palestrantes',
   path: '/palestrantes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const InscricaoRoute = InscricaoRouteImport.update({
@@ -44,49 +56,80 @@ const IndexRoute = IndexRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/inscricao': typeof InscricaoRoute
+  '/login': typeof LoginRoute
   '/palestrantes': typeof PalestrantesRoute
   '/palestras': typeof PalestrasRoute
   '/quem-somos': typeof QuemSomosRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/inscricao': typeof InscricaoRoute
+  '/login': typeof LoginRoute
   '/palestrantes': typeof PalestrantesRoute
   '/palestras': typeof PalestrasRoute
   '/quem-somos': typeof QuemSomosRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/inscricao': typeof InscricaoRoute
+  '/login': typeof LoginRoute
   '/palestrantes': typeof PalestrantesRoute
   '/palestras': typeof PalestrasRoute
   '/quem-somos': typeof QuemSomosRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/inscricao' | '/palestrantes' | '/palestras' | '/quem-somos'
+  fullPaths:
+    | '/'
+    | '/inscricao'
+    | '/login'
+    | '/palestrantes'
+    | '/palestras'
+    | '/quem-somos'
+    | '/recuperar-senha'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/inscricao' | '/palestrantes' | '/palestras' | '/quem-somos'
+  to:
+    | '/'
+    | '/inscricao'
+    | '/login'
+    | '/palestrantes'
+    | '/palestras'
+    | '/quem-somos'
+    | '/recuperar-senha'
   id:
     | '__root__'
     | '/'
     | '/inscricao'
+    | '/login'
     | '/palestrantes'
     | '/palestras'
     | '/quem-somos'
+    | '/recuperar-senha'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   InscricaoRoute: typeof InscricaoRoute
+  LoginRoute: typeof LoginRoute
   PalestrantesRoute: typeof PalestrantesRoute
   PalestrasRoute: typeof PalestrasRoute
   QuemSomosRoute: typeof QuemSomosRoute
+  RecuperarSenhaRoute: typeof RecuperarSenhaRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/recuperar-senha': {
+      id: '/recuperar-senha'
+      path: '/recuperar-senha'
+      fullPath: '/recuperar-senha'
+      preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/quem-somos': {
       id: '/quem-somos'
       path: '/quem-somos'
@@ -106,6 +149,13 @@ declare module '@tanstack/react-router' {
       path: '/palestrantes'
       fullPath: '/palestrantes'
       preLoaderRoute: typeof PalestrantesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/inscricao': {
@@ -128,9 +178,11 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   InscricaoRoute: InscricaoRoute,
+  LoginRoute: LoginRoute,
   PalestrantesRoute: PalestrantesRoute,
   PalestrasRoute: PalestrasRoute,
   QuemSomosRoute: QuemSomosRoute,
+  RecuperarSenhaRoute: RecuperarSenhaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

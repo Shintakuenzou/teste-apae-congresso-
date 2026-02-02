@@ -69,7 +69,7 @@ export function Footer() {
                 <div>
                   <div className="text-sm text-background/70">E-mail</div>
                   <a href="mailto:contato@nebus.com.br" className="text-sm hover:text-secondary transition-colors">
-                    contato@nebus.com.br
+                    fenapaes@apaebrasil.org.br
                   </a>
                 </div>
               </li>
@@ -78,7 +78,7 @@ export function Footer() {
                 <div>
                   <div className="text-sm text-background/70">Telefone</div>
                   <a href="tel:+556133211234" className="text-sm hover:text-secondary transition-colors">
-                    (61) 3321-1234
+                    (61) 3224-9922
                   </a>
                 </div>
               </li>
@@ -87,9 +87,9 @@ export function Footer() {
                 <div>
                   <div className="text-sm text-background/70">Endereco</div>
                   <span className="text-sm">
-                    SCS Quadra 1, Bloco K
+                    SDS Venâncio IV - Cobertura - CEP: 70393-903
                     <br />
-                    Brasilia - DF, 70398-900
+                    Brasília - Distrito Federal
                   </span>
                 </div>
               </li>
@@ -120,7 +120,7 @@ export function Footer() {
             <p className="text-sm text-background/60">
               Desenvolvido por{" "}
               <a href="https://nebus.com.br" target="_blank" rel="noopener noreferrer" className="text-secondary hover:underline font-medium">
-                Nebus
+                Shin
               </a>
             </p>
           </div>

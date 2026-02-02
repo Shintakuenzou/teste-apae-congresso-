@@ -12,6 +12,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { CheckCircle, Mail, MapPinned, User, Lock, Briefcase, Heart, Loader2 } from "lucide-react";
 import { handlePostFormParticipant } from "@/services/form-service";
+import { formatCPF } from "@/utils/format-cpf";
+import { formatPhone } from "@/utils/format-phone";
 
 export const Route = createFileRoute("/inscricao")({
   component: InscricaoPage,
@@ -30,6 +32,8 @@ const escolaridades = [
   "Doutorado",
 ];
 
+const tamanhosCamisa = ["PP", "P", "M", "G", "GG", "XG", "XGG"];
+
 // Schema de validação com Zod
 const formSchema = z.object({
   cpf: z.string().min(14, "CPF deve ter 11 dígitos").max(14),
@@ -42,6 +46,7 @@ const formSchema = z.object({
   telefone: z.string().min(14, "Telefone inválido"),
   whatsapp: z.string().min(14, "WhatsApp inválido"),
   escolaridade: z.string().min(1, "Selecione a escolaridade"),
+  tamanho_camisa: z.string().min(1, "Selecione a escolaridade"),
   apaeFiliada: z.string().min(2, "Nome da APAE é obrigatório"),
   senha: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
   presidente_apae: z.string().optional(),
@@ -79,6 +84,7 @@ function InscricaoPage() {
       telefone: "",
       whatsapp: "",
       escolaridade: "",
+      tamanho_camisa: "",
       apaeFiliada: "",
       senha: "",
       presidente_apae: "",
@@ -131,22 +137,6 @@ function InscricaoPage() {
     }
   };
 
-  // Funções de formatação
-  const formatCPF = (value: string) => {
-    const numbers = value.replace(/\D/g, "");
-    if (numbers.length <= 3) return numbers;
-    if (numbers.length <= 6) return `${numbers.slice(0, 3)}.${numbers.slice(3)}`;
-    if (numbers.length <= 9) return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6)}`;
-    return `${numbers.slice(0, 3)}.${numbers.slice(3, 6)}.${numbers.slice(6, 9)}-${numbers.slice(9, 11)}`;
-  };
-
-  const formatPhone = (value: string) => {
-    const numbers = value.replace(/\D/g, "");
-    if (numbers.length <= 2) return numbers;
-    if (numbers.length <= 7) return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
-    return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
-  };
-
   if (submitted) {
     return (
       <main className="min-h-screen bg-background">
@@ -183,7 +173,7 @@ function InscricaoPage() {
 
       <section className="pt-32 pb-20">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-12 space-y-5">
             <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">Garanta sua Vaga</h1>
             <p className="text-muted-foreground text-lg">Preencha seus dados para participar do Congresso Nacional APAE Brasil 2026</p>
           </div>
@@ -256,6 +246,29 @@ function InscricaoPage() {
                       />
                       {errors.escolaridade && <p className="text-sm text-destructive mt-1">{errors.escolaridade.message}</p>}
                     </Field>
+
+                    <Field>
+                      <FieldLabel htmlFor="tamanho_camisa">Tamanho de Camisa *</FieldLabel>
+                      <Controller
+                        name="tamanho_camisa"
+                        control={control}
+                        render={({ field }) => (
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger id="tamanho_camisa" className="!h-11 w-full">
+                              <SelectValue placeholder="Selecione seu tamanho de camisa" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {tamanhosCamisa.map((esc) => (
+                                <SelectItem key={esc} value={esc}>
+                                  {esc}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                      {errors.tamanho_camisa && <p className="text-sm text-destructive mt-1">{errors.tamanho_camisa.message}</p>}
+                    </Field>
                   </FieldGroup>
                 </FieldSet>
               </CardContent>
@@ -269,7 +282,7 @@ function InscricaoPage() {
                     <Mail className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h2 className="font-semibold text-lg text-foreground">Informacoes de Contato</h2>
+                    <h2 className="font-semibold text-lg text-foreground">Informações de Contato</h2>
                     <p className="text-sm text-muted-foreground">Como podemos entrar em contato com voce</p>
                   </div>
                 </div>
@@ -380,7 +393,7 @@ function InscricaoPage() {
                     <Briefcase className="h-5 w-5 text-primary" />
                   </div>
                   <div>
-                    <h2 className="font-semibold text-lg text-foreground">Informacoes Profissionais</h2>
+                    <h2 className="font-semibold text-lg text-foreground">Informações Profissionais</h2>
                     <p className="text-sm text-muted-foreground">Dados sobre sua atuacao na APAE</p>
                   </div>
                 </div>
@@ -394,22 +407,37 @@ function InscricaoPage() {
                     </Field>
 
                     <Field>
-                      <FieldLabel htmlFor="presidente_apae">Presidente da APAE</FieldLabel>
-                      <Input id="presidente_apae" placeholder="Nome do presidente" {...register("presidente_apae")} className="h-11" />
+                      <FieldLabel htmlFor="presidente_apae">Sou presidente da apae</FieldLabel>
+
+                      <Controller
+                        name="presidente_apae"
+                        control={control}
+                        render={({ field }) => (
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger id="presidente_apae" className="!h-11 w-full">
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Sim">Sim</SelectItem>
+                              <SelectItem value="Nao">Nao</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
                     </Field>
 
                     <Field>
-                      <FieldLabel htmlFor="funcao">Funcao</FieldLabel>
+                      <FieldLabel htmlFor="funcao">Função</FieldLabel>
                       <Input id="funcao" placeholder="Sua funcao" {...register("funcao")} className="h-11" />
                     </Field>
 
                     <Field className="md:col-span-2">
-                      <FieldLabel htmlFor="area_atuacao">Area de Atuacao</FieldLabel>
+                      <FieldLabel htmlFor="area_atuacao">Area de Atuação</FieldLabel>
                       <Input id="area_atuacao" placeholder="Qual sua area de atuacao?" {...register("area_atuacao")} className="h-11" />
                     </Field>
 
                     <Field>
-                      <FieldLabel htmlFor="coordenacao">Coordenacao</FieldLabel>
+                      <FieldLabel htmlFor="coordenacao">Coordenação</FieldLabel>
                       <Input id="coordenacao" placeholder="Coordenacao" {...register("coordenacao")} className="h-11" />
                     </Field>
                   </FieldGroup>
@@ -496,7 +524,7 @@ function InscricaoPage() {
                 type="submit"
                 size="lg"
                 disabled={isSubmitting}
-                className="w-full md:w-auto min-w-[300px] h-12 text-base font-semibold bg-secondary hover:bg-secondary/90 text-secondary-foreground"
+                className="w-full md:w-auto min-w-[300px] h-12 text-base font-semibold bg-secondary hover:bg-secondary/90 text-secondary-foreground cursor-pointer"
               >
                 {isSubmitting ? (
                   <>
@@ -507,7 +535,6 @@ function InscricaoPage() {
                   "Confirmar Inscricao"
                 )}
               </Button>
-              <p className="text-xs text-muted-foreground text-center">* Campos obrigatorios</p>
             </div>
           </form>
         </div>
