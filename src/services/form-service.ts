@@ -19,7 +19,7 @@ export async function handlePostFormParticipant({ documentId, values }: SendPart
     // ✅ Define a URL correta baseado no ambiente
     const endpoint = import.meta.env.DEV
       ? `/ecm-forms/api/v2/cardindex/${documentId}/cards` // Endpoint do Fluig (proxy vai interceptar)
-      : `https://firebrick-kingfisher-525619.hostingersite.com/proxy.php`; // Proxy em produção
+      : `https://firebrick-kingfisher-525619.hostingersite.com/proxy.php/ecm-forms/api/v2/cardindex/${documentId}/cards`; // Proxy em produção
 
     console.log("📤 Enviando para:", endpoint);
     console.log("🔧 Modo:", import.meta.env.DEV ? "DEV" : "PROD");
