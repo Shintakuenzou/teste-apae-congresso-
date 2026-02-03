@@ -11,31 +11,22 @@ interface SendParticipantData {
 }
 
 export async function handlePostFormParticipant({ documentId, values }: SendParticipantData) {
-  console.log("values: ", values);
-  console.log("values: ", import.meta.env.VITE_CONSUMER_KEY_BASE_TESTE);
-  console.log("documentId", documentId);
-
   try {
-    // ✅ Define a URL correta baseado no ambiente
-    const endpoint = import.meta.env.DEV
-      ? `/ecm-forms/api/v2/cardindex/${documentId}/cards` // Endpoint do Fluig (proxy vai interceptar)
-      : `https://firebrick-kingfisher-525619.hostingersite.com/proxy.php/ecm-forms/api/v2/cardindex/${documentId}/cards`; // Proxy em produção
+    // No ambiente DEV, você provavelmente usa um proxy local (vite proxy)
+    // No ambiente PROD (Hostinger), chamamos o proxy.php passando o endpoint real como parâmetro
+    const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards`;
 
-    console.log("📤 Enviando para:", endpoint);
-    console.log("🔧 Modo:", import.meta.env.DEV ? "DEV" : "PROD");
+    const url = import.meta.env.DEV ? fluigPath : `https://firebrick-kingfisher-525619.hostingersite.com/proxy.php?endpoint=${fluigPath}&method=POST`;
 
-    const response = await axiosApi.post(endpoint, { values });
-    const data = response;
+    console.log("📤 Enviando para:", url);
 
-    console.log("✅ Formulário enviado com sucesso:", data);
-    return data;
+    const response = await axiosApi.post(url, { values });
+    return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
       console.error("❌ Axios error submitting form data:", axiosError.response?.data || axiosError.message);
       return;
     }
-  } finally {
-    console.log("Request to submit form data completed.");
   }
 }
