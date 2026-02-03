@@ -68,6 +68,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         ],
       });
 
+      console.log("response login: ", response);
+
       if (response.items && response.items.length > 0) {
         const userData = response.items[0];
         console.log("userData: ", userData);
