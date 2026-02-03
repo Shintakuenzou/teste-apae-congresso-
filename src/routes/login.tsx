@@ -11,6 +11,7 @@ import BgLogin from "../../public/login-bg.png";
 import { formatCPF } from "@/utils/format-cpf";
 import { useEffect } from "react";
 import { useAuth } from "@/context/auth-context";
+import { AxiosError } from "axios";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -49,13 +50,48 @@ function LoginPage() {
 
     try {
       // ✅ Chama a função de login do contexto
-      await login(formData.cpf, formData.password);
+      const response = await login(formData.cpf, formData.password);
+      console.log(" Login bem-sucedido:", response);
+    } catch (err) {
+      // ✅ Type-safe error handling
+      if (err instanceof AxiosError) {
+        console.error("❌ Axios Error:", err);
+        console.error("❌ Status:", err.response?.status);
+        console.error("❌ Data:", err.response?.data);
+        console.error("❌ Config:", err.config);
 
-      // ✅ Redireciona para o painel após login bem-sucedido
-      navigate({ to: "/painel" });
-    } catch (error) {
-      console.error("Erro no login:", error);
-      setError("CPF ou senha inválidos. Tente novamente.");
+        let errorMessage = "CPF ou senha inválidos. Tente novamente.";
+
+        if (err.response?.data?.error) {
+          errorMessage = err.response.data.error;
+        } else if (err.response?.data?.message) {
+          errorMessage = err.response.data.message;
+        } else if (err.response?.status === 404) {
+          errorMessage = "Serviço indisponível. Tente novamente mais tarde.";
+        } else if (err.response?.status === 500) {
+          errorMessage = "Erro no servidor. Tente novamente mais tarde.";
+        } else if (err.code === "ERR_NETWORK") {
+          errorMessage = "Erro de conexão. Verifique sua internet.";
+        }
+
+        setError(errorMessage);
+
+        console.table({
+          "Status HTTP": err.response?.status || "N/A",
+          Mensagem: err.message || "N/A",
+          URL: err.config?.url || "N/A",
+          Método: err.config?.method || "N/A",
+          Ambiente: import.meta.env.DEV ? "DEV" : "PROD",
+        });
+      } else if (err instanceof Error) {
+        console.error("❌ Error genérico:", err);
+        setError(err.message || "Erro desconhecido");
+      } else {
+        console.error("❌ Erro desconhecido:", err);
+        setError("Erro desconhecido ao fazer login");
+      }
+
+      setIsLoading(false);
     } finally {
       setIsLoading(false);
     }

@@ -49,6 +49,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (cpf: string, password: string) => {
     setIsLoading(true);
+    console.log(cpf.replace(/\D/g, ""), password);
+
     try {
       const response = await fetchDataset({
         datasetId: "cadParticipanteCN",
