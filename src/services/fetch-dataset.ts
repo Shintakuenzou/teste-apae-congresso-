@@ -4,8 +4,6 @@ export type DatasetRecord = Record<string, string | number | boolean | null>;
 
 export interface DatasetResponse<T = DatasetRecord> {
   values?: T[];
-  items?: T[]; // ✅ Fluig pode retornar "items" ou "values"
-  hasNext?: boolean;
 }
 
 export interface DatasetConstraint {
@@ -24,12 +22,8 @@ interface FetchDatasetProps {
 
 export async function fetchDataset<T = DatasetRecord>({ datasetId, offset, limit, constraints = [] }: FetchDatasetProps): Promise<{ items: T[]; hasNext: boolean }> {
   try {
-    // ✅ MUDANÇA PRINCIPAL: Adicionar endpoint e method como parâmetros
+    const base = "/dataset/api/v2/dataset-handle/search";
     const params = new URLSearchParams();
-
-    // Parâmetros do proxy
-    params.set("endpoint", "/dataset/api/v2/dataset-handle/search");
-    params.set("method", "GET");
 
     // datasetId
     params.set("datasetId", datasetId);
@@ -52,35 +46,17 @@ export async function fetchDataset<T = DatasetRecord>({ datasetId, offset, limit
     });
 
     const query = params.toString();
-    const url = `/proxy.php?${query}`; // ✅ Chamar o proxy
-
-    console.log("📤 URL completa:", url);
+    const url = `${base}?${query}`;
+    // console.log(url, query);
 
     const response = await axiosApi.get<DatasetResponse<T>>(url);
 
-    console.log("✅ Response dataset:", response.data);
-
-    // // ✅ VALIDAÇÃO: Verificar se retornou HTML
-    // if (typeof response.data === "string" && response.data.("<!doctype html>")) {
-    //   throw new Error("Proxy retornou HTML. Verifique as credenciais OAuth no proxy.php");
-    // }
-
-    // ✅ Fluig pode retornar "values" ou "items"
-    const items = response.data.items ?? response.data.values ?? [];
-    const hasNext = response.data.hasNext ?? false;
-
     return {
-      items: items as T[],
-      hasNext,
+      items: response.data.values ?? [],
+      hasNext: false,
     };
   } catch (error) {
-    console.error("❌ Erro ao buscar dataset:", error);
-
-    // ✅ Melhor tratamento de erro
-    if (error instanceof Error) {
-      throw error;
-    }
-
-    throw new Error("Erro desconhecido ao buscar dataset");
+    console.error("Erro ao buscar dataset:", error);
+    return { items: [], hasNext: false };
   }
 }
