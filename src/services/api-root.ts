@@ -6,14 +6,14 @@ import axios, { type AxiosRequestHeaders, type InternalAxiosRequestConfig } from
 const FLUIG_BASE_URL = "https://federacaonacional201538.fluig.cloudtotvs.com.br";
 
 // ✅ Determina a base URL dependendo do ambiente
-const getBaseURL = () => {
-  if (import.meta.env.DEV) {
-    // Em desenvolvimento, usa string vazia para Vite Proxy interceptar
-    return "";
-  }
-  // Em produção, também usa string vazia (vai chamar proxy.php via URL completa)
-  return "";
-};
+// const getBaseURL = () => {
+//   if (import.meta.env.DEV) {
+//     // Em desenvolvimento, usa string vazia para Vite Proxy interceptar
+//     return "";
+//   }
+//   // Em produção, também usa string vazia (vai chamar proxy.php via URL completa)
+//   return "";
+// };
 
 // Instância do Axios
 export const axiosApi = axios.create({
