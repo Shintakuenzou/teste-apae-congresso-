@@ -81,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           nome: userData.nome as string,
           sobrenome: userData.sobrenome as string,
           email: userData.email as string,
-          dataNascimento: userData.dataNascimento as string,
+          dataNascimento: userData.data_nascimento as string,
           uf: userData.uf as string,
           municipio: userData.municipio as string,
           telefone: userData.telefone as string,
@@ -89,10 +89,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           escolaridade: userData.escolaridade as string,
           apaeFiliada: userData.apaeFiliada as string,
           inscricao: userData.inscricao as string,
-          dataInscricao: (userData.dataInscricao as string) || (userData.criado_em as string),
+          dataInscricao: (userData.criado_em as string) || (userData.criado_em as string),
         };
-
-        console.log("user: ", user);
 
         setUser(user);
         localStorage.setItem("user", JSON.stringify(user));

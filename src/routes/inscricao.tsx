@@ -22,6 +22,7 @@ import { fetchCep } from "@/services/cep";
 import { formatCEO } from "@/utils/cep";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
+import { cryptoService } from "@/services/ryptoService";
 
 export const Route = createFileRoute("/inscricao")({
   component: InscricaoPage,
@@ -67,7 +68,6 @@ function InscricaoPage() {
     handleSubmit,
     control,
     formState: { errors },
-    getValues,
     reset,
     watch,
     setValue,
@@ -107,11 +107,15 @@ function InscricaoPage() {
     console.log("Dados enviados:", data);
 
     try {
+      const senhaCriptografada = cryptoService.encryptPassword(data.senha);
+      console.log(senhaCriptografada);
+
       const response = await handlePostFormParticipant({
         documentId: import.meta.env.VITE_FORM_PARTICIPANTE as string,
         values: [
+          { fieldId: "criado_em", value: data.criado_em },
           { fieldId: "cpf", value: data.cpf.replace(/\D/g, "") },
-          { fieldId: "senha", value: data.senha },
+          { fieldId: "senha", value: senhaCriptografada },
           { fieldId: "nome", value: data.nome },
           { fieldId: "sobrenome", value: data.sobrenome },
           { fieldId: "email", value: data.email },
@@ -132,9 +136,11 @@ function InscricaoPage() {
           { fieldId: "coordenacao", value: data.coordenacao || "" },
         ],
       });
+      console.log(response);
 
-      console.log("response ", response);
-      setSubmitted(true);
+      if (response && response.status === 200) {
+        setSubmitted(true);
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -152,9 +158,7 @@ function InscricaoPage() {
               <CheckCircle className="h-10 w-10 text-secondary-foreground" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-4">Inscricao Realizada!</h1>
-            <p className="text-muted-foreground mb-6">
-              Voce recebera um e-mail em <strong className="text-foreground">{getValues("email")}</strong> com as instrucoes de pagamento e detalhes do evento.
-            </p>
+
             <Button
               onClick={() => {
                 setSubmitted(false);
@@ -211,7 +215,6 @@ function InscricaoPage() {
 
   const handlePopulateInfoFromCpf = async (cpf: string) => {
     const formatCPF = cpf.replace(/\D/g, "");
-    console.log("cpf: ", formatCPF);
 
     try {
       const response = await fetchDataset({
@@ -225,7 +228,6 @@ function InscricaoPage() {
           },
         ],
       });
-      console.log(response);
 
       if (response.items.length > 0) {
         const participant = response.items[0];
@@ -242,13 +244,19 @@ function InscricaoPage() {
   };
 
   async function handleBlurCPF(event: React.FocusEvent<HTMLInputElement>) {
-    const response = await handleCheckExistingParticipant(event.target.value);
-    if (response!.items.length > 0) {
-      toast.warning("CPF já cadastrado!", { position: "top-right" });
-      return;
-    }
+    try {
+      const response = await handleCheckExistingParticipant(event.target.value);
+      console.log(response);
 
-    await handlePopulateInfoFromCpf(event.target.value);
+      if (response && response?.items && response.items[0]) {
+        toast.warning("CPF já cadastrado!", { position: "bottom-right", duration: 4000 });
+        return;
+      }
+
+      await handlePopulateInfoFromCpf(event.target.value);
+    } catch (error) {
+      console.error("Erro ao verificar CPF existente:", error);
+    }
   }
 
   return (
