@@ -12,7 +12,7 @@ const getBaseURL = () => {
     return "";
   }
   // Em produção, também usa string vazia (vai chamar proxy.php via URL completa)
-  return "";
+  return "https://firebrick-kingfisher-525619.hostingersite.com/proxy.php";
 };
 
 // Instância do Axios
