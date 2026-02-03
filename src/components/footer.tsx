@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import LogoApae from "../../public/logo-apae.jpg";
 
 const socialLinks = [
   { icon: Facebook, href: "https://facebook.com/apaebrasiloficial", label: "Facebook" },
@@ -25,7 +26,8 @@ export function Footer() {
                 <span className="text-foreground font-black text-lg">A</span>
               </div>
               <div className="flex flex-col">
-                <span className="text-lg font-bold leading-tight">APAE BRASIL</span>
+                 <img src={LogoApae} className="size-12 object-cover rounded-full p-1" alt="logo apae" />
+            </div>
                 <span className="text-xs text-background/60">Congresso Nacional 2026</span>
               </div>
             </div>

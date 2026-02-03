@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -6,16 +6,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 
-import { Link } from '@tanstack/react-router'
+import { Link } from "@tanstack/react-router";
 import { Clock, User, MapPin, Calendar, ArrowRight, Filter } from "lucide-react";
 
-export const Route = createFileRoute('/palestras')({
+export const Route = createFileRoute("/palestras")({
   component: PalestrasPage,
-})
-
- 
-
-
+});
 
 const days = [
   { id: "dia1", label: "15 de Agosto", shortLabel: "Dia 1" },
@@ -207,7 +203,7 @@ const schedule: Record<
   ],
 };
 
-  function PalestrasPage() {
+function PalestrasPage() {
   const [selectedDay, setSelectedDay] = useState("dia1");
   const [selectedCategory, setSelectedCategory] = useState("Todos");
 
@@ -309,7 +305,7 @@ const schedule: Record<
           <div className="mt-16 text-center">
             <p className="text-muted-foreground mb-6">Garanta sua vaga e participe de todas as atividades do congresso.</p>
             <Button asChild size="lg" className="group">
-              <Link to='/inscricao' href="/inscricao">
+              <Link to="/login">
                 Inscreva-se Agora
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
@@ -322,4 +318,3 @@ const schedule: Record<
     </main>
   );
 }
-

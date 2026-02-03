@@ -1,9 +1,7 @@
 <?php
-// proxy.php - Versão melhorada com logs e suporte a múltiplos métodos
 error_reporting(E_ALL);
 ini_set('display_errors', 0);
 
-// CORS
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
@@ -14,7 +12,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-// Configurações Fluig
 $config = [
     'consumer_key' => 'API_Key',
     'consumer_secret' => 'api_secret',
@@ -23,29 +20,27 @@ $config = [
     'base_url' => 'https://federacaonacional201538.fluig.cloudtotvs.com.br'
 ];
 
-// Captura dados
+// 1. Captura de inputs
 $inputJSON = file_get_contents('php://input');
-$body = json_decode($inputJSON, true);
-
-// Endpoint e método vindos da requisição
-$endpoint = isset($_GET['endpoint']) ? $_GET['endpoint'] : '/ecm-forms/api/v2/cardindex/210890/cards';
 $method = isset($_GET['method']) ? strtoupper($_GET['method']) : $_SERVER['REQUEST_METHOD'];
 
+// 2. Lógica de Endpoint
+// Se o seu JS enviar ?endpoint=..., usamos ele. Caso contrário, assume o Search do Dataset v2.
+$endpoint = isset($_GET['endpoint']) ? $_GET['endpoint'] : '/dataset/api/v2/dataset-handle/search';
+
+// 3. Organização de Parâmetros para a Assinatura
+$queryParams = $_GET;
+unset($queryParams['endpoint']); // Removemos os controles do proxy
+unset($queryParams['method']);
+
+// Monta a URL final para o Fluig
 $targetUrl = $config['base_url'] . $endpoint;
+if (!empty($queryParams)) {
+    $targetUrl .= '?' . http_build_query($queryParams);
+}
 
-// Log para debug (REMOVA EM PRODUÇÃO)
-$logFile = __DIR__ . '/proxy_log.txt';
-$logData = [
-    'timestamp' => date('Y-m-d H:i:s'),
-    'method' => $method,
-    'endpoint' => $endpoint,
-    'target_url' => $targetUrl,
-    'body' => $body
-];
-file_put_contents($logFile, print_r($logData, true) . "\n\n", FILE_APPEND);
-
-// Função OAuth 1.0a
-function buildOAuthHeader($url, $method, $config)
+// Função OAuth 1.0a Unificada
+function buildOAuthHeader($baseUrl, $method, $allParams, $config)
 {
     $timestamp = time();
     $nonce = md5(uniqid(rand(), true));
@@ -59,23 +54,27 @@ function buildOAuthHeader($url, $method, $config)
         'oauth_version' => '1.0'
     ];
 
-    ksort($oauthParams);
+    // Mescla parâmetros da URL com OAuth para a base da assinatura
+    $baseParams = array_merge($oauthParams, $allParams);
+    uksort($baseParams, 'strcmp');
 
     $paramString = [];
-    foreach ($oauthParams as $key => $value) {
-        $paramString[] = $key . '=' . rawurlencode($value);
+    foreach ($baseParams as $key => $value) {
+        if (is_array($value)) {
+            sort($value);
+            foreach ($value as $v) {
+                $paramString[] = rawurlencode($key) . '=' . rawurlencode($v);
+            }
+        } else {
+            $paramString[] = rawurlencode($key) . '=' . rawurlencode($value);
+        }
     }
-    $paramString = implode('&', $paramString);
 
-    $baseString = strtoupper($method) . '&'
-        . rawurlencode($url) . '&'
-        . rawurlencode($paramString);
-
+    $baseString = strtoupper($method) . '&' . rawurlencode($baseUrl) . '&' . rawurlencode(implode('&', $paramString));
     $signingKey = rawurlencode($config['consumer_secret']) . '&' . rawurlencode($config['token_secret']);
     $signature = base64_encode(hash_hmac('sha1', $baseString, $signingKey, true));
 
     $oauthParams['oauth_signature'] = $signature;
-
     $headerParts = [];
     foreach ($oauthParams as $key => $value) {
         $headerParts[] = $key . '="' . rawurlencode($value) . '"';
@@ -86,13 +85,14 @@ function buildOAuthHeader($url, $method, $config)
 
 try {
     $ch = curl_init();
-    $authHeader = buildOAuthHeader($targetUrl, $method, $config);
+
+    // Importante: A assinatura usa a URL sem a query string, os params entram no corpo da assinatura
+    $authHeader = buildOAuthHeader($config['base_url'] . $endpoint, $method, $queryParams, $config);
 
     curl_setopt($ch, CURLOPT_URL, $targetUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
 
-    // Adiciona body para POST/PUT
     if (in_array($method, ['POST', 'PUT', 'PATCH']) && !empty($inputJSON)) {
         curl_setopt($ch, CURLOPT_POSTFIELDS, $inputJSON);
     }
@@ -105,33 +105,19 @@ try {
 
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-    curl_setopt($ch, CURLOPT_VERBOSE, true);
 
     $response = curl_exec($ch);
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     $curlError = curl_error($ch);
-
-    // Log da resposta
-    file_put_contents($logFile, "Response Code: $httpCode\n", FILE_APPEND);
-    file_put_contents($logFile, "Response: $response\n", FILE_APPEND);
-    file_put_contents($logFile, "cURL Error: $curlError\n\n", FILE_APPEND);
-
     curl_close($ch);
 
-    if ($curlError) {
+    if ($curlError)
         throw new Exception("Erro cURL: $curlError");
-    }
 
     http_response_code($httpCode);
     echo $response;
 
 } catch (Exception $e) {
     http_response_code(500);
-    $errorResponse = [
-        'error' => 'Erro no proxy',
-        'message' => $e->getMessage()
-    ];
-    file_put_contents($logFile, "Exception: " . print_r($errorResponse, true) . "\n\n", FILE_APPEND);
-    echo json_encode($errorResponse);
+    echo json_encode(['error' => 'Erro no proxy', 'message' => $e->getMessage()]);
 }
-?>

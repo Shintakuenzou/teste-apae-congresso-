@@ -1,15 +1,13 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, Users, Target, Award, ArrowRight, Building, Calendar, Globe } from "lucide-react";
 
-export const Route = createFileRoute('/quem-somos')({
+export const Route = createFileRoute("/quem-somos")({
   component: QuemSomosPage,
-})
-
-
+});
 
 const features = [
   {
@@ -69,7 +67,7 @@ const timeline = [
   },
 ];
 
- function QuemSomosPage() {
+function QuemSomosPage() {
   return (
     <main className="min-h-screen">
       <Header />
@@ -204,7 +202,7 @@ const timeline = [
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold h-14 px-8">
-              <a href="/inscricao">Inscreva-se Agora</a>
+              <a href="/login">Inscreva-se Agora</a>
             </Button>
             <Button
               asChild
@@ -222,4 +220,3 @@ const timeline = [
     </main>
   );
 }
-

@@ -29,7 +29,7 @@ export function CTASection() {
                 size="lg"
                 className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold h-14 px-8 shadow-lg hover:shadow-xl transition-all group"
               >
-                <a href="/inscricao">
+                <a href="/login">
                   Inscreva-se agora
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </a>

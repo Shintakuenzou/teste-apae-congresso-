@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute } from "@tanstack/react-router";
 
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
@@ -6,10 +6,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Linkedin, Instagram } from "lucide-react";
 
-export const Route = createFileRoute('/palestrantes')({
+export const Route = createFileRoute("/palestrantes")({
   component: PalestrantesPage,
-})
-
+});
 
 const palestrantes = [
   {
@@ -95,7 +94,7 @@ function getInitials(name: string) {
     .toUpperCase();
 }
 
-  function PalestrantesPage() {
+function PalestrantesPage() {
   return (
     <main className="min-h-screen bg-background">
       <Header />
@@ -153,7 +152,7 @@ function getInitials(name: string) {
         </div>
       </section>
 
-      <section className="py-16 bg-muted">
+      {/* <section className="py-16 bg-muted">
         <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-2xl font-bold text-foreground mb-4">Quer palestrar no Congresso?</h2>
           <p className="text-muted-foreground mb-6">Estamos com chamada aberta para palestras e workshops. Compartilhe seu conhecimento com a comunidade apaeana.</p>
@@ -164,10 +163,9 @@ function getInitials(name: string) {
             Enviar proposta
           </a>
         </div>
-      </section>
+      </section> */}
 
       <Footer />
     </main>
   );
 }
-
