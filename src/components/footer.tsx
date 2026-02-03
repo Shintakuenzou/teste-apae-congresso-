@@ -26,8 +26,8 @@ export function Footer() {
                 <span className="text-foreground font-black text-lg">A</span>
               </div>
               <div className="flex flex-col">
-                 <img src={LogoApae} className="size-12 object-cover rounded-full p-1" alt="logo apae" />
-            </div>
+                <img src={LogoApae} className="size-12 object-cover rounded-full p-1" alt="logo apae" />
+
                 <span className="text-xs text-background/60">Congresso Nacional 2026</span>
               </div>
             </div>
@@ -80,7 +80,7 @@ export function Footer() {
                 <div>
                   <div className="text-sm text-background/70">Telefone</div>
                   <a href="tel:+556133211234" className="text-sm hover:text-secondary transition-colors">
-                    (61) 3224-9922
+                    (61)3224-9922
                   </a>
                 </div>
               </li>
