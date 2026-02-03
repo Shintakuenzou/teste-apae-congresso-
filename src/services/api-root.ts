@@ -12,7 +12,7 @@ const getBaseURL = () => {
     return "";
   }
   // Em produção, também usa string vazia (vai chamar proxy.php via URL completa)
-  return "https://firebrick-kingfisher-525619.hostingersite.com/proxy.php";
+  return "";
 };
 
 // Instância do Axios
@@ -76,6 +76,7 @@ axiosApi.interceptors.request.use(
         console.error("❌ ERRO: Não use proxy.php em desenvolvimento!");
         return Promise.reject(new Error("Use a API do Fluig diretamente em DEV"));
       }
+      console.log("isProxyCall: ", isProxyCall);
 
       // ✅ Em PROD, proxy.php não precisa de OAuth (ele faz isso)
       console.log("📡 Usando proxy.php (produção) - sem OAuth");

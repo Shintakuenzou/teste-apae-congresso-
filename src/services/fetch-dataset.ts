@@ -50,6 +50,7 @@ export async function fetchDataset<T = DatasetRecord>({ datasetId, offset, limit
     console.log(url, query);
 
     const response = await axiosApi.get<DatasetResponse<T>>(url);
+    console.log("response: ", response);
 
     return {
       items: response.data.values ?? [],
