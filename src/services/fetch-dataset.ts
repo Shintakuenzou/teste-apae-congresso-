@@ -4,6 +4,8 @@ export type DatasetRecord = Record<string, string | number | boolean | null>;
 
 export interface DatasetResponse<T = DatasetRecord> {
   values?: T[];
+  items?: T[]; // ✅ Fluig pode retornar "items" ou "values"
+  hasNext?: boolean;
 }
 
 export interface DatasetConstraint {
@@ -22,8 +24,12 @@ interface FetchDatasetProps {
 
 export async function fetchDataset<T = DatasetRecord>({ datasetId, offset, limit, constraints = [] }: FetchDatasetProps): Promise<{ items: T[]; hasNext: boolean }> {
   try {
-    const base = "/dataset/api/v2/dataset-handle/search";
+    // ✅ MUDANÇA PRINCIPAL: Adicionar endpoint e method como parâmetros
     const params = new URLSearchParams();
+
+    // Parâmetros do proxy
+    params.set("endpoint", "/dataset/api/v2/dataset-handle/search");
+    params.set("method", "GET");
 
     // datasetId
     params.set("datasetId", datasetId);
@@ -46,18 +52,35 @@ export async function fetchDataset<T = DatasetRecord>({ datasetId, offset, limit
     });
 
     const query = params.toString();
-    const url = `${base}?${query}`;
-    console.log(url, query);
+    const url = `/proxy.php?${query}`; // ✅ Chamar o proxy
+
+    console.log("📤 URL completa:", url);
 
     const response = await axiosApi.get<DatasetResponse<T>>(url);
-    console.log("response: ", response);
+
+    console.log("✅ Response dataset:", response.data);
+
+    // // ✅ VALIDAÇÃO: Verificar se retornou HTML
+    // if (typeof response.data === "string" && response.data.("<!doctype html>")) {
+    //   throw new Error("Proxy retornou HTML. Verifique as credenciais OAuth no proxy.php");
+    // }
+
+    // ✅ Fluig pode retornar "values" ou "items"
+    const items = response.data.items ?? response.data.values ?? [];
+    const hasNext = response.data.hasNext ?? false;
 
     return {
-      items: response.data.values ?? [],
-      hasNext: false,
+      items: items as T[],
+      hasNext,
     };
   } catch (error) {
-    console.error("Erro ao buscar dataset:", error);
-    return { items: [], hasNext: false };
+    console.error("❌ Erro ao buscar dataset:", error);
+
+    // ✅ Melhor tratamento de erro
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error("Erro desconhecido ao buscar dataset");
   }
 }
