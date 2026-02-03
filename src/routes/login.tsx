@@ -1,27 +1,39 @@
-import React from "react";
-
+// src/routes/login.tsx
 import { useState } from "react";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Eye, EyeOff, LogIn, ArrowLeft } from "lucide-react";
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+
 import BgLogin from "../../public/login-bg.png";
 import { formatCPF } from "@/utils/format-cpf";
+import { useEffect } from "react";
+import { useAuth } from "@/context/auth-context";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
 });
 
-export default function LoginPage() {
+function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     cpf: "",
     password: "",
   });
+
+  const { login, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  // ✅ Se já estiver autenticado, redireciona para o painel
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate({ to: "/painel" });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleCPFChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatCPF(e.target.value);
@@ -33,13 +45,20 @@ export default function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    setError("");
 
-    // Simula autenticacao
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    try {
+      // ✅ Chama a função de login do contexto
+      await login(formData.cpf, formData.password);
 
-    setIsLoading(false);
-    // Redireciona para o painel do participante
-    // router.push("/painel");
+      // ✅ Redireciona para o painel após login bem-sucedido
+      navigate({ to: "/painel" });
+    } catch (error) {
+      console.error("Erro no login:", error);
+      setError("CPF ou senha inválidos. Tente novamente.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -55,9 +74,9 @@ export default function LoginPage() {
           </Link>
 
           <div className="space-y-6">
-            <h2 className="text-4xl xl:text-5xl font-bold leading-tight text-balance">Juntos pela inclusao e transformacao social</h2>
+            <h2 className="text-4xl xl:text-5xl font-bold leading-tight text-balance">Juntos pela inclusão e transformação social</h2>
             <p className="text-lg text-primary-foreground/90 max-w-md">
-              A APAE atua ha mais de 60 anos promovendo a inclusao de pessoas com deficiencia intelectual e multipla, transformando vidas e construindo uma sociedade mais justa.
+              A APAE atua há mais de 60 anos promovendo a inclusão de pessoas com deficiência intelectual e múltipla, transformando vidas e construindo uma sociedade mais justa.
             </p>
           </div>
 
@@ -74,13 +93,13 @@ export default function LoginPage() {
             <div className="w-px h-12 bg-primary-foreground/30" />
             <div>
               <p className="text-3xl font-bold">60+</p>
-              <p className="text-sm text-primary-foreground/80">Anos de historia</p>
+              <p className="text-sm text-primary-foreground/80">Anos de história</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Lado direito - Formulario */}
+      {/* Lado direito - Formulário */}
       <div className="w-full lg:w-1/2 xl:w-2/5 flex flex-col bg-background">
         {/* Header mobile */}
         <header className="p-6 lg:hidden">
@@ -90,10 +109,10 @@ export default function LoginPage() {
           </Link>
         </header>
 
-        {/* Conteudo centralizado */}
+        {/* Conteúdo centralizado */}
         <main className="flex-1 flex items-center justify-center p-6 lg:p-12">
           <div className="w-full max-w-md space-y-8">
-            {/* Logo e titulo */}
+            {/* Logo e título */}
             <div className="text-center space-y-3">
               <div className="inline-flex lg:hidden items-center justify-center w-16 h-16 rounded-2xl bg-primary text-primary-foreground font-bold text-xl shadow-lg">APAE</div>
               <div>
@@ -106,6 +125,13 @@ export default function LoginPage() {
             <Card className="border-0 shadow-xl">
               <CardContent className="p-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* ✅ Mensagem de erro */}
+                  {error && (
+                    <div className="p-3 rounded-lg bg-red-50 border border-red-200">
+                      <p className="text-sm text-red-600">{error}</p>
+                    </div>
+                  )}
+
                   {/* Campo CPF */}
                   <div className="space-y-2">
                     <Label htmlFor="cpf" className="text-sm font-medium">
@@ -145,7 +171,7 @@ export default function LoginPage() {
                     </div>
                   </div>
 
-                  {/* Botao de login */}
+                  {/* Botão de login */}
                   <Button type="submit" className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 cursor-pointer" disabled={isLoading}>
                     {isLoading ? (
                       <span className="flex items-center gap-2">
@@ -174,11 +200,11 @@ export default function LoginPage() {
                     <div className="w-full border-t border-border" />
                   </div>
                   <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-card px-3 text-muted-foreground">Ainda nao tem conta?</span>
+                    <span className="bg-card px-3 text-muted-foreground">Ainda não tem conta?</span>
                   </div>
                 </div>
 
-                {/* Link para inscricao */}
+                {/* Link para inscrição */}
                 <Link to="/inscricao">
                   <Button
                     variant="outline"

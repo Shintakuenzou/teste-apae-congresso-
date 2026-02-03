@@ -106,14 +106,6 @@ function InscricaoPage() {
     setIsSubmitting(true);
     console.log("Dados enviados:", data);
 
-    const existCpf = await handleCheckExistingParticipant(data.cpf);
-
-    if (existCpf && existCpf.items.length > 0) {
-      toast.error("CPF já cadastrado!");
-      setIsSubmitting(false);
-      return;
-    }
-
     try {
       const response = await handlePostFormParticipant({
         documentId: import.meta.env.VITE_FORM_PARTICIPANTE as string,
@@ -249,9 +241,19 @@ function InscricaoPage() {
     }
   };
 
+  async function handleBlurCPF(event: React.FocusEvent<HTMLInputElement>) {
+    const response = await handleCheckExistingParticipant(event.target.value);
+    if (response!.items.length > 0) {
+      toast.warning("CPF já cadastrado!", { position: "top-right" });
+      return;
+    }
+
+    await handlePopulateInfoFromCpf(event.target.value);
+  }
+
   return (
     <main className="min-h-screen bg-background">
-      <Toaster />
+      <Toaster richColors />
       <Header />
 
       <section className="pt-32 pb-20">
@@ -289,7 +291,7 @@ function InscricaoPage() {
                             maxLength={14}
                             {...field}
                             onChange={(e) => field.onChange(formatCPF(e.target.value))}
-                            onBlur={(e) => handlePopulateInfoFromCpf(e.target.value)}
+                            onBlur={(e) => handleBlurCPF(e)}
                             className="h-11"
                           />
                         )}

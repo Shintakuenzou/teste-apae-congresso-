@@ -13,6 +13,7 @@ import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as QuemSomosRouteImport } from './routes/quem-somos'
 import { Route as PalestrasRouteImport } from './routes/palestras'
 import { Route as PalestrantesRouteImport } from './routes/palestrantes'
+import { Route as PainelRouteImport } from './routes/painel'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as InscricaoRouteImport } from './routes/inscricao'
 import { Route as IndexRouteImport } from './routes/index'
@@ -37,6 +38,11 @@ const PalestrantesRoute = PalestrantesRouteImport.update({
   path: '/palestrantes',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PainelRoute = PainelRouteImport.update({
+  id: '/painel',
+  path: '/painel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -57,6 +63,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/inscricao': typeof InscricaoRoute
   '/login': typeof LoginRoute
+  '/painel': typeof PainelRoute
   '/palestrantes': typeof PalestrantesRoute
   '/palestras': typeof PalestrasRoute
   '/quem-somos': typeof QuemSomosRoute
@@ -66,6 +73,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/inscricao': typeof InscricaoRoute
   '/login': typeof LoginRoute
+  '/painel': typeof PainelRoute
   '/palestrantes': typeof PalestrantesRoute
   '/palestras': typeof PalestrasRoute
   '/quem-somos': typeof QuemSomosRoute
@@ -76,6 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/inscricao': typeof InscricaoRoute
   '/login': typeof LoginRoute
+  '/painel': typeof PainelRoute
   '/palestrantes': typeof PalestrantesRoute
   '/palestras': typeof PalestrasRoute
   '/quem-somos': typeof QuemSomosRoute
@@ -87,6 +96,7 @@ export interface FileRouteTypes {
     | '/'
     | '/inscricao'
     | '/login'
+    | '/painel'
     | '/palestrantes'
     | '/palestras'
     | '/quem-somos'
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/'
     | '/inscricao'
     | '/login'
+    | '/painel'
     | '/palestrantes'
     | '/palestras'
     | '/quem-somos'
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/inscricao'
     | '/login'
+    | '/painel'
     | '/palestrantes'
     | '/palestras'
     | '/quem-somos'
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   InscricaoRoute: typeof InscricaoRoute
   LoginRoute: typeof LoginRoute
+  PainelRoute: typeof PainelRoute
   PalestrantesRoute: typeof PalestrantesRoute
   PalestrasRoute: typeof PalestrasRoute
   QuemSomosRoute: typeof QuemSomosRoute
@@ -151,6 +164,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PalestrantesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/painel': {
+      id: '/painel'
+      path: '/painel'
+      fullPath: '/painel'
+      preLoaderRoute: typeof PainelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -179,6 +199,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   InscricaoRoute: InscricaoRoute,
   LoginRoute: LoginRoute,
+  PainelRoute: PainelRoute,
   PalestrantesRoute: PalestrantesRoute,
   PalestrasRoute: PalestrasRoute,
   QuemSomosRoute: QuemSomosRoute,
