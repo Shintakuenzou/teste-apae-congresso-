@@ -17,7 +17,7 @@ const getBaseURL = () => {
 
 // Instância do Axios
 export const axiosApi = axios.create({
-  baseURL: getBaseURL(),
+  baseURL: "https://firebrick-kingfisher-525619.hostingersite.com/proxy.php",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
