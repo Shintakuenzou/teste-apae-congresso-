@@ -173,7 +173,7 @@ function PainelPage() {
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
+    setFormData((prev) => (prev ? { ...prev, [field]: value } : null));
   };
 
   const formatPhone = (value: string) => {
