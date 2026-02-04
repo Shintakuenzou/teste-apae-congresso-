@@ -9,8 +9,9 @@ export const SecurityService = {
    * Usado tanto no Login quanto na Inscrição.
    */
   encryptForTransport(password: string): string {
-    const encrypted = CryptoJS.AES.encrypt(password, SECURITY_KEY, {
-      mode: CryptoJS.mode.ECB,
+    const key = CryptoJS.enc.Utf8.parse(SECURITY_KEY);
+    const encrypted = CryptoJS.AES.encrypt(password, key, {
+      mode: CryptoJS.mode.ECB, // Modo compatível com Java padrão
       padding: CryptoJS.pad.Pkcs7,
     });
     return encrypted.toString();
