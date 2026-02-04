@@ -115,7 +115,7 @@ function InscricaoPage() {
         values: [
           { fieldId: "criado_em", value: data.criado_em },
           { fieldId: "cpf", value: data.cpf.replace(/\D/g, "") },
-          { fieldId: "senha", value: senhaCriptografada },
+          { fieldId: "senha", value: data.senha },
           { fieldId: "nome", value: data.nome },
           { fieldId: "sobrenome", value: data.sobrenome },
           { fieldId: "email", value: data.email },
