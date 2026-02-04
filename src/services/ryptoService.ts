@@ -9,12 +9,11 @@ export const SecurityService = {
    * Usado tanto no Login quanto na Inscrição.
    */
   encryptForTransport(password: string): string {
-    try {
-      return CryptoJS.AES.encrypt(password, SECURITY_KEY).toString();
-    } catch (error) {
-      console.error("Erro na criptografia de transporte:", error);
-      throw new Error("Erro ao processar dados de segurança.");
-    }
+    const encrypted = CryptoJS.AES.encrypt(password, SECURITY_KEY, {
+      mode: CryptoJS.mode.ECB,
+      padding: CryptoJS.pad.Pkcs7,
+    });
+    return encrypted.toString();
   },
 
   /**
@@ -29,6 +28,3 @@ export const SecurityService = {
     return isLongEnough && hasUpper && hasLower && hasNumber;
   },
 };
-
-
-

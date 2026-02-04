@@ -62,10 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       console.log("=== INICIANDO LOGIN ===");
-      console.log("CPF:", cpf);
 
-      // ✅ Limpar CPF
-      const cpfLimpo = cpf.replace(/\D/g, "");
       // ✅ Criptografar senha
       const senhaCriptoAES = SecurityService.encryptForTransport(password);
 
@@ -77,12 +74,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         constraints: [
           {
             fieldName: "cpf",
-            initialValue: cpfLimpo,
-            finalValue: cpfLimpo,
+            initialValue: cpf,
+            finalValue: cpf,
             constraintType: "MUST",
           },
           {
-            fieldName: "senhaBase64",
+            fieldName: "senhaCriptografada",
             initialValue: senhaCriptoAES,
             finalValue: senhaCriptoAES,
             constraintType: "MUST",

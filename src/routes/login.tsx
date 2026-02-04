@@ -64,7 +64,7 @@ function LoginPage() {
       }
 
       // ✅ Fazer login
-      await login(formData.cpf, formData.password);
+      await login(cpfLimpo, formData.password);
 
       console.log("✅ Login concluído com sucesso!");
     } catch (err: unknown) {
