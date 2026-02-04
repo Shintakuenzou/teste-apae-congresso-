@@ -4,10 +4,7 @@ import axios from "axios";
 
 interface SendParticipantData {
   documentId: string;
-  values?: {
-    fieldId: string;
-    value: string;
-  }[];
+  values: { fieldId: string; value: string | null }[];
 }
 
 interface FluigCardField {
@@ -79,7 +76,10 @@ export function parsePalestrante(card: FluigCard): Palestrante {
   };
 }
 
-export async function handlePostFormParticipant({ documentId, values }: SendParticipantData) {
+export async function handlePostFormParticipant({
+  documentId,
+  values,
+}: SendParticipantData): Promise<{ activeVersion: boolean; cardId: number; children: []; companyId: number; parentDocumentId: number; values: [] }> {
   // ✅ Validação do documentId
   if (!documentId || documentId === "undefined") {
     console.error("❌ documentId inválido:", documentId);
@@ -96,7 +96,7 @@ export async function handlePostFormParticipant({ documentId, values }: SendPart
     console.log("📤 Enviando POST para:", url);
     console.log("📤 documentId:", documentId);
 
-    const response = await axiosApi.post<SendParticipantData>(url, { values });
+    const response = await axiosApi.post<{ activeVersion: boolean; cardId: number; children: []; companyId: number; parentDocumentId: number; values: [] }>(url, { values });
 
     return response.data;
   } catch (error: unknown) {
