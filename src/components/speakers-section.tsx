@@ -61,7 +61,7 @@ export function SpeakersSection() {
   const { data } = useQuery({
     queryKey: ["palestrantes"],
     queryFn: async () => {
-      const palestrantes = await handleGetFormParticipant({ documentId: import.meta.env.VITE_FORM_cadPalestranteCN as string });
+      const palestrantes = await handleGetFormParticipant({ documentId: import.meta.env.VITE_FORM_PALESTRANT as string });
       return palestrantes;
     },
   });
