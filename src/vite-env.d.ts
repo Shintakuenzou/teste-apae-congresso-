@@ -6,6 +6,7 @@ interface ImportMetaEnv {
   readonly VITE_TOKEN_SECRET_BASE_TESTE?: string;
   readonly VITE_BASE_URL_TESTE?: string;
   readonly VITE_BASE_URL_PROD?: string;
+  readonly VITE_FORM_cadPalestranteCN?: string;
 }
 interface ImportMeta {
   readonly env: ImportMetaEnv;

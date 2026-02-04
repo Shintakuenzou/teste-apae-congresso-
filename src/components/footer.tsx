@@ -1,5 +1,5 @@
 import { Facebook, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from "lucide-react";
-import LogoApae from "../../public/logo-apae.jpg";
+import LogoApae from "../../public/logo-transparente.png";
 
 const socialLinks = [
   { icon: Facebook, href: "https://facebook.com/apaebrasiloficial", label: "Facebook" },
@@ -22,11 +22,8 @@ export function Footer() {
         <div className="py-16 grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-background rounded-full flex items-center justify-center">
-                <img src={LogoApae} className="size-12 object-cover rounded-full p-1" alt="logo apae" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xs text-background/60">Congresso Nacional 2026</span>
+              <div className="w-12 h-12 flex items-center justify-center">
+                <img src={LogoApae} className="size-14 object-cover rounded-full p-1" alt="logo apae" />
               </div>
             </div>
             <p className="text-background/70 text-sm leading-relaxed mb-6">

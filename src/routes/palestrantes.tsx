@@ -5,6 +5,8 @@ import { Footer } from "@/components/footer";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Linkedin, Instagram } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { handleGetFormParticipant } from "@/services/form-service";
 
 export const Route = createFileRoute("/palestrantes")({
   component: PalestrantesPage,
@@ -95,6 +97,16 @@ function getInitials(name: string) {
 }
 
 function PalestrantesPage() {
+  const { data } = useQuery({
+    queryKey: ["palestrantes"],
+    queryFn: async () => {
+      const palestrantes = await handleGetFormParticipant({ documentId: import.meta.env.VITE_FORM_cadPalestranteCN as string });
+      return palestrantes;
+    },
+  });
+
+  console.log("data palestrante: ", data);
+
   return (
     <main className="min-h-screen bg-background">
       <Header />

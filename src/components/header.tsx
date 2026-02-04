@@ -20,12 +20,12 @@ const navItems = linkOptions([
     label: "Programação",
   },
   {
-    to: "/galeria",
-    label: "Galeria",
-  },
-  {
     to: "/sub-trabalho",
     label: "Submissão de Trabalhos",
+  },
+  {
+    to: "/galeria",
+    label: "Galeria",
   },
 ]);
 
@@ -37,7 +37,7 @@ export function Header() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-20 items-center justify-between py-3">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-full flex items-center justify-center group-hover:scale-105 transition-transform ml-10">
+            <div className="w-full flex items-center justify-center group-hover:scale-105 transition-transform">
               <img src={LogoApae} className="size-20 object-contain p-1" alt="logo apae" />
             </div>
           </Link>
@@ -81,7 +81,7 @@ export function Header() {
           <div className="px-4 py-6 space-y-2">
             {navItems.map((item) => {
               return (
-                <Link key={item.to} to={item.to} className="block px-4 py-3 rounded-lg text-sm font-medium transition-all" onClick={() => setMobileMenuOpen(false)}>
+                <Link key={item.to} to={item.to} className="block px-4 py-3 rounded-lg text-sm font-medium transition-all text-white" onClick={() => setMobileMenuOpen(false)}>
                   {item.label}
                 </Link>
               );
