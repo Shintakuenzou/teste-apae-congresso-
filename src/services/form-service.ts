@@ -79,7 +79,7 @@ export function parsePalestrante(card: FluigCard): Palestrante {
   };
 }
 
-export async function handlePostFormParticipant({ documentId, values }: SendParticipantData): Promise<FluigCardsResponse> {
+export async function handlePostFormParticipant({ documentId, values }: SendParticipantData) {
   // ✅ Validação do documentId
   if (!documentId || documentId === "undefined") {
     console.error("❌ documentId inválido:", documentId);
@@ -96,7 +96,7 @@ export async function handlePostFormParticipant({ documentId, values }: SendPart
     console.log("📤 Enviando POST para:", url);
     console.log("📤 documentId:", documentId);
 
-    const response = await axiosApi.post<FluigCardsResponse>(url, { values });
+    const response = await axiosApi.post<SendParticipantData>(url, { values });
 
     return response.data;
   } catch (error: unknown) {
