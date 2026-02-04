@@ -1,30 +1,26 @@
 // src/contexts/auth-context.tsx
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { useNavigate } from "@tanstack/react-router";
-
 import { fetchDataset } from "@/services/fetch-dataset";
-import { SecurityService } from "@/services/ryptoService";
+import { useNavigate } from "@tanstack/react-router";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
 interface User {
   cpf: string;
-  nome?: string;
-  sobrenome?: string;
-  dataNascimento?: string;
-  inscricao?: string;
-  dataInscricao?: string;
-  email?: string;
-  telefone?: string;
-  whatsapp?: string;
-  uf?: string;
-  municipio?: string;
-  cep?: string;
-  escolaridade?: string;
-  apaeFiliada?: string;
+  nome: string;
+  sobrenome: string;
+  email: string;
+  dataNascimento: string;
+  uf: string;
+  municipio: string;
+  telefone: string;
+  whatsapp: string;
+  escolaridade: string;
+  apaeFiliada: string;
+  inscricao: string;
+  dataInscricao: string;
 }
 
 export interface AuthContextType {
   user: User | null;
-  token: string | null;
   isLoading: boolean;
   login: (cpf: string, password: string) => Promise<void>;
   logout: () => void;
@@ -35,23 +31,17 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  // ✅ Carregar dados salvos no localStorage
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    const storedToken = localStorage.getItem("authToken");
-
-    if (storedUser && storedToken) {
+    if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
-        setToken(storedToken);
       } catch (error) {
-        console.error("Erro ao carregar dados:", error);
+        console.error("Erro ao carregar usuário do localStorage:", error);
         localStorage.removeItem("user");
-        localStorage.removeItem("authToken");
       }
     }
     setIsLoading(false);
@@ -61,67 +51,50 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setIsLoading(true);
 
     try {
-      console.log("=== INICIANDO LOGIN ===");
-
-      // ✅ Criptografar senha
-      const senhaCriptoAES = SecurityService.encryptForTransport(password);
-
-      console.log("Senha criptografada:", senhaCriptoAES);
-      console.log("cpf: ", cpf);
-
-      // ✅ Chamar dataset de AUTENTICAÇÃO (não o dataset de participantes!)
       const response = await fetchDataset({
         datasetId: "cadParticipanteCN",
         constraints: [
           {
             fieldName: "cpf",
-            initialValue: cpf,
-            finalValue: cpf,
+            initialValue: cpf.replace(/\D/g, ""),
+            finalValue: cpf.replace(/\D/g, ""),
+            constraintType: "MUST",
+          },
+          {
+            fieldName: "senha",
+            initialValue: password,
+            finalValue: password,
             constraintType: "MUST",
           },
         ],
       });
 
-      // ✅ Validar resposta
-      // if (response.items[0].status !== "sucesso" || response.items.length === 0) {
-      //   throw new Error("Erro ao processar login");
-      // }
+      if (response.items && response.items.length > 0) {
+        const userData = response.items[0];
 
-      const result = response.items[0];
-      console.log("Resultado:", result);
-
-      // ✅ Verificar status
-      if (result.senha === password) {
-        const userData: User = {
-          cpf: result.cpf as string,
+        const user: User = {
+          cpf: (userData.cpf as string) || cpf,
+          nome: userData.nome as string,
+          sobrenome: userData.sobrenome as string,
+          email: userData.email as string,
+          dataNascimento: userData.data_nascimento as string,
+          uf: userData.uf as string,
+          municipio: userData.municipio as string,
+          telefone: userData.telefone as string,
+          whatsapp: userData.whatsapp as string,
+          escolaridade: userData.escolaridade as string,
+          apaeFiliada: userData.apaeFiliada as string,
+          inscricao: userData.inscricao as string,
+          dataInscricao: (userData.criado_em as string) || (userData.criado_em as string),
         };
 
-        // console.log("✅ Login bem-sucedido!");
-        // console.log("Token:", result.token);
-        // console.log("Usuário:", userData);
-
-        // ✅ Salvar no estado e localStorage
-        setUser(userData);
-        // setToken(result.tokenSessao as string);
-        // localStorage.setItem("user", JSON.stringify(userData));
-        // localStorage.setItem("authToken", result.tokenSessao as string);
-
-        // // ✅ Redirecionar para painel
-        navigate({ to: "/painel" });
+        setUser(user);
+        localStorage.setItem("user", JSON.stringify(user));
       } else {
-        // ❌ Login falhou
-        throw new Error("CPF ou senha incorretos");
+        throw new Error("CPF ou senha inválidos");
       }
-    } catch (error: unknown) {
-      console.error("❌ Erro no login:", error);
-
-      // Limpar dados em caso de erro
-      setUser(null);
-      setToken(null);
-      localStorage.removeItem("user");
-      localStorage.removeItem("authToken");
-
-      // Re-lançar o erro para ser tratado no componente
+    } catch (error) {
+      console.error("Erro ao fazer login:", error);
       throw error;
     } finally {
       setIsLoading(false);
@@ -130,24 +103,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     setUser(null);
-    setToken(null);
     localStorage.removeItem("user");
-    localStorage.removeItem("authToken");
     navigate({ to: "/login" });
   };
-
-  // ✅ Verificar se está autenticado
-  const isAuthenticated = !!user && !!token;
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        token,
         isLoading,
         login,
         logout,
-        isAuthenticated,
+        isAuthenticated: !!user,
       }}
     >
       {children}
@@ -156,7 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 /* eslint-disable react-refresh/only-export-components */
-// ✅ Hook useAuth
+// ✅ Hook useAuth DENTRO do mesmo arquivo
 export function useAuth() {
   const context = useContext(AuthContext);
   if (!context) {
