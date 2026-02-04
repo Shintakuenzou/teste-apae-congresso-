@@ -138,7 +138,7 @@ function InscricaoPage() {
       });
       console.log(response);
 
-      if (response && response.status === 200) {
+      if (response && response.values.length > 0) {
         setSubmitted(true);
       }
     } catch (error) {
