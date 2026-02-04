@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       // ✅ Chamar dataset de AUTENTICAÇÃO (não o dataset de participantes!)
       const response = await fetchDataset({
-        datasetId: "ds_autenticacao",
+        datasetId: "cadParticipanteCN",
         constraints: [
           {
             fieldName: "cpf",
@@ -79,42 +79,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             finalValue: cpf,
             constraintType: "MUST",
           },
-          {
-            fieldName: "senhaCriptografada",
-            initialValue: senhaCriptoAES,
-            finalValue: senhaCriptoAES,
-            constraintType: "MUST",
-          },
         ],
       });
 
-      console.log("Response completo:", response);
-
       // ✅ Validar resposta
-      if (response.items[0].status !== "sucesso" || response.items.length === 0) {
-        throw new Error("Erro ao processar login");
-      }
+      // if (response.items[0].status !== "sucesso" || response.items.length === 0) {
+      //   throw new Error("Erro ao processar login");
+      // }
 
       const result = response.items[0];
       console.log("Resultado:", result);
 
       // ✅ Verificar status
-      if (result.status === "sucesso") {
+      if (result.senha === password) {
         const userData: User = {
           cpf: result.cpf as string,
         };
 
-        console.log("✅ Login bem-sucedido!");
-        console.log("Token:", result.token);
-        console.log("Usuário:", userData);
+        // console.log("✅ Login bem-sucedido!");
+        // console.log("Token:", result.token);
+        // console.log("Usuário:", userData);
 
         // ✅ Salvar no estado e localStorage
         setUser(userData);
-        setToken(result.tokenSessao as string);
-        localStorage.setItem("user", JSON.stringify(userData));
-        localStorage.setItem("authToken", result.tokenSessao as string);
+        // setToken(result.tokenSessao as string);
+        // localStorage.setItem("user", JSON.stringify(userData));
+        // localStorage.setItem("authToken", result.tokenSessao as string);
 
-        // ✅ Redirecionar para painel
+        // // ✅ Redirecionar para painel
         navigate({ to: "/painel" });
       } else {
         // ❌ Login falhou
