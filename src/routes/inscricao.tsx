@@ -250,6 +250,9 @@ function InscricaoPage() {
 
       if (response && response?.items && response.items[0]) {
         toast.warning("CPF já cadastrado!", { position: "bottom-right", duration: 4000 });
+        setValue("cpf", "");
+        setValue("nome", "");
+        setValue("sobrenome", "");
         return;
       }
 
