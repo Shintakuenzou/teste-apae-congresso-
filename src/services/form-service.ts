@@ -4,7 +4,7 @@ import axios from "axios";
 
 interface SendParticipantData {
   documentId: string;
-  values: { fieldId: string; value: string | null }[];
+  values?: { fieldId: string; value: string | null }[];
 }
 
 interface FluigCardField {
