@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SubTrabalhoRouteImport } from './routes/sub-trabalho'
 import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as QuemSomosRouteImport } from './routes/quem-somos'
 import { Route as PalestrasRouteImport } from './routes/palestras'
@@ -19,6 +20,11 @@ import { Route as InscricaoRouteImport } from './routes/inscricao'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as IndexRouteImport } from './routes/index'
 
+const SubTrabalhoRoute = SubTrabalhoRouteImport.update({
+  id: '/sub-trabalho',
+  path: '/sub-trabalho',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
   id: '/recuperar-senha',
   path: '/recuperar-senha',
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/palestras': typeof PalestrasRoute
   '/quem-somos': typeof QuemSomosRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/sub-trabalho': typeof SubTrabalhoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -86,6 +93,7 @@ export interface FileRoutesByTo {
   '/palestras': typeof PalestrasRoute
   '/quem-somos': typeof QuemSomosRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/sub-trabalho': typeof SubTrabalhoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -98,6 +106,7 @@ export interface FileRoutesById {
   '/palestras': typeof PalestrasRoute
   '/quem-somos': typeof QuemSomosRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/sub-trabalho': typeof SubTrabalhoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -111,6 +120,7 @@ export interface FileRouteTypes {
     | '/palestras'
     | '/quem-somos'
     | '/recuperar-senha'
+    | '/sub-trabalho'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -122,6 +132,7 @@ export interface FileRouteTypes {
     | '/palestras'
     | '/quem-somos'
     | '/recuperar-senha'
+    | '/sub-trabalho'
   id:
     | '__root__'
     | '/'
@@ -133,6 +144,7 @@ export interface FileRouteTypes {
     | '/palestras'
     | '/quem-somos'
     | '/recuperar-senha'
+    | '/sub-trabalho'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -145,10 +157,18 @@ export interface RootRouteChildren {
   PalestrasRoute: typeof PalestrasRoute
   QuemSomosRoute: typeof QuemSomosRoute
   RecuperarSenhaRoute: typeof RecuperarSenhaRoute
+  SubTrabalhoRoute: typeof SubTrabalhoRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sub-trabalho': {
+      id: '/sub-trabalho'
+      path: '/sub-trabalho'
+      fullPath: '/sub-trabalho'
+      preLoaderRoute: typeof SubTrabalhoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/recuperar-senha': {
       id: '/recuperar-senha'
       path: '/recuperar-senha'
@@ -225,6 +245,7 @@ const rootRouteChildren: RootRouteChildren = {
   PalestrasRoute: PalestrasRoute,
   QuemSomosRoute: QuemSomosRoute,
   RecuperarSenhaRoute: RecuperarSenhaRoute,
+  SubTrabalhoRoute: SubTrabalhoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

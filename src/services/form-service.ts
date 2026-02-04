@@ -19,11 +19,8 @@ export async function handlePostFormParticipant({ documentId, values }: SendPart
     console.log("📤 Enviando para:", url);
     let response = await axiosApi.post(url, { values });
 
-    if (values.length > 0) {
-      response = await axiosApi.post(url, { values });
-    }
+    response = await axiosApi.post(url, { values });
 
-    response = await axiosApi.get(url);
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {

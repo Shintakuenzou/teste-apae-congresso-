@@ -4,8 +4,6 @@ import { ArrowRight, Linkedin, Twitter, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Badge } from "./ui/badge";
-import { useQuery } from "@tanstack/react-query";
-import { handlePostFormParticipant } from "@/services/form-service";
 
 const speakers = [
   {
@@ -58,12 +56,12 @@ const speakers = [
 ];
 
 export function SpeakersSection() {
-  const { data } = useQuery({
-    queryKey: ["speakers"],
-    queryFn: async () => await handlePostFormParticipant({ documentId: import.meta.env.VITE_FORM_cadPalestranteCN, values: [] }),
-  });
+  // const { data } = useQuery({
+  //   queryKey: ["speakers"],
+  //   queryFn: async () => await handlePostFormParticipant({ documentId: import.meta.env.VITE_FORM_cadPalestranteCN, values: [] }),
+  // });
 
-  console.log(data);
+  // console.log(data);
 
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   return (

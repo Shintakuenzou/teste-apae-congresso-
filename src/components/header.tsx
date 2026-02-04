@@ -23,6 +23,10 @@ const navItems = linkOptions([
     to: "/galeria",
     label: "Galeria",
   },
+  {
+    to: "/sub-trabalho",
+    label: "Submissão de Trabalhos",
+  },
 ]);
 
 export function Header() {
@@ -52,7 +56,7 @@ export function Header() {
             <Button
               asChild
               size="lg"
-              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold shadow-md hover:shadow-lg transition-all flex items-center uppercase"
+              className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold shadow-md hover:shadow-lg transition-all flex items-center"
             >
               <Link to="/login">
                 <User className="size-4" />
