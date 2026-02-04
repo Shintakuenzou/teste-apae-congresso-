@@ -12,10 +12,10 @@ export function Hero() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-32 w-full">
         <div className="max-w-4xl">
-          <div className="inline-flex items-center gap-2 bg-secondary/20 backdrop-blur-sm border border-secondary/30 px-5 py-2.5 rounded-full mb-8">
+          {/* <div className="inline-flex items-center gap-2 bg-secondary/20 backdrop-blur-sm border border-secondary/30 px-5 py-2.5 rounded-full mb-8">
             <span className="w-2 h-2 bg-secondary rounded-full animate-pulse" />
             <span className="text-sm font-medium text-primary-foreground">Federacao Nacional das APAEs</span>
-          </div>
+          </div> */}
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-primary-foreground leading-[1.1]">
             Congresso Nacional
@@ -24,7 +24,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-8 text-lg sm:text-xl text-primary-foreground/75 max-w-2xl leading-relaxed">
-            Inclusao, diversidade e transformacao social. Junte-se a milhares de profissionais e familias na maior conferencia sobre deficiencia intelectual do Brasil.
+            Inclusão, diversidade e transformação social. Junte‑se a milhares de profissionais e famílias na maior conferência sobre deficiência intelectual do Brasil.
           </p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-start gap-4">
@@ -38,24 +38,16 @@ export function Hero() {
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="border-2 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 hover:text-green-400 text-lg px-8 h-14 bg-transparent"
-            >
-              <Link to="/palestras">Ver programacao</Link>
-            </Button>
           </div>
 
           <div className="mt-14 flex flex-wrap items-center gap-6 text-primary-foreground/70">
             <div className="flex items-center gap-2 bg-primary-foreground/5 px-4 py-2 rounded-full">
               <Calendar className="h-5 w-5 text-secondary" />
-              <span className="font-medium">15 a 18 de Agosto, 2026</span>
+              <span className="font-medium">27 a 30 de Novembro, 2026</span>
             </div>
             <div className="flex items-center gap-2 bg-primary-foreground/5 px-4 py-2 rounded-full">
               <MapPin className="h-5 w-5 text-secondary" />
-              <span className="font-medium">Brasilia - DF</span>
+              <span className="font-medium">Salvador - BA</span>
             </div>
           </div>
         </div>

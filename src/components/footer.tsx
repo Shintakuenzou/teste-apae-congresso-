@@ -23,16 +23,14 @@ export function Footer() {
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 bg-background rounded-full flex items-center justify-center">
-                <span className="text-foreground font-black text-lg">A</span>
+                <img src={LogoApae} className="size-12 object-cover rounded-full p-1" alt="logo apae" />
               </div>
               <div className="flex flex-col">
-                <img src={LogoApae} className="size-12 object-cover rounded-full p-1" alt="logo apae" />
-
                 <span className="text-xs text-background/60">Congresso Nacional 2026</span>
               </div>
             </div>
             <p className="text-background/70 text-sm leading-relaxed mb-6">
-              O maior evento de inclusao social do Brasil. Transformando vidas atraves da educacao, saude e cidadania.
+              O maior evento de inclusão social do Brasil. Transformando vidas por meio da educação, da saúde e da cidadania.
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social, index) => (
@@ -64,7 +62,7 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold text-lg mb-6">Contato Nebus</h3>
+            <h3 className="font-semibold text-lg mb-6">Contato</h3>
             <ul className="space-y-4">
               <li className="flex items-start gap-3">
                 <Mail className="h-5 w-5 text-secondary mt-0.5 flex-shrink-0" />
@@ -118,13 +116,7 @@ export function Footer() {
 
         <div className="py-6 border-t border-background/10">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-background/60">2026 Federacao Nacional das APAEs. Todos os direitos reservados.</p>
-            <p className="text-sm text-background/60">
-              Desenvolvido por{" "}
-              <a href="https://nebus.com.br" target="_blank" rel="noopener noreferrer" className="text-secondary hover:underline font-medium">
-                Shin
-              </a>
-            </p>
+            <p className="text-sm text-background/60 text-center">2026 Federacao Nacional das APAEs. Todos os direitos reservados.</p>
           </div>
         </div>
       </div>

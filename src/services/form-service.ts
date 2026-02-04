@@ -12,14 +12,18 @@ interface SendParticipantData {
 
 export async function handlePostFormParticipant({ documentId, values }: SendParticipantData) {
   try {
-   
     const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards`;
 
     const url = import.meta.env.DEV ? fluigPath : `https://firebrick-kingfisher-525619.hostingersite.com/proxy.php?endpoint=${fluigPath}&method=POST`;
 
     console.log("📤 Enviando para:", url);
+    let response = await axiosApi.post(url, { values });
 
-    const response = await axiosApi.post(url, { values });
+    if (values.length > 0) {
+      response = await axiosApi.post(url, { values });
+    }
+
+    response = await axiosApi.get(url);
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {

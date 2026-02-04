@@ -74,7 +74,7 @@ function InscricaoPage() {
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      criado_em: new Date(Date.now()).toLocaleDateString(),
+      criado_em: new Date(Date.now()).toString(),
       criado_por: "",
       cpf: "",
       nome: "",

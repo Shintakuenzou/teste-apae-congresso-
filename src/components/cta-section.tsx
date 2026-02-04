@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, CheckCircle } from "lucide-react";
 
-const benefits = ["Acesso completo a todas as palestras", "Material exclusivo do evento", "Certificado de participacao", "Networking com profissionais"];
+const benefits = ["Acesso completo a todas as palestras", "Material exclusivo do evento", "Certificado de participação", "Networking com profissionais"];
 
 export function CTASection() {
   return (
@@ -11,7 +11,7 @@ export function CTASection() {
           <div>
             <h2 className="text-3xl sm:text-4xl font-bold text-primary-foreground mb-6">Garanta sua Vaga no Maior Evento do Movimento Apaeano</h2>
             <p className="text-lg text-primary-foreground/75 mb-8">
-              Inscricoes com desconto de 30% ate 30 de Junho de 2026. Nao perca essa oportunidade unica de fazer parte dessa transformacao.
+              Inscrições com desconto de 30% ate 30 de Junho de 2026. Não perca essa oportunidade única de fazer parte dessa transformação.
             </p>
 
             <ul className="space-y-3 mb-10">

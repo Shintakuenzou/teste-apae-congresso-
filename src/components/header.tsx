@@ -4,14 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Menu, User, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { linkOptions } from "@tanstack/react-router";
-import LogoApae from "../../public/logo-apae.jpg";
+import LogoApae from "../../public/logo-transparente.png";
 
 const navItems = linkOptions([
-  {
-    to: "/",
-    label: "Home",
-    activeOptions: { exact: true },
-  },
   {
     to: "/quem-somos",
     label: "Quem Somos",
@@ -22,7 +17,11 @@ const navItems = linkOptions([
   },
   {
     to: "/palestras",
-    label: "Programacao",
+    label: "Programação",
+  },
+  {
+    to: "/galeria",
+    label: "Galeria",
   },
 ]);
 
@@ -30,18 +29,14 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-primary shadow-lg">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-primary shadow-lg border-b-2 border-primary-foreground/25">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-18 items-center justify-between py-3">
-          <a href="/" className="flex items-center gap-3 group">
-            <div className="w-12 h-12 bg-primary-foreground rounded-full flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-              <img src={LogoApae} className="size-12 object-cover rounded-full p-1" alt="logo apae" />
+        <div className="flex h-20 items-center justify-between py-3">
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="w-full flex items-center justify-center group-hover:scale-105 transition-transform ml-10">
+              <img src={LogoApae} className="size-20 object-contain p-1" alt="logo apae" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-lg font-bold leading-tight text-primary-foreground tracking-wide">APAE BRASIL</span>
-              <span className="text-xs text-primary-foreground/70">Congresso Nacional 2026</span>
-            </div>
-          </a>
+          </Link>
 
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
