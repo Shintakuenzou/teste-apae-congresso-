@@ -231,9 +231,9 @@ function InscricaoPage() {
 
       if (response.items.length > 0) {
         const participant = response.items[0];
-        const [firstName, lastName] = participant["nome"]?.toString().split(" ") as string[];
+        const [firstName, ...rest] = participant["nome"]?.toString().split(" ") as string[];
         setValue("nome", firstName || "");
-        setValue("sobrenome", lastName || "");
+        setValue("sobrenome", rest.join(" ") || "");
 
         setValue("dataNascimento", participant["data_nascimento"]?.toString() || "");
       }
