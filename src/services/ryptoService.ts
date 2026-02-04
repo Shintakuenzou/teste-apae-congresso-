@@ -1,29 +1,36 @@
-// src/services/cryptoService.js
-import CryptoJS from "crypto-js";
+// src/services/cryptoService.ts
+import bcryptjs from "bcryptjs";
 
 class CryptoService {
-  // Chave de 32 caracteres (256 bits) - DEVE SER A MESMA NO BACKEND
-  SECRET_KEY = import.meta.env.VITE_ACCESS_TOKEN_BASE_TESTE; // Sua chave atual
+  /**
+   * Gera hash seguro da senha usando bcrypt
+   * @param password - Senha em texto plano
+   * @returns Hash bcrypt (inclui salt automaticamente)
+   */
+  async hashPassword(password: string): Promise<string> {
+    try {
+      // 10 rounds é um bom equilíbrio entre segurança e performance
+      const saltRounds = 10;
+      const hash = await bcryptjs.hash(password, saltRounds);
+      return hash;
+    } catch (error) {
+      console.error("Erro ao gerar hash da senha:", error);
+      throw new Error("Erro ao processar senha");
+    }
+  }
 
   /**
-   * Criptografa a senha de forma compatível com Java AES
+   * Verifica se a senha corresponde ao hash
+   * @param password - Senha em texto plano
+   * @param hash - Hash armazenado
+   * @returns true se a senha estiver correta
    */
-  encryptPassword(password: string) {
+  async verifyPassword(password: string, hash: string): Promise<boolean> {
     try {
-      // Converter a chave para o formato correto
-      const key = CryptoJS.enc.Utf8.parse(this.SECRET_KEY!.substring(0, 32));
-
-      // Criptografar usando AES com ECB mode (mesmo do Java)
-      const encrypted = CryptoJS.AES.encrypt(password, key, {
-        mode: CryptoJS.mode.ECB,
-        padding: CryptoJS.pad.Pkcs7,
-      });
-
-      // Retornar apenas o ciphertext em Base64
-      return encrypted.ciphertext.toString(CryptoJS.enc.Base64);
+      return await bcryptjs.compare(password, hash);
     } catch (error) {
-      console.error("Erro ao criptografar senha:", error);
-      throw new Error("Erro na criptografia");
+      console.error("Erro ao verificar senha:", error);
+      return false;
     }
   }
 
@@ -31,7 +38,7 @@ class CryptoService {
    * Valida força da senha
    */
   validatePasswordStrength(password: string) {
-    const errors = [];
+    const errors: string[] = [];
 
     if (password.length < 8) {
       errors.push("A senha deve ter no mínimo 8 caracteres");
@@ -56,7 +63,10 @@ class CryptoService {
     };
   }
 
-  calculateStrength(password: string) {
+  /**
+   * Calcula força da senha
+   */
+  calculateStrength(password: string): "fraca" | "média" | "forte" {
     let strength = 0;
 
     if (password.length >= 8) strength += 20;
@@ -69,6 +79,13 @@ class CryptoService {
     if (strength < 40) return "fraca";
     if (strength < 70) return "média";
     return "forte";
+  }
+
+  /**
+   * Gera um salt aleatório (caso você precise enviar para o backend)
+   */
+  async generateSalt(rounds: number = 10): Promise<string> {
+    return await bcryptjs.genSalt(rounds);
   }
 }
 

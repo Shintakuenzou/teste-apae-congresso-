@@ -107,7 +107,7 @@ function InscricaoPage() {
     console.log("Dados enviados:", data);
 
     try {
-      const senhaCriptografada = cryptoService.encryptPassword(data.senha);
+      const senhaCriptografada = await cryptoService.hashPassword(data.senha);
       console.log(senhaCriptografada);
 
       const response = await handlePostFormParticipant({

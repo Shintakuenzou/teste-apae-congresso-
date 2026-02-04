@@ -377,7 +377,7 @@ function PainelPage() {
                         {isEditing ? (
                           <Input type="date" value={formData?.dataNascimento} onChange={(e) => handleInputChange("dataNascimento", e.target.value)} />
                         ) : (
-                          <Input value={new Date(formData!.dataNascimento).toLocaleDateString("pt-BR")} disabled className="bg-muted/50" />
+                          <Input value={new Date(formData!.dataNascimento as string).toLocaleDateString("pt-BR")} disabled className="bg-muted/50" />
                         )}
                       </div>
                       <div className="space-y-2">
@@ -490,7 +490,7 @@ function PainelPage() {
                             </SelectContent>
                           </Select>
                         ) : (
-                          <Input value={getEscolaridadeLabel(formData!.escolaridade)} disabled className="bg-muted/50" />
+                          <Input value={getEscolaridadeLabel(formData?.escolaridade as string)} disabled className="bg-muted/50" />
                         )}
                       </div>
                       <div className="space-y-2">

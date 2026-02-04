@@ -11,7 +11,6 @@ import BgLogin from "../../public/login-bg.png";
 import { formatCPF } from "@/utils/format-cpf";
 import { useEffect } from "react";
 import { useAuth } from "@/context/auth-context";
-import { AxiosError } from "axios";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -29,7 +28,7 @@ function LoginPage() {
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
-  // ✅ Se já estiver autenticado, redireciona para o painel
+  // ✅ Se já estiver autenticado, redireciona
   useEffect(() => {
     if (isAuthenticated) {
       navigate({ to: "/painel" });
@@ -49,49 +48,33 @@ function LoginPage() {
     setError("");
 
     try {
-      // ✅ Chama a função de login do contexto
-      const response = await login(formData.cpf, formData.password);
-      console.log(" Login bem-sucedido:", response);
-    } catch (err) {
-      // ✅ Type-safe error handling
-      if (err instanceof AxiosError) {
-        console.error("❌ Axios Error:", err);
-        console.error("❌ Status:", err.response?.status);
-        console.error("❌ Data:", err.response?.data);
-        console.error("❌ Config:", err.config);
+      // ✅ Validações
+      const cpfLimpo = formData.cpf.replace(/\D/g, "");
 
-        let errorMessage = "CPF ou senha inválidos. Tente novamente.";
-
-        if (err.response?.data?.error) {
-          errorMessage = err.response.data.error;
-        } else if (err.response?.data?.message) {
-          errorMessage = err.response.data.message;
-        } else if (err.response?.status === 404) {
-          errorMessage = "Serviço indisponível. Tente novamente mais tarde.";
-        } else if (err.response?.status === 500) {
-          errorMessage = "Erro no servidor. Tente novamente mais tarde.";
-        } else if (err.code === "ERR_NETWORK") {
-          errorMessage = "Erro de conexão. Verifique sua internet.";
-        }
-
-        setError(errorMessage);
-
-        console.table({
-          "Status HTTP": err.response?.status || "N/A",
-          Mensagem: err.message || "N/A",
-          URL: err.config?.url || "N/A",
-          Método: err.config?.method || "N/A",
-          Ambiente: import.meta.env.DEV ? "DEV" : "PROD",
-        });
-      } else if (err instanceof Error) {
-        console.error("❌ Error genérico:", err);
-        setError(err.message || "Erro desconhecido");
-      } else {
-        console.error("❌ Erro desconhecido:", err);
-        setError("Erro desconhecido ao fazer login");
+      if (cpfLimpo.length !== 11) {
+        setError("CPF inválido");
+        setIsLoading(false);
+        return;
       }
 
-      setIsLoading(false);
+      if (!formData.password || formData.password.length < 6) {
+        setError("Senha inválida");
+        setIsLoading(false);
+        return;
+      }
+
+      // ✅ Fazer login
+      await login(formData.cpf, formData.password);
+
+      console.log("✅ Login concluído com sucesso!");
+    } catch (err: unknown) {
+      console.error("❌ Erro no login:", err);
+
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Erro desconhecido ao fazer login");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -137,7 +120,6 @@ function LoginPage() {
 
       {/* Lado direito - Formulário */}
       <div className="w-full lg:w-1/2 xl:w-2/5 flex flex-col bg-background">
-        {/* Header mobile */}
         <header className="p-6 lg:hidden">
           <Link to="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="h-4 w-4" />
@@ -145,10 +127,8 @@ function LoginPage() {
           </Link>
         </header>
 
-        {/* Conteúdo centralizado */}
         <main className="flex-1 flex items-center justify-center p-6 lg:p-12">
           <div className="w-full max-w-md space-y-8">
-            {/* Logo e título */}
             <div className="text-center space-y-3">
               <div className="inline-flex lg:hidden items-center justify-center w-16 h-16 rounded-2xl bg-primary text-primary-foreground font-bold text-xl shadow-lg">APAE</div>
               <div>
@@ -157,7 +137,6 @@ function LoginPage() {
               </div>
             </div>
 
-            {/* Card de login */}
             <Card className="border-0 shadow-xl">
               <CardContent className="p-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -168,7 +147,6 @@ function LoginPage() {
                     </div>
                   )}
 
-                  {/* Campo CPF */}
                   <div className="space-y-2">
                     <Label htmlFor="cpf" className="text-sm font-medium">
                       CPF
@@ -176,7 +154,6 @@ function LoginPage() {
                     <Input id="cpf" type="text" placeholder="000.000.000-00" value={formData.cpf} onChange={handleCPFChange} className="h-12 text-base" required />
                   </div>
 
-                  {/* Campo Senha */}
                   <div className="space-y-2">
                     <div className="flex items-center justify-between">
                       <Label htmlFor="password" className="text-sm font-medium">
@@ -207,7 +184,6 @@ function LoginPage() {
                     </div>
                   </div>
 
-                  {/* Botão de login */}
                   <Button type="submit" className="w-full h-12 text-base font-semibold bg-primary hover:bg-primary/90 cursor-pointer" disabled={isLoading}>
                     {isLoading ? (
                       <span className="flex items-center gap-2">
@@ -230,7 +206,6 @@ function LoginPage() {
                   </Button>
                 </form>
 
-                {/* Divisor */}
                 <div className="relative my-8">
                   <div className="absolute inset-0 flex items-center">
                     <div className="w-full border-t border-border" />
@@ -240,7 +215,6 @@ function LoginPage() {
                   </div>
                 </div>
 
-                {/* Link para inscrição */}
                 <Link to="/inscricao">
                   <Button
                     variant="outline"
