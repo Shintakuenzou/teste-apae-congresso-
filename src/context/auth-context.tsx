@@ -67,6 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const senhaCriptoAES = SecurityService.encryptForTransport(password);
 
       console.log("Senha criptografada:", senhaCriptoAES);
+      console.log("cpf: ", cpf);
 
       // ✅ Chamar dataset de AUTENTICAÇÃO (não o dataset de participantes!)
       const response = await fetchDataset({
