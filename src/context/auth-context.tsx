@@ -2,7 +2,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import { useNavigate } from "@tanstack/react-router";
 
-import { cryptoService } from "../services/ryptoService";
 import { fetchDataset } from "@/services/fetch-dataset";
 
 interface User {
@@ -68,9 +67,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const cpfLimpo = cpf.replace(/\D/g, "");
 
       // ✅ Criptografar senha
-      const senhaCriptografada = await cryptoService.hashPassword(password);
+      const senhaBase64 = btoa(password);
 
-      console.log("Senha criptografada:", senhaCriptografada);
+      console.log("Senha criptografada:", senhaBase64);
 
       // ✅ Chamar dataset de AUTENTICAÇÃO (não o dataset de participantes!)
       const response = await fetchDataset({
@@ -83,9 +82,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             constraintType: "MUST",
           },
           {
-            fieldName: "senhaCriptografada",
-            initialValue: senhaCriptografada,
-            finalValue: senhaCriptografada,
+            fieldName: "senhaBase64",
+            initialValue: senhaBase64,
+            finalValue: senhaBase64,
             constraintType: "MUST",
           },
         ],
