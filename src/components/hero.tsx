@@ -43,7 +43,7 @@ export function Hero() {
           <div className="mt-14 flex flex-wrap items-center gap-6 text-primary-foreground/70">
             <div className="flex items-center gap-2 bg-primary-foreground/5 px-4 py-2 rounded-full">
               <Calendar className="h-5 w-5 text-secondary" />
-              <span className="font-medium">27 a 30 de Novembro, 2026</span>
+              <span className="font-medium">29, 30 de Novembro até 1 de Dezembro, 2026</span>
             </div>
             <div className="flex items-center gap-2 bg-primary-foreground/5 px-4 py-2 rounded-full">
               <MapPin className="h-5 w-5 text-secondary" />

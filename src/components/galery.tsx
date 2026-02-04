@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
+import { photos } from "@/routes/galeria";
 
 const galleryImages = [
   {
@@ -64,14 +65,16 @@ export function GallerySection() {
 
         {/* Gallery Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-          {galleryImages.map((image, index) => (
+          {photos.slice(0, 6).map((image, index) => (
             <button
               key={image.id}
               onClick={() => setSelectedImage(index)}
               className={`relative overflow-hidden rounded-xl group cursor-pointer ${index === 0 ? "col-span-2 row-span-2" : ""}`}
             >
               <div className={`bg-primary/20 ${index === 0 ? "aspect-square" : "aspect-square"}`}>
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20  group-hover:opacity-80 transition-opacity">
+                  <img src={image.src || "/placeholder.svg"} alt={image.title} className="w-full h-full object-cover" />
+                </div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <span className={`font-bold text-primary-foreground/30 ${index === 0 ? "text-8xl" : "text-4xl"}`}>{image.id}</span>
                 </div>
@@ -80,7 +83,6 @@ export function GallerySection() {
               <div className="absolute bottom-0 left-0 right-0 p-4 md:p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform">
                 <span className="inline-block px-2 py-1 bg-primary/80 text-primary-foreground text-xs rounded mb-2">{image.category}</span>
                 <h3 className={`font-semibold text-background mb-1 ${index === 0 ? "text-xl" : "text-sm"}`}>{image.title}</h3>
-                <p className={`text-background/80 ${index === 0 ? "text-sm" : "text-xs hidden md:block"}`}>{image.description}</p>
               </div>
             </button>
           ))}
