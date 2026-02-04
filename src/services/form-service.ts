@@ -32,6 +32,8 @@ export async function handlePostFormParticipant({ documentId, values }: SendPart
 }
 
 export async function handleGetFormParticipant({ documentId }: SendParticipantData) {
+  console.log(documentId);
+
   try {
     const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards`;
 
