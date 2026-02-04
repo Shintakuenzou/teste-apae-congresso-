@@ -1,11 +1,11 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Linkedin, Twitter, X } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Badge } from "./ui/badge";
 import { useQuery } from "@tanstack/react-query";
-import { handleGetFormParticipant } from "@/services/form-service";
+import { handleGetFormParticipant, parsePalestrante } from "@/services/form-service";
 
 const speakers = [
   {
@@ -58,15 +58,13 @@ const speakers = [
 ];
 
 export function SpeakersSection() {
-  const { data } = useQuery({
+  const { data: palestrantes } = useQuery({
     queryKey: ["palestrantes"],
-    queryFn: async () => {
-      const palestrantes = await handleGetFormParticipant({ documentId: import.meta.env.VITE_FORM_PALESTRANT as string });
-      return palestrantes;
-    },
+    queryFn: async () => await handleGetFormParticipant({ documentId: import.meta.env.VITE_FORM_PALESTRANT as string }),
   });
 
-  console.log("data palestrante: ", data);
+  const formatedDataPalestrantes = palestrantes?.items.map(parsePalestrante);
+  console.log(formatedDataPalestrantes);
 
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
   return (
@@ -87,30 +85,18 @@ export function SpeakersSection() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {speakers.map((speaker, index) => (
+          {formatedDataPalestrantes?.map((speaker, index) => (
             <Card key={index} className="group border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300 overflow-hidden hover:scale-105">
               <CardContent className="p-0" onClick={() => setSelectedImage(index)}>
                 <div className="aspect-[4/5] bg-muted relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-transparent to-transparent z-10" />
-                  <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                    <span className="text-6xl font-bold text-primary-foreground/20">{speaker.name.charAt(0)}</span>
-                  </div>
-
-                  {/* Social Links */}
-                  <div className="absolute top-4 right-4 z-20 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <a href={speaker.linkedin} className="p-2 bg-background/90 rounded-full hover:bg-background transition-colors" aria-label={`LinkedIn de ${speaker.name}`}>
-                      <Linkedin className="h-4 w-4 text-foreground" />
-                    </a>
-                    <a href={speaker.twitter} className="p-2 bg-background/90 rounded-full hover:bg-background transition-colors" aria-label={`Twitter de ${speaker.name}`}>
-                      <Twitter className="h-4 w-4 text-foreground" />
-                    </a>
-                  </div>
+                  <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${speaker.fields.url_foto})` }} />
+                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-transparent to-transparent z-10"></div>
 
                   {/* Info */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
-                    <h3 className="text-lg font-semibold text-background mb-1">{speaker.name}</h3>
-                    <p className="text-sm text-background/80 mb-1">{speaker.role}</p>
-                    <p className="text-xs text-background/60">{speaker.organization}</p>
+                  <div className="absolute bottom-0 left-0 right-0 p-6 z-50">
+                    <h3 className="text-lg font-semibold text-background mb-1">{speaker.fields.nome}</h3>
+                    <p className="text-sm text-background/80 mb-1">{speaker.fields.empresa_faculdade}</p>
+                    <p className="text-xs text-background/80">{speaker.fields.email}</p>
                   </div>
                 </div>
               </CardContent>
