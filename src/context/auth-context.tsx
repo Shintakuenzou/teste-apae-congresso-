@@ -60,36 +60,32 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             finalValue: cpf.replace(/\D/g, ""),
             constraintType: "MUST",
           },
-          {
-            fieldName: "senha",
-            initialValue: password,
-            finalValue: password,
-            constraintType: "MUST",
-          },
         ],
       });
 
       if (response.items && response.items.length > 0) {
         const userData = response.items[0];
 
-        const user: User = {
-          cpf: (userData.cpf as string) || cpf,
-          nome: userData.nome as string,
-          sobrenome: userData.sobrenome as string,
-          email: userData.email as string,
-          dataNascimento: userData.data_nascimento as string,
-          uf: userData.uf as string,
-          municipio: userData.municipio as string,
-          telefone: userData.telefone as string,
-          whatsapp: userData.whatsapp as string,
-          escolaridade: userData.escolaridade as string,
-          apaeFiliada: userData.apaeFiliada as string,
-          inscricao: userData.inscricao as string,
-          dataInscricao: (userData.criado_em as string) || (userData.criado_em as string),
-        };
+        if (response.items[0]["senha"] == password) {
+          const user: User = {
+            cpf: (userData.cpf as string) || cpf,
+            nome: userData.nome as string,
+            sobrenome: userData.sobrenome as string,
+            email: userData.email as string,
+            dataNascimento: userData.data_nascimento as string,
+            uf: userData.uf as string,
+            municipio: userData.municipio as string,
+            telefone: userData.telefone as string,
+            whatsapp: userData.whatsapp as string,
+            escolaridade: userData.escolaridade as string,
+            apaeFiliada: userData.apaeFiliada as string,
+            inscricao: userData.inscricao as string,
+            dataInscricao: (userData.criado_em as string) || (userData.criado_em as string),
+          };
 
-        setUser(user);
-        localStorage.setItem("user", JSON.stringify(user));
+          setUser(user);
+          localStorage.setItem("user", JSON.stringify(user));
+        }
       } else {
         throw new Error("CPF ou senha inválidos");
       }
