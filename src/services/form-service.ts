@@ -14,9 +14,11 @@ export async function handlePostFormParticipant({ documentId, values }: SendPart
   try {
     const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards`;
 
-    const url = import.meta.env.DEV ? fluigPath : `https://firebrick-kingfisher-525619.hostingersite.com/proxy.php?endpoint=${fluigPath}&method=POST`;
+    // ✅ Em DEV: usa path relativo (Vite Proxy intercepta)
+    // ✅ Em PROD: usa query params para proxy.php
+    const url = import.meta.env.DEV ? fluigPath : `?endpoint=${encodeURIComponent(fluigPath)}&method=POST`;
 
-    console.log("📤 Enviando para:", url);
+    console.log("📤 Enviando POST para:", url);
     const response = await axiosApi.post(url, { values });
 
     return response.data;
@@ -33,16 +35,18 @@ export async function handleGetFormParticipant({ documentId }: SendParticipantDa
   try {
     const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards`;
 
-    const url = import.meta.env.DEV ? fluigPath : `https://firebrick-kingfisher-525619.hostingersite.com/proxy.php?endpoint=${fluigPath}&method=get`;
+    // ✅ Em DEV: usa path relativo (Vite Proxy intercepta)
+    // ✅ Em PROD: usa query params para proxy.php
+    const url = import.meta.env.DEV ? fluigPath : `?endpoint=${encodeURIComponent(fluigPath)}&method=GET`;
 
-    console.log("📤 Enviando para:", url);
-    const response = await axiosApi.post(url);
+    console.log("📤 Enviando GET para:", url);
+    const response = await axiosApi.get(url);
 
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
-      console.error("❌ Axios error submitting form data:", axiosError.response?.data || axiosError.message);
+      console.error("❌ Axios error fetching form data:", axiosError.response?.data || axiosError.message);
       return;
     }
   }

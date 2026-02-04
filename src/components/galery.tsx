@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { photos } from "@/routes/galeria";
+import { photos } from "@/constants";
 
 const galleryImages = [
   {

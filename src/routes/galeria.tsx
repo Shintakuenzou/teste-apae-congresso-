@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 import { X, ChevronLeft, ChevronRight, Grid3X3, LayoutGrid, Calendar, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
+import { photos } from "@/constants";
 
 const categories = [
   { id: "todos", label: "Todos" },
@@ -13,129 +14,6 @@ const categories = [
   { id: "workshops", label: "Workshops" },
   { id: "inclusao", label: "Inclusão" },
   { id: "bastidores", label: "Bastidores" },
-];
-
-export const photos = [
-  {
-    id: 1,
-    src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop",
-    title: "Abertura do Congresso 2024",
-    category: "congressos",
-    year: "2024",
-    location: "São Paulo, SP",
-    featured: true,
-    description: "Cerimônia de abertura do último congresso",
-  },
-  {
-    id: 2,
-    src: "https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=800&h=600&fit=crop",
-    title: "Palestra sobre Inclusão Digital",
-    category: "palestras",
-    year: "2024",
-    location: "Rio de Janeiro, RJ",
-    featured: false,
-    description: "Palestra sobre inclusão digital e tecnologias assistivas",
-  },
-  {
-    id: 3,
-    src: "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=800&h=600&fit=crop",
-    title: "Workshop de Artes",
-    category: "workshops",
-    year: "2023",
-    location: "Belo Horizonte, MG",
-    featured: false,
-    description: "Participantes em atividade prática de artes",
-  },
-  {
-    id: 4,
-    src: "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800&h=600&fit=crop",
-    title: "Momento de Integração",
-    category: "inclusao",
-    year: "2024",
-    location: "Brasília, DF",
-    featured: true,
-    description: "Momento de integração entre participantes",
-  },
-  {
-    id: 5,
-    src: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678?w=800&h=600&fit=crop",
-    title: "Preparativos do Evento",
-    category: "bastidores",
-    year: "2023",
-    location: "Curitiba, PR",
-    featured: false,
-    description: "Equipe organizando os preparativos do evento",
-  },
-  {
-    id: 6,
-    src: "https://images.unsplash.com/photo-1560439514-4e9645039924?w=800&h=600&fit=crop",
-    title: "Mesa Redonda sobre Políticas Públicas",
-    category: "palestras",
-    year: "2024",
-    location: "Salvador, BA",
-    featured: false,
-    description: "Discussão sobre políticas públicas para inclusão",
-  },
-  {
-    id: 7,
-    src: "https://images.unsplash.com/photo-1511578314322-379afb476865?w=800&h=600&fit=crop",
-    title: "Cerimônia de Encerramento",
-    category: "congressos",
-    year: "2023",
-    location: "Fortaleza, CE",
-    featured: true,
-    description: "Show de encerramento do evento",
-  },
-  {
-    id: 8,
-    src: "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=800&h=600&fit=crop",
-    title: "Atividades Inclusivas",
-    category: "inclusao",
-    year: "2024",
-    location: "Porto Alegre, RS",
-    featured: false,
-    description: "Atividades inclusivas durante o congresso",
-  },
-  {
-    id: 9,
-    src: "https://images.unsplash.com/photo-1559223607-a43c990c692c?w=800&h=600&fit=crop",
-    title: "Workshop de Capacitação",
-    category: "workshops",
-    year: "2023",
-    location: "Recife, PE",
-    featured: false,
-    description: "Sessão de capacitação para educadores",
-  },
-  {
-    id: 10,
-    src: "https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&h=600&fit=crop",
-    title: "Equipe de Voluntários",
-    category: "bastidores",
-    year: "2024",
-    location: "Manaus, AM",
-    featured: false,
-    description: "Voluntários trabalhando nos bastidores do evento",
-  },
-  {
-    id: 11,
-    src: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=800&h=600&fit=crop",
-    title: "Networking entre Participantes",
-    category: "congressos",
-    year: "2024",
-    location: "Goiânia, GO",
-    featured: false,
-    description: "Participantes interagindo durante o evento",
-  },
-  {
-    id: 12,
-    src: "https://images.unsplash.com/photo-1558008258-3256797b43f3?w=800&h=600&fit=crop",
-    title: "Apresentação Cultural",
-    category: "inclusao",
-    year: "2023",
-    location: "Florianópolis, SC",
-    featured: true,
-    description: "Apresentação cultural durante o congresso",
-  },
 ];
 
 export const Route = createFileRoute("/galeria")({
@@ -199,9 +77,9 @@ function Galery() {
       {/* Filtros e Controles */}
       <section className="sticky top-16 z-40 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-end gap-4">
             {/* Categorias */}
-            <div className="flex flex-wrap items-center gap-2 none">
+            <div className="hidden ">
               {categories.map((category) => (
                 <button
                   key={category.id}
@@ -253,7 +131,7 @@ function Galery() {
                   className={cn("group relative break-inside-avoid cursor-pointer overflow-hidden rounded-xl", photo.featured ? "row-span-2" : "")}
                 >
                   <div className={cn("relative w-full", photo.featured ? "aspect-[4/5]" : "aspect-[4/3]")}>
-                    <img src={photo.src || "/placeholder.svg"} alt={photo.title} className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <img src={photo.src || "/placeholder.svg"} alt={photo.title} className="object-cover w-full h-full transition-transform duration-500 group-hover:scale-105" />
                     {/* Overlay com informações */}
                     <div className="absolute inset-0 bg-gradient-to-t from-foreground/80 via-foreground/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <div className="absolute bottom-0 left-0 right-0 p-5">

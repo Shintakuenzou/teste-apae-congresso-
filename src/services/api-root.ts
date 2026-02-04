@@ -2,22 +2,22 @@ import OAuth from "oauth-1.0a";
 import CryptoJs from "crypto-js";
 import axios, { type AxiosRequestHeaders, type InternalAxiosRequestConfig } from "axios";
 
-// ✅ URL real do Fluig (para OAuth e DEV)
+// ✅ URL real do Fluig (para OAuth)
 const FLUIG_BASE_URL = "https://federacaonacional201538.fluig.cloudtotvs.com.br";
 
 // ✅ Determina a base URL dependendo do ambiente
-// const getBaseURL = () => {
-//   if (import.meta.env.DEV) {
-//     // Em desenvolvimento, usa string vazia para Vite Proxy interceptar
-//     return "";
-//   }
-//   // Em produção, também usa string vazia (vai chamar proxy.php via URL completa)
-//   return "";
-// };
+const getBaseURL = () => {
+  if (import.meta.env.DEV) {
+    // Em desenvolvimento, usa string vazia para Vite Proxy interceptar
+    return "";
+  }
+  // Em produção, usa o proxy.php
+  return "https://firebrick-kingfisher-525619.hostingersite.com/proxy.php";
+};
 
 // Instância do Axios
 export const axiosApi = axios.create({
-  baseURL: "https://firebrick-kingfisher-525619.hostingersite.com/proxy.php",
+  baseURL: getBaseURL(),
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -67,25 +67,15 @@ axiosApi.interceptors.request.use(
       mode: import.meta.env.DEV ? "DEV (Vite Proxy)" : "PROD (proxy.php)",
     });
 
-    // ✅ Detecta se é chamada ao proxy.php
-    const isProxyCall = url.includes("proxy.php") || url.includes("hostingersite.com");
-
-    if (isProxyCall) {
-      // 🚫 Em DEV, não deve usar proxy.php
-      if (import.meta.env.DEV) {
-        console.error("❌ ERRO: Não use proxy.php em desenvolvimento!");
-        return Promise.reject(new Error("Use a API do Fluig diretamente em DEV"));
-      }
-      console.log("isProxyCall: ", isProxyCall);
-
-      // ✅ Em PROD, proxy.php não precisa de OAuth (ele faz isso)
-      console.log("📡 Usando proxy.php (produção) - sem OAuth");
+    // ✅ Em PROD, o proxy.php cuida do OAuth
+    if (!import.meta.env.DEV) {
+      console.log("📡 Usando proxy.php (produção) - sem OAuth no client");
       return config;
     }
 
-    // ✅ Para chamadas normais à API do Fluig, aplica OAuth
-    // Constrói URL completa para OAuth
-    const oauthURL = url.startsWith("http") ? url : `${FLUIG_BASE_URL}${url}`;
+    // ✅ Em DEV, aplica OAuth para chamadas à API do Fluig via Vite Proxy
+    // Constrói URL completa para OAuth (o Vite Proxy vai redirecionar)
+    const oauthURL = `${FLUIG_BASE_URL}${url}`;
 
     console.log("🔐 Calculando OAuth para:", oauthURL);
 

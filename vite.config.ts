@@ -41,6 +41,7 @@ export default defineConfig({
         target: "https://federacaonacional201538.fluig.cloudtotvs.com.br",
         changeOrigin: true,
         secure: true,
+        rewrite: (path) => path,
       },
       "/process-management/api": {
         target: "https://federacaonacional201538.fluig.cloudtotvs.com.br",
