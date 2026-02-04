@@ -22,7 +22,7 @@ import { fetchCep } from "@/services/cep";
 import { formatCEO } from "@/utils/cep";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
-import { cryptoService } from "@/services/ryptoService";
+import { SecurityService } from "@/services/ryptoService";
 
 export const Route = createFileRoute("/inscricao")({
   component: InscricaoPage,
@@ -107,7 +107,7 @@ function InscricaoPage() {
     console.log("Dados enviados:", data);
 
     try {
-      const senhaCriptografada = await cryptoService.hashPassword(data.senha);
+      const senhaCriptografada = SecurityService.encryptForTransport(data.senha);
       console.log(senhaCriptografada);
 
       const response = await handlePostFormParticipant({
