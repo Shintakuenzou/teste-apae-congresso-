@@ -23,6 +23,7 @@ import { formatCEO } from "@/utils/cep";
 import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { SecurityService } from "@/services/ryptoService";
+import { format } from "date-fns";
 
 export const Route = createFileRoute("/inscricao")({
   component: InscricaoPage,
@@ -74,7 +75,7 @@ function InscricaoPage() {
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      criado_em: new Date(Date.now()).toString(),
+      criado_em: format(new Date(Date.now()), "yyyy-MM-dd"),
       criado_por: "",
       cpf: "",
       nome: "",

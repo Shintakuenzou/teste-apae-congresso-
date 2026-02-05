@@ -42,6 +42,10 @@ interface PalestranteFields {
   nome: string;
   status: "ativo" | "inativo";
   url_foto: string;
+  youtube: string;
+  linkedin: string;
+  instagram: string;
+  facebook: string;
 }
 
 interface Palestrante {
@@ -53,6 +57,7 @@ interface Palestrante {
   fields: PalestranteFields;
 }
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 export function parseFluigCard<T extends Record<string, any>>(card: FluigCard): T {
   const fields = {} as T;
 
@@ -80,7 +85,6 @@ export async function handlePostFormParticipant({
   documentId,
   values,
 }: SendParticipantData): Promise<{ activeVersion: boolean; cardId: number; children: []; companyId: number; parentDocumentId: number; values: [] }> {
-  // ✅ Validação do documentId
   if (!documentId || documentId === "undefined") {
     console.error("❌ documentId inválido:", documentId);
     throw new Error("documentId é obrigatório e não pode ser undefined");
@@ -89,8 +93,6 @@ export async function handlePostFormParticipant({
   try {
     const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards`;
 
-    // ✅ Em DEV: usa path relativo (Vite Proxy intercepta)
-    // ✅ Em PROD: usa query params para proxy.php
     const url = import.meta.env.DEV ? fluigPath : `?endpoint=${encodeURIComponent(fluigPath)}&method=POST`;
 
     console.log("📤 Enviando POST para:", url);
@@ -109,25 +111,15 @@ export async function handlePostFormParticipant({
   }
 }
 
-/**
- * Busca dados de participantes (GET)
- */
 export async function handleGetFormParticipant({ documentId }: SendParticipantData): Promise<FluigCardsResponse> {
-  // ✅ Validação do documentId
   if (!documentId || documentId === "undefined") {
-    console.error("❌ documentId inválido:", documentId);
     throw new Error("documentId é obrigatório e não pode ser undefined");
   }
 
   try {
     const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards`;
 
-    // ✅ Em DEV: usa path relativo (Vite Proxy intercepta)
-    // ✅ Em PROD: usa query params para proxy.php
     const url = import.meta.env.DEV ? fluigPath : `?endpoint=${encodeURIComponent(fluigPath)}&method=GET`;
-
-    console.log("📤 Enviando GET para:", url);
-    console.log("📤 documentId:", documentId);
 
     const response = await axiosApi.get<FluigCardsResponse>(url);
 

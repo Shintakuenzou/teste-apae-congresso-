@@ -1,72 +1,19 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight, Briefcase, Building2, GraduationCap, Mail } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Badge } from "./ui/badge";
-import { useQuery } from "@tanstack/react-query";
-import { handleGetFormParticipant, parsePalestrante } from "@/services/form-service";
-
-const speakers = [
-  {
-    id: 1,
-    name: "Celiane Ferreira Secunho",
-    role: ["Palestrante", "Ex-professora de Introdução à Psicologia — Faculdade Católica de Brasília"],
-    organization: "Universidade de Brasília",
-    formation: [
-      "Graduação em Psicologia — UNICEUB",
-      "Pós-graduação em Psicologia Infantil — UNB",
-      "Especialização em Resiliência — Universidad de Lanús, Buenos Aires, Argentina",
-      "Membro do Grupo de Estudo e Pesquisas em Autismo e Psicose da Infância — GEPAPI",
-      "Ex-professora de Psicologia da Infância e Adolescência — UNICEUB",
-      "Ex-professora do Curso de Especialização em Transtornos Invasivos do Desenvolvimento — IESCO, DF",
-    ],
-
-    notableWorks: [
-      {
-        type: "Livro",
-        title: "Resiliência: A Arte de Enfrentar a Adversidade no Ciclo da Vida",
-        role: "Autora",
-        year: null,
-      },
-      {
-        type: "Artigo",
-        title: "Morrer para Viver — Um paradoxo, a busca do verdadeiro self",
-        publication: "Instituto de Psicologia, Universidade de São Paulo (Arquivos)",
-        month: "outubro",
-        year: 1999,
-      },
-    ],
-
-    memberships: [
-      {
-        body: "Câmara Técnica 'Autismo e Psicoses Infanto-Juvenis'",
-        institution: "MEC / CORDE / Universidade Católica de Petrópolis",
-        role: "Membro da equipe técnica",
-        since: "junho de 1996",
-      },
-    ],
-
-    // Resumo técnico-bio para uso em site, ficha ou card
-    technicalBio:
-      "Psicóloga com formação em psicologia clínica e infantil, especializada em resiliência. Atua em pesquisa e formação sobre autismo, psicose infanto-juvenil e processos de desenvolvimento. Experiência docente em cursos de graduação e especialização; autora de obra sobre resiliência e publicações em periódicos acadêmicos.",
-
-    image: "/speakers/speaker-1.jpg",
-    linkedin: "#",
-    twitter: "#",
-  },
-];
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "./ui/dialog";
+import { Separator } from "./ui/separator";
+import { ScrollArea } from "./ui/scroll-area";
+import { usePalestrantes } from "@/hooks/usePalestrantes";
 
 export function SpeakersSection() {
-  const { data: palestrantes } = useQuery({
-    queryKey: ["palestrantes"],
-    queryFn: async () => await handleGetFormParticipant({ documentId: import.meta.env.VITE_FORM_PALESTRANT as string }),
-  });
-
-  const formatedDataPalestrantes = palestrantes?.items.map(parsePalestrante);
-  console.log(formatedDataPalestrantes);
+  const { formatedDataPalestrantes } = usePalestrantes();
 
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
+
   return (
     <section className="py-24 bg-muted">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -105,32 +52,86 @@ export function SpeakersSection() {
         </div>
       </div>
 
-      {selectedImage !== null && (
-        <div className="fixed inset-0 z-50 bg-foreground/90 flex items-center justify-center p-4" onClick={() => setSelectedImage(null)}>
-          <button
-            className="absolute top-4 right-4 p-2 bg-background/20 rounded-full hover:bg-background/40 transition-colors"
-            onClick={() => setSelectedImage(null)}
-            aria-label="Fechar"
-          >
-            <X className="h-6 w-6 text-background" />
-          </button>
+      <Dialog open={selectedImage !== null} onOpenChange={() => setSelectedImage(null)}>
+        {selectedImage !== null && formatedDataPalestrantes && (
+          <DialogContent className="!max-w-3xl overflow-hidden p-0 gap-0 [&>button]:hidden">
+            {/* Header com imagem e info básica */}
+            <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 pb-4">
+              <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start">
+                {/* Avatar */}
+                <div className="relative shrink-0">
+                  <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden ring-4 ring-background shadow-xl">
+                    <img
+                      src={formatedDataPalestrantes![selectedImage as number].fields.url_foto || "/placeholder.svg?height=400&width=400"}
+                      alt={formatedDataPalestrantes![selectedImage as number].fields.nome}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground rounded-full p-2 shadow-lg">
+                    <GraduationCap className="w-4 h-4" />
+                  </div>
+                </div>
 
-          <div className="max-w-4xl w-full bg-card rounded-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
-            <div className="aspect-video bg-primary/20 flex items-center justify-center">
-              <span className="text-8xl font-bold text-primary-foreground/30">{speakers[selectedImage].id}</span>
+                {/* Info */}
+                <div className="flex-1 text-center sm:text-left space-y-3">
+                  <DialogHeader className="space-y-1">
+                    <DialogTitle className="text-2xl font-bold tracking-tight">{formatedDataPalestrantes![selectedImage as number].fields.nome}</DialogTitle>
+                    <DialogDescription className="sr-only">Informações sobre {formatedDataPalestrantes![selectedImage as number].fields.nome}</DialogDescription>
+                  </DialogHeader>
+
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2 justify-center sm:justify-start text-muted-foreground">
+                      <Building2 className="w-4 h-4 text-primary" />
+                      <span className="text-sm font-medium">{formatedDataPalestrantes![selectedImage as number].fields.empresa_faculdade}</span>
+                    </div>
+                    <div className="flex items-center gap-2 justify-center sm:justify-start text-muted-foreground">
+                      <Mail className="w-4 h-4 text-primary" />
+                      <a href={`mailto:${formatedDataPalestrantes![selectedImage as number].fields.email}`} className="text-sm hover:text-primary transition-colors">
+                        {formatedDataPalestrantes![selectedImage as number].fields.email}
+                      </a>
+                    </div>
+                  </div>
+
+                  <Badge variant="secondary" className="mt-2">
+                    Palestrante
+                  </Badge>
+                </div>
+              </div>
             </div>
-            <div className="p-6">
-              {speakers[selectedImage].role.map((role, index) => (
-                <Badge key={index} className="inline-block px-2 py-1 bg-primary/10 text-primary text-xs rounded-full mr-2 mb-2">
-                  {role}
-                </Badge>
-              ))}
-              <h3 className="text-2xl font-bold text-foreground mb-2">{speakers[selectedImage].name}</h3>
-              <p className="text-muted-foreground">{speakers[selectedImage].formation}</p>
+
+            <Separator />
+
+            {/* Conteúdo - Formação e Experiência */}
+            <ScrollArea className="max-h-[50vh]">
+              <div className="p-6 space-y-4">
+                <div className="flex items-center gap-2 text-foreground">
+                  <Briefcase className="w-5 h-5 text-primary" />
+                  <h3 className="font-semibold text-lg">Formação & Experiência</h3>
+                </div>
+
+                <ul className="overflow-y-scroll h-44 pr-2 mt-4 text-sm text-muted-foreground space-y-4">
+                  {formatedDataPalestrantes![selectedImage as number].fields.descricao
+                    .replaceAll(",", " ")
+                    .split(";")
+                    .map((paragraph, idx) => (
+                      <li key={idx} className="list-disc list-inside text-justify">
+                        {paragraph.trim()}
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            </ScrollArea>
+
+            {/* Footer */}
+            <Separator />
+            <div className="p-4 bg-muted/30">
+              <Button onClick={() => setSelectedImage(null)} className="w-full bg-transparent" variant="outline">
+                Fechar
+              </Button>
             </div>
-          </div>
-        </div>
-      )}
+          </DialogContent>
+        )}
+      </Dialog>
     </section>
   );
 }

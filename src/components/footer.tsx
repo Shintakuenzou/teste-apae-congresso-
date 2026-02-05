@@ -1,11 +1,13 @@
-import { Facebook, Instagram, Youtube, Linkedin, Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin } from "lucide-react";
+import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import LogoApae from "../../public/logo-transparente.png";
+import { Link } from "@tanstack/react-router";
 
 const socialLinks = [
-  { icon: Facebook, href: "https://facebook.com/apaebrasiloficial", label: "Facebook" },
-  { icon: Instagram, href: "https://instagram.com/apaebrasiloficial", label: "Instagram" },
-  { icon: Youtube, href: "https://youtube.com/apaebrasiloficial", label: "YouTube" },
-  { icon: Linkedin, href: "https://linkedin.com/company/apae-brasil", label: "LinkedIn" },
+  { icon: "facebook", href: "https://www.facebook.com/apaebrasil/", label: "Facebook" },
+  { icon: "instagram", href: "https://www.instagram.com/Apaebrasil/", label: "Instagram" },
+  { icon: "youtube", href: "https://www.youtube.com/@ApaeBrasilOficial", label: "YouTube" },
+  { icon: "linkedin", href: "https://www.linkedin.com/company/apaebrasil/posts/?feedView=all", label: "LinkedIn" },
 ];
 
 const quickLinks = [
@@ -31,16 +33,16 @@ export function Footer() {
             </p>
             <div className="flex gap-3">
               {socialLinks.map((social, index) => (
-                <a
+                <Link
                   key={index}
-                  href={social.href}
+                  to={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-10 h-10 bg-background/10 hover:bg-secondary rounded-full flex items-center justify-center transition-colors group"
                   aria-label={social.label}
                 >
-                  <social.icon className="h-5 w-5 group-hover:text-secondary-foreground transition-colors" />
-                </a>
+                  <DynamicIcon name={social.icon as IconName} className="h-5 w-5 group-hover:text-secondary-foreground transition-colors" />
+                </Link>
               ))}
             </div>
           </div>
