@@ -1,13 +1,24 @@
-import { handleGetFormParticipant, parseAtividadeCard } from "@/services/form-service";
+import { fetchDataset } from "@/services/fetch-dataset";
+import type { EventoFields } from "@/services/form-service";
 import { useQuery } from "@tanstack/react-query";
 
-export function useAtividade() {
+export function useAtividade(id_lote: string) {
   const { data: atividade } = useQuery({
-    queryKey: ["evento_atividade"],
-    queryFn: async () => handleGetFormParticipant({ documentId: import.meta.env.VITE_FORM_ATIVIDADE as string }),
+    queryKey: ["evento_atividade", id_lote],
+    queryFn: async () =>
+      fetchDataset<EventoFields>({
+        datasetId: "cadAtividadeCN",
+        constraints: [
+          {
+            fieldName: "id_lote",
+            initialValue: id_lote,
+            finalValue: id_lote,
+            constraintType: "MUST",
+          },
+        ],
+      }),
+    enabled: !!id_lote,
   });
 
-  const formatedDataAtividade = atividade?.items.map(parseAtividadeCard);
-
-  return { formatedDataAtividade };
+  return { atividade };
 }

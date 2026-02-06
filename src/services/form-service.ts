@@ -49,7 +49,7 @@ export interface PalestranteFields {
   facebook: string;
 }
 
-interface EventoFields {
+export interface EventoFields {
   bairro: string;
   categoria_evento: string;
   cep: string;

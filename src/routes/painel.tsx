@@ -112,7 +112,8 @@ function PainelPage() {
   const [eventoSelecionado, setEventoSelecionado] = useState<LoteFields | null>(null);
   const [compraSelecionada, setCompraSelecionada] = useState<(typeof historicoCompras)[0] | null>(null);
   const { formatedDataLote } = useLotes();
-  const { formatedDataAtividade } = useAtividade();
+  const id_lote = formatedDataLote ? formatedDataLote[formatedDataLote.length - 1].cardId : "";
+  const { atividade } = useAtividade(id_lote.toString());
 
   const handleSave = async () => {
     setIsSaving(true);
@@ -250,7 +251,7 @@ function PainelPage() {
                       setEventoSelecionado(null);
                       setCompraSelecionada(null);
                     }}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors cursor-pointer ${
                       activeTab === "eventos" ? "bg-primary text-primary-foreground" : "hover:bg-muted text-foreground"
                     }`}
                   >
@@ -474,7 +475,7 @@ function PainelPage() {
                     <CardTitle className="text-xl">Eventos Disponiveis</CardTitle>
                     <p className="text-sm text-muted-foreground">Selecione um evento para ver detalhes e realizar a compra</p>
                   </CardHeader>
-                  <CardContent className="space-y-4">
+                  <CardContent className="space-y-4 cursor-pointer">
                     {formatedDataLote?.map((evento) => (
                       <div key={evento.cardId} className={`border rounded-xl p-4 transition-all`} onClick={() => setEventoSelecionado(evento.fields)}>
                         <div className="flex flex-col sm:flex-row gap-4">
@@ -550,10 +551,10 @@ function PainelPage() {
                     <div>
                       <h3 className="font-semibold mb-3">O que esta incluso:</h3>
                       <ul className="space-y-2">
-                        {formatedDataAtividade?.map((beneficio, index) => (
+                        {atividade?.items?.map((beneficio, index) => (
                           <li key={index} className="flex items-center gap-2 text-muted-foreground">
                             <CheckCircle2 className="h-4 w-4 text-secondary" />
-                            <span>{beneficio.fields.titulo}</span>
+                            <span>{beneficio.titulo}</span>
                           </li>
                         ))}
                       </ul>
