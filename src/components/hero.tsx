@@ -12,6 +12,8 @@ export function Hero() {
   let description;
   let date;
   let location;
+  console.log(formatedDataEvento);
+
   if (formatedDataEvento && formatedDataEvento.length > 0) {
     const idx = formatedDataEvento.length - 1;
     const tituloRaw = formatedDataEvento[idx]?.fields?.titulo ?? "";
