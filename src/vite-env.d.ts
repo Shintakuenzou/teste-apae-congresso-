@@ -7,6 +7,10 @@ interface ImportMetaEnv {
   readonly VITE_BASE_URL_TESTE?: string;
   readonly VITE_BASE_URL_PROD?: string;
   readonly VITE_FORM_PALESTRANT?: string;
+  readonly VITE_FORM_EVENTO?: string;
+  readonly VITE_FORM_EVENTO?: string;
+  readonly VITE_FORM_LOTES?: string;
+  readonly VITE_FORM_ATIVIDADE?: string;
 }
 interface ImportMeta {
   readonly env: ImportMetaEnv;

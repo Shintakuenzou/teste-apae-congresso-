@@ -65,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.items && response.items.length > 0) {
         const userData = response.items[0];
+        console.log("userData", userData);
 
         if (response.items[0]["senha"] == password) {
           const user: User = {
@@ -75,10 +76,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             dataNascimento: userData.data_nascimento as string,
             uf: userData.uf as string,
             municipio: userData.municipio as string,
-            telefone: userData.telefone as string,
+            telefone: userData.telefone_contato as string,
             whatsapp: userData.whatsapp as string,
             escolaridade: userData.escolaridade as string,
-            apaeFiliada: userData.apaeFiliada as string,
+            apaeFiliada: userData.apae_filiada as string,
             inscricao: userData.inscricao as string,
             dataInscricao: (userData.criado_em as string) || (userData.criado_em as string),
           };

@@ -5,6 +5,7 @@ import axios from "axios";
 interface SendParticipantData {
   documentId: string;
   values?: { fieldId: string; value: string | null }[];
+  queryParams?: string;
 }
 
 interface FluigCardField {
@@ -27,7 +28,7 @@ interface FluigCardsResponse {
   hasNext: boolean;
 }
 
-interface PalestranteFields {
+export interface PalestranteFields {
   anonymization_date: string | null;
   anonymization_user_id: string | null;
   criado_em: string;
@@ -48,14 +49,76 @@ interface PalestranteFields {
   facebook: string;
 }
 
-interface Palestrante {
+interface EventoFields {
+  bairro: string;
+  categoria_evento: string;
+  cep: string;
+  cidade: string;
+  criado_em: string;
+  criado_por: string;
+  data_fim: string;
+  data_inicio: string;
+  descricao: string;
+  endereco: string;
+  estado: string;
+  hora_fim: string;
+  hora_inicio: string;
+  local: string;
+  local_evento: string;
+  modificado_em: string;
+  modificado_por: string;
+  pais: string;
+  tipo_evento: string;
+  titulo: string;
+}
+
+export interface LoteFields {
+  anonymization_date: string;
+  anonymization_user_id: string;
+  data_fim_vendas: string;
+  data_inicio_vendas: string;
+  descricao: string;
+  hora_fim_vendas: string;
+  hora_inicio_vendas: string;
+  maximo_compra: string;
+  minimo_compra: string;
+  nome: string;
+  preco: string;
+  publico_privado: string;
+  quantidade: string;
+}
+
+export interface ActivityFields {
+  anonymization_date: string | null;
+  anonymization_user_id: string | null;
+  criado_em: string;
+  criado_por: string;
+  descricao: string;
+  id_lote: string;
+  id_tipo_atividade: string;
+  lote: string;
+  modificado_em: string;
+  modificado_por: string;
+  sala: string;
+  tipo_atividade: string;
+  titulo: string;
+  url_foto: string;
+  vagas_disponiveis: string;
+}
+
+export interface Palestrante<T = PalestranteFields> {
   cardId: number;
   parentDocumentId: number;
   activeVersion: boolean;
   companyId: number;
   version: number;
-  fields: PalestranteFields;
+  fields: T;
 }
+
+type PalestranteCard = Palestrante<PalestranteFields>;
+type EventoCard = Palestrante<EventoFields>;
+type LoteCard = Palestrante<LoteFields>;
+type AtividadeCard = Palestrante<ActivityFields>;
 
 /* eslint-disable  @typescript-eslint/no-explicit-any */
 export function parseFluigCard<T extends Record<string, any>>(card: FluigCard): T {
@@ -68,8 +131,8 @@ export function parseFluigCard<T extends Record<string, any>>(card: FluigCard): 
   return fields;
 }
 
-export function parsePalestrante(card: FluigCard): Palestrante {
-  const fields = parseFluigCard<PalestranteFields>(card);
+export function parsePalestrante<T extends Record<string, any> = PalestranteFields>(card: FluigCard): Palestrante<T> {
+  const fields = parseFluigCard<T>(card);
 
   return {
     cardId: card.cardId,
@@ -79,6 +142,22 @@ export function parsePalestrante(card: FluigCard): Palestrante {
     version: card.version,
     fields,
   };
+}
+
+export function parsePalestranteCard(card: FluigCard): PalestranteCard {
+  return parsePalestrante<PalestranteFields>(card);
+}
+
+export function parseEventoCard(card: FluigCard): EventoCard {
+  return parsePalestrante<EventoFields>(card);
+}
+
+export function parseLoteCard(card: FluigCard): LoteCard {
+  return parsePalestrante<LoteFields>(card);
+}
+
+export function parseAtividadeCard(card: FluigCard): AtividadeCard {
+  return parsePalestrante<ActivityFields>(card);
 }
 
 export async function handlePostFormParticipant({
@@ -111,13 +190,14 @@ export async function handlePostFormParticipant({
   }
 }
 
-export async function handleGetFormParticipant({ documentId }: SendParticipantData): Promise<FluigCardsResponse> {
+export async function handleGetFormParticipant({ documentId, queryParams }: SendParticipantData): Promise<FluigCardsResponse> {
   if (!documentId || documentId === "undefined") {
     throw new Error("documentId é obrigatório e não pode ser undefined");
   }
+  console.log(queryParams);
 
   try {
-    const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards`;
+    const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards?filter=id_evento eq ${queryParams}`;
 
     const url = import.meta.env.DEV ? fluigPath : `?endpoint=${encodeURIComponent(fluigPath)}&method=GET`;
 
@@ -126,10 +206,36 @@ export async function handleGetFormParticipant({ documentId }: SendParticipantDa
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      const axiosError = error as AxiosError;
-      console.error("❌ Axios error fetching form data:", axiosError.response?.data || axiosError.message);
-      throw axiosError;
+      const status = error.response?.status;
+      const errorData = error.response?.data;
+
+      console.error("❌ Erro detalhado:", {
+        status,
+        documentId,
+        url: error.config?.url,
+        errorData,
+      });
+
+      // Tratamento específico por código de status
+      switch (status) {
+        case 404:
+          throw new Error(`Documento ${documentId} não encontrado`);
+
+        case 403:
+          throw new Error(`Sem permissão para acessar o documento ${documentId}`);
+
+        case 500:
+          // Erro interno do servidor
+          if (errorData?.code === "java.lang.NullPointerException") {
+            throw new Error(`Erro ao processar documento ${documentId}. ` + `O documento pode estar corrompido ou sem dados obrigatórios.`);
+          }
+          throw new Error(`Erro interno no servidor ao buscar documento ${documentId}. ` + `Tente novamente em alguns instantes.`);
+
+        default:
+          throw new Error(`Erro ao buscar documento: ${error.message}`);
+      }
     }
+
     throw error;
   }
 }

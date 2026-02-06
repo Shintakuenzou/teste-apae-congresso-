@@ -1,13 +1,24 @@
-import { handleGetFormParticipant, parsePalestrante } from "@/services/form-service";
+import { fetchDataset } from "@/services/fetch-dataset";
+import type { PalestranteFields } from "@/services/form-service";
 import { useQuery } from "@tanstack/react-query";
 
-export function usePalestrantes() {
+export function usePalestrantes(event_id: string) {
   const { data: palestrantes } = useQuery({
-    queryKey: ["palestrantes"],
-    queryFn: async () => await handleGetFormParticipant({ documentId: import.meta.env.VITE_FORM_PALESTRANT as string }),
+    queryKey: ["palestrantes", event_id],
+    queryFn: async () =>
+      await fetchDataset<PalestranteFields>({
+        datasetId: "cadPalestranteCN",
+        constraints: [
+          {
+            fieldName: "id_evento",
+            initialValue: event_id,
+            finalValue: event_id,
+            constraintType: "MUST",
+          },
+        ],
+      }),
+    enabled: !!event_id,
   });
 
-  const formatedDataPalestrantes = palestrantes?.items.map(parsePalestrante);
-
-  return { formatedDataPalestrantes };
+  return { palestrantes };
 }

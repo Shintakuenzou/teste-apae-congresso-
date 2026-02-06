@@ -8,9 +8,14 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Separator } from "./ui/separator";
 import { ScrollArea } from "./ui/scroll-area";
 import { usePalestrantes } from "@/hooks/usePalestrantes";
+import { useEvents } from "@/hooks/useEvents";
 
 export function SpeakersSection() {
-  const { formatedDataPalestrantes } = usePalestrantes();
+  const { formatedDataEvento } = useEvents();
+
+  const event_id = formatedDataEvento ? formatedDataEvento[formatedDataEvento.length - 1].cardId.toString() : "";
+
+  const { palestrantes } = usePalestrantes(event_id);
 
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
@@ -32,18 +37,18 @@ export function SpeakersSection() {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {formatedDataPalestrantes?.map((speaker, index) => (
-            <Card key={index} className="group border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300 overflow-hidden hover:scale-105">
+          {palestrantes?.items?.map((speaker, index) => (
+            <Card key={index} className="group border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300 overflow-hidden hover:scale-105 cursor-pointer ">
               <CardContent className="p-0" onClick={() => setSelectedImage(index)}>
                 <div className="aspect-[4/5] bg-muted relative overflow-hidden">
-                  <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${speaker.fields.url_foto})` }} />
+                  <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${speaker.url_foto})` }} />
                   <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-transparent to-transparent z-10"></div>
 
                   {/* Info */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6 z-50">
-                    <h3 className="text-lg font-semibold text-background mb-1">{speaker.fields.nome}</h3>
-                    <p className="text-sm text-background/80 mb-1">{speaker.fields.empresa_faculdade}</p>
-                    <p className="text-xs text-background/80">{speaker.fields.email}</p>
+                  <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
+                    <h3 className="text-lg font-semibold text-background mb-1">{speaker.nome}</h3>
+                    <p className="text-sm text-background/80 mb-1">{speaker.empresa_faculdade}</p>
+                    <p className="text-xs text-background/80">{speaker.email}</p>
                   </div>
                 </div>
               </CardContent>
@@ -53,7 +58,7 @@ export function SpeakersSection() {
       </div>
 
       <Dialog open={selectedImage !== null} onOpenChange={() => setSelectedImage(null)}>
-        {selectedImage !== null && formatedDataPalestrantes && (
+        {selectedImage !== null && palestrantes && (
           <DialogContent className="!max-w-3xl overflow-hidden p-0 gap-0 [&>button]:hidden">
             {/* Header com imagem e info básica */}
             <div className="relative bg-gradient-to-br from-primary/10 via-primary/5 to-background p-6 pb-4">
@@ -62,8 +67,8 @@ export function SpeakersSection() {
                 <div className="relative shrink-0">
                   <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-2xl overflow-hidden ring-4 ring-background shadow-xl">
                     <img
-                      src={formatedDataPalestrantes![selectedImage as number].fields.url_foto || "/placeholder.svg?height=400&width=400"}
-                      alt={formatedDataPalestrantes![selectedImage as number].fields.nome}
+                      src={palestrantes.items[selectedImage as number].url_foto || "/placeholder.svg?height=400&width=400"}
+                      alt={palestrantes.items[selectedImage as number].nome}
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -75,19 +80,19 @@ export function SpeakersSection() {
                 {/* Info */}
                 <div className="flex-1 text-center sm:text-left space-y-3">
                   <DialogHeader className="space-y-1">
-                    <DialogTitle className="text-2xl font-bold tracking-tight">{formatedDataPalestrantes![selectedImage as number].fields.nome}</DialogTitle>
-                    <DialogDescription className="sr-only">Informações sobre {formatedDataPalestrantes![selectedImage as number].fields.nome}</DialogDescription>
+                    <DialogTitle className="text-2xl font-bold tracking-tight">{palestrantes.items[selectedImage as number].nome}</DialogTitle>
+                    <DialogDescription className="sr-only">Informações sobre {palestrantes.items[selectedImage as number].nome}</DialogDescription>
                   </DialogHeader>
 
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2 justify-center sm:justify-start text-muted-foreground">
                       <Building2 className="w-4 h-4 text-primary" />
-                      <span className="text-sm font-medium">{formatedDataPalestrantes![selectedImage as number].fields.empresa_faculdade}</span>
+                      <span className="text-sm font-medium">{palestrantes.items[selectedImage as number].empresa_faculdade}</span>
                     </div>
                     <div className="flex items-center gap-2 justify-center sm:justify-start text-muted-foreground">
                       <Mail className="w-4 h-4 text-primary" />
-                      <a href={`mailto:${formatedDataPalestrantes![selectedImage as number].fields.email}`} className="text-sm hover:text-primary transition-colors">
-                        {formatedDataPalestrantes![selectedImage as number].fields.email}
+                      <a href={`mailto:${palestrantes.items[selectedImage as number].email}`} className="text-sm hover:text-primary transition-colors">
+                        {palestrantes.items[selectedImage as number].email}
                       </a>
                     </div>
                   </div>
@@ -110,7 +115,7 @@ export function SpeakersSection() {
                 </div>
 
                 <ul className="overflow-y-scroll h-44 pr-2 mt-4 text-sm text-muted-foreground space-y-4">
-                  {formatedDataPalestrantes![selectedImage as number].fields.descricao
+                  {palestrantes.items[selectedImage as number].descricao
                     .replaceAll(",", " ")
                     .split(";")
                     .map((paragraph, idx) => (

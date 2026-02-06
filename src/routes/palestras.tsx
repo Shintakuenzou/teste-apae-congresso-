@@ -14,13 +14,12 @@ export const Route = createFileRoute("/palestras")({
 });
 
 const days = [
-  { id: "dia1", label: "15 de Agosto", shortLabel: "Dia 1" },
-  { id: "dia2", label: "16 de Agosto", shortLabel: "Dia 2" },
-  { id: "dia3", label: "17 de Agosto", shortLabel: "Dia 3" },
-  { id: "dia4", label: "18 de Agosto", shortLabel: "Dia 4" },
+  { id: "dia1", label: "29 de Novembro", shortLabel: "Dia 1" },
+  { id: "dia2", label: "30 de Novembro", shortLabel: "Dia 2" },
+  { id: "dia3", label: "01 de Dezembro", shortLabel: "Dia 3" },
 ];
 
-const categories = ["Todos", "Cerimonia", "Palestra Magna", "Palestra", "Workshop", "Painel"];
+const categories = ["Todos", "Cerimonia", "Palestra Magna", "Mesa de rodas"];
 
 const schedule: Record<
   string,
@@ -233,7 +232,7 @@ function PalestrasPage() {
                 key={day.id}
                 variant={selectedDay === day.id ? "default" : "outline"}
                 onClick={() => setSelectedDay(day.id)}
-                className={`${selectedDay === day.id ? "bg-primary text-primary-foreground" : ""}`}
+                className={`cursor-pointer ${selectedDay === day.id ? "bg-primary text-primary-foreground" : ""}`}
               >
                 <Calendar className="h-4 w-4 mr-2" />
                 <span className="hidden sm:inline">{day.label}</span>

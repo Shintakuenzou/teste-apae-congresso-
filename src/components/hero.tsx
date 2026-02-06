@@ -1,8 +1,62 @@
 import { Button } from "@/components/ui/button";
+import { useEvents } from "@/hooks/useEvents";
 import { Link } from "@tanstack/react-router";
+import { eachDayOfInterval, format, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import { Calendar, MapPin, ArrowRight, Users, Mic2, Building } from "lucide-react";
 
 export function Hero() {
+  const { formatedDataEvento } = useEvents();
+  let firstTitle;
+  let lastTitle;
+  let description;
+  let date;
+  let location;
+  if (formatedDataEvento && formatedDataEvento.length > 0) {
+    const idx = formatedDataEvento.length - 1;
+    const tituloRaw = formatedDataEvento[idx]?.fields?.titulo ?? "";
+
+    firstTitle = tituloRaw.replaceAll(" ", ",").split(",").slice(0, 2).join(" ") as string;
+    lastTitle = tituloRaw.replaceAll(" ", ",").split(",").slice(2).join(" ") as string;
+
+    description = formatedDataEvento[idx].fields.descricao;
+    date = formatThreeDayRange(formatedDataEvento[idx].fields.data_inicio, formatedDataEvento[idx].fields.data_fim);
+    location = `${formatedDataEvento[idx].fields.cidade}-${formatedDataEvento[idx].fields.estado}`;
+  } else {
+    firstTitle = "" as string;
+    lastTitle = "" as string;
+    description = "" as string;
+  }
+
+  function formatThreeDayRange(startIso: string, endIso: string): string {
+    const start = parseISO(startIso);
+    const end = parseISO(endIso);
+
+    const days = eachDayOfInterval({ start, end });
+
+    // agrupa por mês/ano
+    const groups: Date[][] = [];
+    days.forEach((d) => {
+      const key = `${d.getFullYear()}-${d.getMonth()}`;
+      const lastGroup = groups[groups.length - 1];
+      if (!lastGroup || `${lastGroup[0].getFullYear()}-${lastGroup[0].getMonth()}` !== key) {
+        groups.push([d]);
+      } else {
+        lastGroup.push(d);
+      }
+    });
+
+    const parts = groups.map((g) => {
+      const dayNumbers = g.map((d) => format(d, "d", { locale: ptBR }));
+      const daysJoined = dayNumbers.join(" e ");
+      const monthName = format(g[0], "MMMM", { locale: ptBR });
+      return `${daysJoined} de ${monthName}`;
+    });
+
+    const year = format(end, "yyyy", { locale: ptBR });
+    return `${parts.join(" e ")} de ${year}`;
+  }
+
   return (
     <section className="relative min-h-screen flex items-center bg-primary overflow-hidden">
       <div className="absolute inset-0">
@@ -12,20 +66,13 @@ export function Hero() {
 
       <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-32 w-full">
         <div className="max-w-4xl">
-          {/* <div className="inline-flex items-center gap-2 bg-secondary/20 backdrop-blur-sm border border-secondary/30 px-5 py-2.5 rounded-full mb-8">
-            <span className="w-2 h-2 bg-secondary rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-primary-foreground">Federacao Nacional das APAEs</span>
-          </div> */}
-
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-tight text-primary-foreground leading-[1.1]">
-            Congresso Nacional
+            {firstTitle}
             <br />
-            <span className="text-secondary">APAE Brasil 2026</span>
+            <span className="text-secondary">{lastTitle}</span>
           </h1>
 
-          <p className="mt-8 text-lg sm:text-xl text-primary-foreground/75 max-w-2xl leading-relaxed">
-            Inclusão, diversidade e transformação social. Junte‑se a milhares de profissionais e famílias na maior conferência sobre deficiência intelectual do Brasil.
-          </p>
+          <p className="mt-8 text-lg sm:text-xl text-primary-foreground/75 max-w-2xl leading-relaxed">{description}</p>
 
           <div className="mt-10 flex flex-col sm:flex-row items-start gap-4">
             <Button
@@ -43,11 +90,11 @@ export function Hero() {
           <div className="mt-14 flex flex-wrap items-center gap-6 text-primary-foreground/70">
             <div className="flex items-center gap-2 bg-primary-foreground/5 px-4 py-2 rounded-full">
               <Calendar className="h-5 w-5 text-secondary" />
-              <span className="font-medium">29, 30 de Novembro até 1 de Dezembro, 2026</span>
+              <span className="font-medium">{date}</span>
             </div>
             <div className="flex items-center gap-2 bg-primary-foreground/5 px-4 py-2 rounded-full">
               <MapPin className="h-5 w-5 text-secondary" />
-              <span className="font-medium">Salvador - BA</span>
+              <span className="font-medium">{location}</span>
             </div>
           </div>
         </div>

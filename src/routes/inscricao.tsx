@@ -45,7 +45,7 @@ const formSchema = z.object({
   whatsapp: z.string().min(14, "WhatsApp inválido"),
   escolaridade: z.string().min(1, "Selecione a escolaridade"),
   tamanho_camisa: z.string().min(1, "Selecione a escolaridade"),
-  apaeFiliada: z.string().min(2, "Nome da APAE é obrigatório"),
+  apaeFiliada: z.string().min(2, "Nome da APAE é obrigatório").optional(),
   senha: z.string().min(6, "Senha deve ter pelo menos 6 caracteres"),
   presidente_apae: z.string().optional(),
   funcao: z.string().optional(),
@@ -56,6 +56,7 @@ const formSchema = z.object({
   tipo_apoio: z.string().optional(),
   outros_apoio: z.string().optional(),
   coordenacao: z.string().optional(),
+  tamanho_camiseta: z.string().optional(),
 });
 
 type FormData = z.infer<typeof formSchema>;
@@ -100,6 +101,7 @@ function InscricaoPage() {
       tipo_apoio: "",
       outros_apoio: "",
       coordenacao: "",
+      tamanho_camiseta: "",
     },
   });
 
@@ -126,7 +128,7 @@ function InscricaoPage() {
           { fieldId: "telefone_contato", value: data.telefone },
           { fieldId: "whatsapp", value: data.whatsapp },
           { fieldId: "escolaridade", value: data.escolaridade },
-          { fieldId: "apae_filiada", value: data.apaeFiliada },
+          { fieldId: "apae_filiada", value: data.apaeFiliada || "" },
           { fieldId: "presidente_apae", value: data.presidente_apae || "" },
           { fieldId: "funcao", value: data.funcao || "" },
           { fieldId: "area_atuacao", value: data.area_atuacao || "" },
@@ -135,6 +137,7 @@ function InscricaoPage() {
           { fieldId: "necessita_apoio", value: data.necessita_apoio || "" },
           { fieldId: "tipo_apoio", value: data.tipo_apoio != "Outros" ? data.tipo_apoio || "" : data.outros_apoio || "" },
           { fieldId: "coordenacao", value: data.coordenacao || "" },
+          { fieldId: "tamanho_camiseta", value: data.tamanho_camiseta || "" },
         ],
       });
       console.log(response);

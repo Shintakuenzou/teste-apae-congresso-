@@ -26,9 +26,9 @@ function LoginPage() {
   });
 
   const { login, isAuthenticated } = useAuth();
+
   const navigate = useNavigate();
 
-  // ✅ Se já estiver autenticado, redireciona
   useEffect(() => {
     if (isAuthenticated) {
       navigate({ to: "/painel" });

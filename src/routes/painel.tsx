@@ -26,9 +26,14 @@ import {
   History,
   ShoppingCart,
   Users,
+  Hourglass,
 } from "lucide-react";
-import LogoApae from "/logo-apae.jpg";
+import LogoApae from "/logo-transparente.png";
 import { useAuth } from "@/context/auth-context";
+import { useLotes } from "@/hooks/useLotes";
+import { format } from "date-fns";
+import type { LoteFields } from "@/services/form-service";
+import { useAtividade } from "@/hooks/useAtividade";
 
 // Status do pagamento: "pendente", "aprovado", "recusado"
 const mockPagamento = {
@@ -98,65 +103,22 @@ const historicoCompras = [
   },
 ];
 
-const eventosDisponiveis = [
-  {
-    id: 1,
-    nome: "Congresso Nacional APAE Brasil 2026",
-    descricao: "O maior evento de inclusao social do Brasil reunindo profissionais, familias e gestores de todas as APAEs do pais.",
-    data: "15 a 18 de Agosto, 2026",
-    local: "Centro de Convencoes, Brasilia - DF",
-    preco: "R$ 450,00",
-    vagas: 2500,
-    vagasRestantes: 847,
-    imagem: "/images/login-bg.jpg",
-    beneficios: ["Acesso a todas as palestras", "Material didatico", "Certificado de participacao", "Coffee break incluso"],
-    status: "disponivel",
-  },
-  {
-    id: 2,
-    nome: "Workshop: Tecnologias Assistivas",
-    descricao: "Workshop intensivo sobre novas tecnologias para auxiliar pessoas com deficiencia intelectual.",
-    data: "16 de Agosto, 2026",
-    local: "Sala 3 - Centro de Convencoes",
-    preco: "R$ 120,00",
-    vagas: 100,
-    vagasRestantes: 23,
-    imagem: "/images/login-bg.jpg",
-    beneficios: ["Material exclusivo", "Certificado especifico", "Acesso ao conteudo online"],
-    status: "disponivel",
-  },
-  {
-    id: 3,
-    nome: "Jantar de Confraternizacao",
-    descricao: "Jantar especial de confraternizacao entre participantes do congresso com apresentacao cultural.",
-    data: "17 de Agosto, 2026",
-    local: "Salao Nobre - Centro de Convencoes",
-    preco: "R$ 180,00",
-    vagas: 500,
-    vagasRestantes: 0,
-    imagem: "/images/login-bg.jpg",
-    beneficios: ["Jantar completo", "Apresentacao cultural", "Brinde exclusivo"],
-    status: "esgotado",
-  },
-];
-
 function PainelPage() {
   const { user, logout } = useAuth();
   const [activeTab, setActiveTab] = useState<TabType>("dados");
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState(user);
   const [isSaving, setIsSaving] = useState(false);
-  const [eventoSelecionado, setEventoSelecionado] = useState<(typeof eventosDisponiveis)[0] | null>(null);
+  const [eventoSelecionado, setEventoSelecionado] = useState<LoteFields | null>(null);
   const [compraSelecionada, setCompraSelecionada] = useState<(typeof historicoCompras)[0] | null>(null);
-  console.log("user: ", user);
+  const { formatedDataLote } = useLotes();
+  const { formatedDataAtividade } = useAtividade();
 
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      // Por enquanto, só simula
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // ✅ Atualiza o localStorage
       localStorage.setItem("user", JSON.stringify(formData));
 
       setIsEditing(false);
@@ -231,10 +193,6 @@ function PainelPage() {
                 <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/10">
                   <img src={LogoApae} className="size-10 object-cover rounded-full p-1" alt="logo apae" />
                 </div>
-                <div className="hidden sm:block">
-                  <p className="text-sm font-semibold leading-tight">Congresso Nacional</p>
-                  <p className="text-xs opacity-80">APAE Brasil 2026</p>
-                </div>
               </Link>
             </div>
             <div className="flex items-center gap-4">
@@ -251,7 +209,7 @@ function PainelPage() {
                   logout();
                 }}
               >
-                <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-white/10 cursor-pointer">
+                <Button variant="ghost" size="sm" className="text-primary-foreground hover:bg-white/10 hover:text-white cursor-pointer">
                   <LogOut className="h-4 w-4 mr-2" />
                   Sair
                 </Button>
@@ -367,6 +325,7 @@ function PainelPage() {
                   {/* Dados Pessoais */}
                   <div>
                     <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-4">Dados Pessoais</h3>
+
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label className="text-muted-foreground">CPF</Label>
@@ -516,41 +475,33 @@ function PainelPage() {
                     <p className="text-sm text-muted-foreground">Selecione um evento para ver detalhes e realizar a compra</p>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    {eventosDisponiveis.map((evento) => (
-                      <div
-                        key={evento.id}
-                        className={`border rounded-xl p-4 transition-all ${
-                          evento.status === "esgotado" ? "opacity-60 bg-muted/30" : "hover:border-primary/50 hover:shadow-md cursor-pointer"
-                        }`}
-                        onClick={() => evento.status !== "esgotado" && setEventoSelecionado(evento)}
-                      >
+                    {formatedDataLote?.map((evento) => (
+                      <div key={evento.cardId} className={`border rounded-xl p-4 transition-all`} onClick={() => setEventoSelecionado(evento.fields)}>
                         <div className="flex flex-col sm:flex-row gap-4">
-                          <div className="w-full sm:w-32 h-24 rounded-lg bg-cover bg-center flex-shrink-0" style={{ backgroundImage: `url(${evento.imagem})` }} />
                           <div className="flex-1 min-w-0">
                             <div className="flex items-start justify-between gap-2 mb-2">
-                              <h3 className="font-semibold text-foreground">{evento.nome}</h3>
-                              {getStatusBadge(evento.status)}
+                              <h3 className="font-semibold text-foreground">{evento.fields.nome}</h3>
                             </div>
-                            <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{evento.descricao}</p>
+                            <p className="text-sm text-muted-foreground line-clamp-2 mb-3">{evento.fields.descricao}</p>
                             <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
                               <div className="flex items-center gap-1.5">
                                 <Calendar className="h-4 w-4" />
-                                <span>{evento.data}</span>
+                                <span>{format(evento.fields.data_inicio_vendas, "dd/MM/yyyy")}</span>
                               </div>
                               <div className="flex items-center gap-1.5">
-                                <MapPin className="h-4 w-4" />
-                                <span>{evento.local}</span>
+                                <Hourglass className="h-4 w-4" />
+                                <span>
+                                  {evento.fields.hora_inicio_vendas} - {evento.fields.hora_fim_vendas}
+                                </span>
                               </div>
                             </div>
                           </div>
                           <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2">
-                            <p className="text-xl font-bold text-secondary">{evento.preco}</p>
-                            {evento.status !== "esgotado" && (
-                              <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                                <Users className="h-4 w-4" />
-                                <span>{evento.vagasRestantes} vagas</span>
-                              </div>
-                            )}
+                            <p className="text-xl font-bold text-secondary">{evento.fields.preco}</p>
+                            <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                              <Users className="h-4 w-4" />
+                              <span>{evento.fields.quantidade} vagas</span>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -569,12 +520,10 @@ function PainelPage() {
                 </Button>
 
                 <Card>
-                  <div className="h-48 w-full bg-cover bg-center rounded-t-xl" style={{ backgroundImage: `url(${eventoSelecionado.imagem})` }} />
                   <CardContent className="p-6 space-y-6">
                     <div>
                       <div className="flex items-start justify-between gap-4 mb-2">
                         <h2 className="text-2xl font-bold text-foreground">{eventoSelecionado.nome}</h2>
-                        {getStatusBadge(eventoSelecionado.status)}
                       </div>
                       <p className="text-muted-foreground">{eventoSelecionado.descricao}</p>
                     </div>
@@ -584,14 +533,16 @@ function PainelPage() {
                         <Calendar className="h-5 w-5 text-primary" />
                         <div>
                           <p className="text-sm text-muted-foreground">Data</p>
-                          <p className="font-medium">{eventoSelecionado.data}</p>
+                          <p className="font-medium">
+                            {format(eventoSelecionado.data_inicio_vendas, "dd/MM/yyyy")} - {format(eventoSelecionado.data_fim_vendas, "dd/MM/yyyy")}
+                          </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
                         <MapPin className="h-5 w-5 text-primary" />
                         <div>
                           <p className="text-sm text-muted-foreground">Local</p>
-                          <p className="font-medium">{eventoSelecionado.local}</p>
+                          <p className="font-medium">Salvador - BA</p>
                         </div>
                       </div>
                     </div>
@@ -599,10 +550,10 @@ function PainelPage() {
                     <div>
                       <h3 className="font-semibold mb-3">O que esta incluso:</h3>
                       <ul className="space-y-2">
-                        {eventoSelecionado.beneficios.map((beneficio, index) => (
+                        {formatedDataAtividade?.map((beneficio, index) => (
                           <li key={index} className="flex items-center gap-2 text-muted-foreground">
                             <CheckCircle2 className="h-4 w-4 text-secondary" />
-                            <span>{beneficio}</span>
+                            <span>{beneficio.fields.titulo}</span>
                           </li>
                         ))}
                       </ul>
@@ -614,9 +565,7 @@ function PainelPage() {
                       <div>
                         <p className="text-sm text-muted-foreground">Valor do ingresso</p>
                         <p className="text-3xl font-bold text-secondary">{eventoSelecionado.preco}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {eventoSelecionado.vagasRestantes} de {eventoSelecionado.vagas} vagas disponiveis
-                        </p>
+                        <p className="text-sm text-muted-foreground">{eventoSelecionado.quantidade} vagas disponiveis</p>
                       </div>
                       <Button size="lg" className="w-full sm:w-auto">
                         <ShoppingCart className="h-5 w-5 mr-2" />

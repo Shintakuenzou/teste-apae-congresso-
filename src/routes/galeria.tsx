@@ -201,22 +201,26 @@ function Galery() {
           {/* Imagem */}
           <div className="flex h-full items-center justify-center p-4 md:p-16">
             <div className="relative max-h-full max-w-full">
-              <div className="relative aspect-video w-[90vw] max-w-5xl">
+              <div className="relative aspect-video w-full max-w-5xl">
                 <img src={currentPhoto.src || "/placeholder.svg"} alt={currentPhoto.title} className="object-contain" />
               </div>
 
               {/* Informações da foto */}
-              <div className="absolute -bottom-16 left-0 right-0 text-center">
-                <h3 className="text-background font-medium text-xl">{currentPhoto.title}</h3>
-                <div className="mt-2 flex items-center justify-center gap-4 text-sm text-background/60">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="h-4 w-4" />
-                    {currentPhoto.year}
-                  </span>
-                  <span className="flex items-center gap-1">
-                    <MapPin className="h-4 w-4" />
-                    {currentPhoto.location}
-                  </span>
+              <div className="absolute -bottom-28 left-0 right-0 text-center">
+                <div className="mt-2 flex flex-col items-center justify-center gap-4 text-sm text-background/60">
+                  <div>
+                    <h3 className="text-background font-medium text-xl">{currentPhoto.title}</h3>
+                  </div>
+                  <div className="flex gap-1.5">
+                    <span className="flex items-center gap-1">
+                      <Calendar className="h-4 w-4" />
+                      {currentPhoto.year}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <MapPin className="h-4 w-4" />
+                      {currentPhoto.location}
+                    </span>
+                  </div>
                 </div>
                 {/* Contador */}
                 <p className="mt-4 text-sm text-background/40">
