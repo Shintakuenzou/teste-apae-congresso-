@@ -10,6 +10,8 @@ const router = createRouter({
   context: {
     auth: undefined!,
   },
+  defaultPreload: "intent",
+  scrollRestoration: true,
 });
 
 // Register the router instance for type safety

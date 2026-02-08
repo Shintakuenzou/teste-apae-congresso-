@@ -19,6 +19,10 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as InscricaoRouteImport } from './routes/inscricao'
 import { Route as GaleriaRouteImport } from './routes/galeria'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PainelIngressoRouteImport } from './routes/painel.ingresso'
+import { Route as PainelHistoricoRouteImport } from './routes/painel.historico'
+import { Route as PainelEventoRouteImport } from './routes/painel.evento'
+import { Route as PainelDataRouteImport } from './routes/painel.data'
 
 const SubTrabalhoRoute = SubTrabalhoRouteImport.update({
   id: '/sub-trabalho',
@@ -70,30 +74,58 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PainelIngressoRoute = PainelIngressoRouteImport.update({
+  id: '/ingresso',
+  path: '/ingresso',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelHistoricoRoute = PainelHistoricoRouteImport.update({
+  id: '/historico',
+  path: '/historico',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelEventoRoute = PainelEventoRouteImport.update({
+  id: '/evento',
+  path: '/evento',
+  getParentRoute: () => PainelRoute,
+} as any)
+const PainelDataRoute = PainelDataRouteImport.update({
+  id: '/data',
+  path: '/data',
+  getParentRoute: () => PainelRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/galeria': typeof GaleriaRoute
   '/inscricao': typeof InscricaoRoute
   '/login': typeof LoginRoute
-  '/painel': typeof PainelRoute
+  '/painel': typeof PainelRouteWithChildren
   '/palestrantes': typeof PalestrantesRoute
   '/palestras': typeof PalestrasRoute
   '/quem-somos': typeof QuemSomosRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/sub-trabalho': typeof SubTrabalhoRoute
+  '/painel/data': typeof PainelDataRoute
+  '/painel/evento': typeof PainelEventoRoute
+  '/painel/historico': typeof PainelHistoricoRoute
+  '/painel/ingresso': typeof PainelIngressoRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/galeria': typeof GaleriaRoute
   '/inscricao': typeof InscricaoRoute
   '/login': typeof LoginRoute
-  '/painel': typeof PainelRoute
+  '/painel': typeof PainelRouteWithChildren
   '/palestrantes': typeof PalestrantesRoute
   '/palestras': typeof PalestrasRoute
   '/quem-somos': typeof QuemSomosRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/sub-trabalho': typeof SubTrabalhoRoute
+  '/painel/data': typeof PainelDataRoute
+  '/painel/evento': typeof PainelEventoRoute
+  '/painel/historico': typeof PainelHistoricoRoute
+  '/painel/ingresso': typeof PainelIngressoRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -101,12 +133,16 @@ export interface FileRoutesById {
   '/galeria': typeof GaleriaRoute
   '/inscricao': typeof InscricaoRoute
   '/login': typeof LoginRoute
-  '/painel': typeof PainelRoute
+  '/painel': typeof PainelRouteWithChildren
   '/palestrantes': typeof PalestrantesRoute
   '/palestras': typeof PalestrasRoute
   '/quem-somos': typeof QuemSomosRoute
   '/recuperar-senha': typeof RecuperarSenhaRoute
   '/sub-trabalho': typeof SubTrabalhoRoute
+  '/painel/data': typeof PainelDataRoute
+  '/painel/evento': typeof PainelEventoRoute
+  '/painel/historico': typeof PainelHistoricoRoute
+  '/painel/ingresso': typeof PainelIngressoRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +157,10 @@ export interface FileRouteTypes {
     | '/quem-somos'
     | '/recuperar-senha'
     | '/sub-trabalho'
+    | '/painel/data'
+    | '/painel/evento'
+    | '/painel/historico'
+    | '/painel/ingresso'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +173,10 @@ export interface FileRouteTypes {
     | '/quem-somos'
     | '/recuperar-senha'
     | '/sub-trabalho'
+    | '/painel/data'
+    | '/painel/evento'
+    | '/painel/historico'
+    | '/painel/ingresso'
   id:
     | '__root__'
     | '/'
@@ -145,6 +189,10 @@ export interface FileRouteTypes {
     | '/quem-somos'
     | '/recuperar-senha'
     | '/sub-trabalho'
+    | '/painel/data'
+    | '/painel/evento'
+    | '/painel/historico'
+    | '/painel/ingresso'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -152,7 +200,7 @@ export interface RootRouteChildren {
   GaleriaRoute: typeof GaleriaRoute
   InscricaoRoute: typeof InscricaoRoute
   LoginRoute: typeof LoginRoute
-  PainelRoute: typeof PainelRoute
+  PainelRoute: typeof PainelRouteWithChildren
   PalestrantesRoute: typeof PalestrantesRoute
   PalestrasRoute: typeof PalestrasRoute
   QuemSomosRoute: typeof QuemSomosRoute
@@ -232,15 +280,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/painel/ingresso': {
+      id: '/painel/ingresso'
+      path: '/ingresso'
+      fullPath: '/painel/ingresso'
+      preLoaderRoute: typeof PainelIngressoRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/historico': {
+      id: '/painel/historico'
+      path: '/historico'
+      fullPath: '/painel/historico'
+      preLoaderRoute: typeof PainelHistoricoRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/evento': {
+      id: '/painel/evento'
+      path: '/evento'
+      fullPath: '/painel/evento'
+      preLoaderRoute: typeof PainelEventoRouteImport
+      parentRoute: typeof PainelRoute
+    }
+    '/painel/data': {
+      id: '/painel/data'
+      path: '/data'
+      fullPath: '/painel/data'
+      preLoaderRoute: typeof PainelDataRouteImport
+      parentRoute: typeof PainelRoute
+    }
   }
 }
+
+interface PainelRouteChildren {
+  PainelDataRoute: typeof PainelDataRoute
+  PainelEventoRoute: typeof PainelEventoRoute
+  PainelHistoricoRoute: typeof PainelHistoricoRoute
+  PainelIngressoRoute: typeof PainelIngressoRoute
+}
+
+const PainelRouteChildren: PainelRouteChildren = {
+  PainelDataRoute: PainelDataRoute,
+  PainelEventoRoute: PainelEventoRoute,
+  PainelHistoricoRoute: PainelHistoricoRoute,
+  PainelIngressoRoute: PainelIngressoRoute,
+}
+
+const PainelRouteWithChildren =
+  PainelRoute._addFileChildren(PainelRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   GaleriaRoute: GaleriaRoute,
   InscricaoRoute: InscricaoRoute,
   LoginRoute: LoginRoute,
-  PainelRoute: PainelRoute,
+  PainelRoute: PainelRouteWithChildren,
   PalestrantesRoute: PalestrantesRoute,
   PalestrasRoute: PalestrasRoute,
   QuemSomosRoute: QuemSomosRoute,

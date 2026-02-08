@@ -55,15 +55,15 @@ export const estados = [
 ];
 
 export const escolaridades = [
-  "Ensino Fundamental Incompleto",
-  "Ensino Fundamental Completo",
-  "Ensino Medio Incompleto",
-  "Ensino Medio Completo",
-  "Ensino Superior Incompleto",
-  "Ensino Superior Completo",
-  "Pos-graduacao",
-  "Mestrado",
-  "Doutorado",
+  { value: "fundamental-incompleto", label: "Fundamental Incompleto" },
+  { value: "fundamental-completo", label: "Fundamental Completo" },
+  { value: "medio-incompleto", label: "Médio Incompleto" },
+  { value: "medio-completo", label: "Médio Completo" },
+  { value: "superior-incompleto", label: "Superior Incompleto" },
+  { value: "superior-completo", label: "Superior Completo" },
+  { value: "pos-graduacao", label: "Pós-graduação" },
+  { value: "mestrado", label: "Mestrado" },
+  { value: "doutorado", label: "Doutorado" },
 ];
 
 export const DISABILITY_OPTIONS: { value: DisabilityOption; label: string }[] = [

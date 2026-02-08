@@ -47,7 +47,14 @@ export function Header() {
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item) => {
               return (
-                <Link key={item.to} to={item.to} className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white">
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white"
+                  activeProps={{
+                    className: "bg-white/20 font-bold",
+                  }}
+                >
                   {item.label}
                 </Link>
               );
@@ -96,7 +103,18 @@ export function Header() {
           <div className="px-4 py-6 space-y-2">
             {navItems.map((item) => {
               return (
-                <Link key={item.to} to={item.to} className="block px-4 py-3 rounded-lg text-sm font-medium transition-all text-white" onClick={() => setMobileMenuOpen(false)}>
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className="block px-4 py-3 rounded-lg text-sm font-medium transition-all text-white"
+                  onClick={() => setMobileMenuOpen(false)}
+                  activeProps={{
+                    className: "bg-red-500/20 font-bold",
+                  }}
+                  activeOptions={{
+                    exact: true,
+                  }}
+                >
                   {item.label}
                 </Link>
               );

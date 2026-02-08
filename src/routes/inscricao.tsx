@@ -344,8 +344,8 @@ function InscricaoPage() {
                             </SelectTrigger>
                             <SelectContent>
                               {escolaridades.map((esc) => (
-                                <SelectItem key={esc} value={esc}>
-                                  {esc}
+                                <SelectItem key={esc.value} value={esc.value}>
+                                  {esc.label}
                                 </SelectItem>
                               ))}
                             </SelectContent>
