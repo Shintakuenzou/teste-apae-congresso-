@@ -12,6 +12,7 @@ import { useEvents } from "@/hooks/useEvents";
 
 export function SpeakersSection() {
   const { formatedDataEvento } = useEvents();
+  console.log("formatedDataEvento: ", formatedDataEvento);
 
   const event_id = formatedDataEvento ? formatedDataEvento[formatedDataEvento.length - 1].cardId.toString() : "";
 

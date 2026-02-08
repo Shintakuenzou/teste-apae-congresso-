@@ -90,16 +90,6 @@ function RouteComponent() {
                   <Download className="h-4 w-4 mr-2" />
                   Baixar Ingresso (PDF)
                 </Button>
-                <Button variant="outline" className="flex-1">
-                  <Ticket className="h-4 w-4 mr-2" />
-                  Adicionar ao Wallet
-                </Button>
-              </div>
-
-              <div className="p-4 bg-muted/50 rounded-lg">
-                <p className="text-sm text-muted-foreground">
-                  Apresente este ingresso (impresso ou no celular) na entrada do evento junto com um documento de identificação com foto.
-                </p>
               </div>
             </div>
           ) : (

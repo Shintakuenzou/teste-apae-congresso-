@@ -20,26 +20,45 @@ $config = [
     'base_url' => 'https://federacaonacional201538.fluig.cloudtotvs.com.br'
 ];
 
-// 1. Captura de inputs
 $inputJSON = file_get_contents('php://input');
 $method = isset($_GET['method']) ? strtoupper($_GET['method']) : $_SERVER['REQUEST_METHOD'];
 
-// 2. Lógica de Endpoint
-// Se o seu JS enviar ?endpoint=..., usamos ele. Caso contrário, assume o Search do Dataset v2.
+// ✅ CORREÇÃO: Separar endpoint de query string
 $endpoint = isset($_GET['endpoint']) ? $_GET['endpoint'] : '/dataset/api/v2/dataset-handle/search';
 
-// 3. Organização de Parâmetros para a Assinatura
-$queryParams = $_GET;
-unset($queryParams['endpoint']); // Removemos os controles do proxy
-unset($queryParams['method']);
+// ✅ Parse do endpoint para separar path e query
+$endpointParts = parse_url($endpoint);
+$endpointPath = $endpointParts['path'] ?? $endpoint;
+$endpointQuery = [];
 
-// Monta a URL final para o Fluig
-$targetUrl = $config['base_url'] . $endpoint;
-if (!empty($queryParams)) {
-    $targetUrl .= '?' . http_build_query($queryParams);
+// Se o endpoint já tem query string, extrai ela
+if (isset($endpointParts['query'])) {
+    parse_str($endpointParts['query'], $endpointQuery);
 }
 
-// Função OAuth 1.0a Unificada
+// ✅ Pega params adicionais da URL do proxy
+$queryParams = $_GET;
+unset($queryParams['endpoint']);
+unset($queryParams['method']);
+
+// ✅ Mescla query do endpoint com query do proxy
+$allParams = array_merge($endpointQuery, $queryParams);
+
+// ✅ Monta URL final corretamente
+$targetUrl = $config['base_url'] . $endpointPath;
+if (!empty($allParams)) {
+    $targetUrl .= '?' . http_build_query($allParams);
+}
+
+// Log para debug (remova em produção)
+error_log("=== PROXY DEBUG ===");
+error_log("Endpoint recebido: " . $endpoint);
+error_log("Endpoint path: " . $endpointPath);
+error_log("Endpoint query: " . print_r($endpointQuery, true));
+error_log("Query params: " . print_r($queryParams, true));
+error_log("All params merged: " . print_r($allParams, true));
+error_log("Target URL: " . $targetUrl);
+
 function buildOAuthHeader($baseUrl, $method, $allParams, $config)
 {
     $timestamp = time();
@@ -54,7 +73,6 @@ function buildOAuthHeader($baseUrl, $method, $allParams, $config)
         'oauth_version' => '1.0'
     ];
 
-    // Mescla parâmetros da URL com OAuth para a base da assinatura
     $baseParams = array_merge($oauthParams, $allParams);
     uksort($baseParams, 'strcmp');
 
@@ -86,8 +104,8 @@ function buildOAuthHeader($baseUrl, $method, $allParams, $config)
 try {
     $ch = curl_init();
 
-    // Importante: A assinatura usa a URL sem a query string, os params entram no corpo da assinatura
-    $authHeader = buildOAuthHeader($config['base_url'] . $endpoint, $method, $queryParams, $config);
+    // ✅ Usa o path limpo para a assinatura OAuth
+    $authHeader = buildOAuthHeader($config['base_url'] . $endpointPath, $method, $allParams, $config);
 
     curl_setopt($ch, CURLOPT_URL, $targetUrl);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -111,13 +129,19 @@ try {
     $curlError = curl_error($ch);
     curl_close($ch);
 
-    if ($curlError)
+    if ($curlError) {
         throw new Exception("Erro cURL: $curlError");
+    }
 
     http_response_code($httpCode);
     echo $response;
 
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Erro no proxy', 'message' => $e->getMessage()]);
+    echo json_encode([
+        'error' => 'Erro no proxy',
+        'message' => $e->getMessage(),
+        'endpoint' => $endpoint ?? null,
+        'targetUrl' => $targetUrl ?? null
+    ]);
 }
