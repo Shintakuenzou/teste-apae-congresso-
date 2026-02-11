@@ -13,6 +13,7 @@ import { useVinculo } from "@/hooks/useVinculo";
 import { useEvents } from "@/hooks/useEvents";
 import { eachDayOfInterval, format, isSameDay, isWithinInterval, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { LoadingScreen } from "@/components/loading";
 
 export const Route = createFileRoute("/palestras")({
   component: PalestrasPage,
@@ -62,6 +63,10 @@ function PalestrasPage() {
 
     return [...new Set(atividadeComPalestrantes.map((atividade) => atividade.eixo))];
   }, [atividadeComPalestrantes]);
+
+  if (atividadesFiltradas.length == 0) {
+    return <LoadingScreen />;
+  }
 
   return (
     <main className="min-h-screen">

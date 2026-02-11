@@ -72,24 +72,53 @@ function PainelPage() {
                 <nav className="space-y-1">
                   <Link
                     to="/painel/data"
-                    activeProps={{
-                      className: "bg-white/20 font-bold",
-                    }}
-                    activeOptions={{ exact: true }}
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors hover:bg-muted"
+                    activeProps={{
+                      className: "bg-zinc-500/20 font-bold",
+                    }}
+                    activeOptions={{
+                      exact: true,
+                    }}
                   >
                     <User className="h-5 w-5" />
                     <span className="font-medium">Dados Cadastrais</span>
                   </Link>
-                  <Link to="/painel/evento" className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors hover:bg-muted">
+                  <Link
+                    to="/painel/evento"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors hover:bg-muted"
+                    activeProps={{
+                      className: "bg-zinc-500/20 font-bold",
+                    }}
+                    activeOptions={{
+                      exact: true,
+                    }}
+                  >
                     <ShoppingCart className="h-5 w-5" />
                     <span className="font-medium">Comprar Eventos</span>
                   </Link>
-                  <Link to="/painel/historico" className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors hover:bg-muted">
+                  <Link
+                    to="/painel/historico"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors hover:bg-muted"
+                    activeProps={{
+                      className: "bg-zinc-500/20 font-bold",
+                    }}
+                    activeOptions={{
+                      exact: true,
+                    }}
+                  >
                     <History className="h-5 w-5" />
                     <span className="font-medium">Historico</span>
                   </Link>
-                  <Link to="/painel/ingresso" className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors hover:bg-muted">
+                  <Link
+                    to="/painel/ingresso"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors hover:bg-muted"
+                    activeProps={{
+                      className: "bg-zinc-500/20 font-bold",
+                    }}
+                    activeOptions={{
+                      exact: true,
+                    }}
+                  >
                     <Ticket className="h-5 w-5" />
                     <span className="font-medium">Meu Ingresso</span>
                   </Link>
