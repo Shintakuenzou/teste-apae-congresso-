@@ -57,7 +57,7 @@ export function CTASection() {
               <div className="mt-8 pt-8 border-t border-primary-foreground/20">
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div>
-                    <div className="text-2xl font-bold text-primary-foreground">4</div>
+                    <div className="text-2xl font-bold text-primary-foreground">3</div>
                     <div className="text-xs text-primary-foreground/60">Dias</div>
                   </div>
                   <div>

@@ -126,7 +126,7 @@ export interface Palestrante<T = PalestranteFields> {
 }
 
 type PalestranteCard = Palestrante<PalestranteFields>;
-type EventoCard = Palestrante<EventoFields>;
+export type EventoCard = Palestrante<EventoFields>;
 type LoteCard = Palestrante<LoteFields>;
 type AtividadeCard = Palestrante<ActivityFields>;
 

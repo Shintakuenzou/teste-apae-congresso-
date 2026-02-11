@@ -1,19 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { useEvents } from "@/hooks/useEvents";
+import type { EventoCard } from "@/services/form-service";
 import { Link } from "@tanstack/react-router";
 import { eachDayOfInterval, format, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Calendar, MapPin, ArrowRight, Users, Mic2, Building } from "lucide-react";
 
-export function Hero() {
-  const { formatedDataEvento } = useEvents();
+interface HeroProps {
+  formatedDataEvento: EventoCard[] | undefined;
+}
+
+export function Hero({ formatedDataEvento }: HeroProps) {
   let firstTitle;
   let lastTitle;
   let description;
   let date;
   let location;
-
-  console.log(formatedDataEvento);
 
   if (formatedDataEvento && formatedDataEvento.length > 0) {
     const idx = formatedDataEvento.length - 1;
@@ -106,7 +107,7 @@ export function Hero() {
           {[
             { value: "5.000+", label: "Participantes", icon: Users },
             { value: "50+", label: "Palestras", icon: Mic2 },
-            { value: "4", label: "Dias de evento", icon: Calendar },
+            { value: "3", label: "Dias de evento", icon: Calendar },
             { value: "2.000+", label: "APAEs representadas", icon: Building },
           ].map((stat, index) => (
             <div

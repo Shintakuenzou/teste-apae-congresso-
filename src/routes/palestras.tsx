@@ -103,6 +103,13 @@ function PalestrasPage() {
           <div className="flex flex-wrap items-center gap-2 mb-10 pb-6 border-b border-border">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm text-muted-foreground mr-2">Filtrar:</span>
+            <Badge
+              variant={selectedCategory === "Todos" ? "default" : "outline"}
+              className={`cursor-pointer transition-colors ${selectedCategory === "Todos" ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : "hover:bg-muted"}`}
+              onClick={() => setSelectedCategory("Todos")}
+            >
+              Todos
+            </Badge>
             {atividadeCategorias.map((category) => (
               <Badge
                 key={category}

@@ -8,16 +8,9 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Separator } from "./ui/separator";
 import { ScrollArea } from "./ui/scroll-area";
 import { usePalestrantes } from "@/hooks/usePalestrantes";
-import { useEvents } from "@/hooks/useEvents";
 
 export function SpeakersSection() {
-  const { formatedDataEvento } = useEvents();
-
-  const event_id = formatedDataEvento ? formatedDataEvento[formatedDataEvento.length - 1].cardId.toString() : "";
-
-  const { palestrantes } = usePalestrantes(event_id);
-
-  console.log("palestrantes: ", palestrantes);
+  const { palestrantes } = usePalestrantes();
 
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
 
@@ -48,9 +41,9 @@ export function SpeakersSection() {
 
                   {/* Info */}
                   <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
-                    <h3 className="text-lg font-semibold text-background mb-1">{speaker.nome}</h3>
-                    <p className="text-sm text-background/80 mb-1">{speaker.empresa_faculdade}</p>
-                    <p className="text-xs text-background/80">{speaker.email}</p>
+                    <h3 className="text-lg font-semibold text-background mb-1 uppercase">{speaker.nome}</h3>
+                    <p className="text-sm text-background/80 mb-1 capitalize">{speaker.empresa_faculdade}</p>
+                    <p className="text-[11px] text-background/80 lowercase">{speaker.email}</p>
                   </div>
                 </div>
               </CardContent>

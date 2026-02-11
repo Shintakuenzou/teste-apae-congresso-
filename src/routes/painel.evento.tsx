@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { eachDayOfInterval, format, isSameDay, isWithinInterval, parseISO } from "date-fns";
 import { useLotes } from "@/hooks/useLotes";
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, Calendar, Clock, Filter, Hourglass, ShoppingCart, User, Users } from "lucide-react";
+import { ArrowRight, Calendar, Filter, Hourglass, ShoppingCart, Users } from "lucide-react";
 import type { LoteFields } from "@/services/form-service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { useVinculo } from "@/hooks/useVinculo";
 import { useEvents } from "@/hooks/useEvents";
 import { Badge } from "@/components/ui/badge";
 import { ptBR } from "date-fns/locale";
+import { SwitchChoiceCard } from "@/components/switch-choice-event-card";
 
 export const Route = createFileRoute("/painel/evento")({
   component: RouteComponent,
@@ -64,6 +65,7 @@ function RouteComponent() {
 
     return [...new Set(atividadeComPalestrantes.map((atividade) => atividade.eixo))];
   }, [atividadeComPalestrantes]);
+  console.log("atividadesFiltradas: ", atividadesFiltradas);
 
   return (
     <div className="space-y-6 col-span-3">
@@ -81,25 +83,6 @@ function RouteComponent() {
                   <h2 className="text-2xl font-bold text-foreground">{eventoSelecionado?.nome}</h2>
                 </div>
               </div>
-
-              {/* <div className="grid sm:grid-cols-2 gap-4">
-                <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
-                  <Calendar className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Data</p>
-                    <p className="font-medium">
-                      {format(eventoSelecionado!.data_inicio_vendas, "dd/MM/yyyy")} até {format(eventoSelecionado!.data_fim_vendas, "dd/MM/yyyy")}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
-                  <MapPin className="h-5 w-5 text-primary" />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Local</p>
-                    <p className="font-medium">Salvador - BA</p>
-                  </div>
-                </div>
-              </div> */}
 
               <div className="flex flex-wrap gap-2 mb-8">
                 {eventoDatas?.map((data, index) => {
@@ -149,35 +132,16 @@ function RouteComponent() {
                 ) : (
                   atividadesFiltradas.map((atividade, index) => {
                     return (
-                      <Card key={index} className="border-border hover:border-secondary/50 hover:shadow-lg transition-all duration-300 overflow-hidden">
-                        <CardContent className="p-0">
-                          <div className="flex flex-col lg:flex-row">
-                            <div className="lg:w-48 flex-shrink-0 bg-muted p-6 flex flex-col justify-center items-center">
-                              <div className="flex items-center gap-2 text-secondary font-semibold mb-1">
-                                <Clock className="h-4 w-4" />
-                                <span>{format(`${atividade.data_inicio}T${atividade.hora_inicio}`, "dd/MM/yyyy")}</span>
-                              </div>
-                              <Badge className="w-fit mt-2 border-secondary/50 text-white">{atividade.eixo}</Badge>
-                            </div>
-
-                            <div className="flex-1 p-6">
-                              <h3 className="text-xl font-semibold text-foreground mb-2">{atividade.titulo}</h3>
-                              <p className="text-muted-foreground mb-4 text-sm">{atividade.descricao}</p>
-
-                              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                                <div className="flex items-center gap-2">
-                                  {atividade.palestrantes?.map((palestrante) => (
-                                    <div className="flex items-center gap-2">
-                                      <User className="h-4 w-4 text-secondary" />
-                                      <span>{palestrante.palestrante}</span>
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
+                      <SwitchChoiceCard
+                        key={index}
+                        titulo={atividade.titulo}
+                        documentId={atividade.documentid}
+                        descricao={atividade.descricao}
+                        eixo={atividade.eixo}
+                        hora_inicio={atividade.hora_inicio}
+                        palestrantes={atividade.palestrantes}
+                        data_inicio={atividade.data_inicio}
+                      />
                     );
                   })
                 )}

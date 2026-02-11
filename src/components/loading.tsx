@@ -75,7 +75,7 @@ export function LoadingScreen({ logoSrc = "/logo-apae.jpg", showProgress = true,
 
           {/* Logo */}
           <div className="relative h-28 w-28 overflow-hidden rounded-full border-2 border-white/10 shadow-2xl sm:h-32 sm:w-32">
-            <img src={logoSrc || "/placeholder.svg"} alt="Logo" className="object-cover" />
+            <img src={logoSrc || "/placeholder.svg"} alt="Logo" className="object-cover h-full" />
           </div>
 
           {/* Glow sutil */}
