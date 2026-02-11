@@ -3,7 +3,7 @@ import { fetchDataset } from "@/services/fetch-dataset";
 import { useNavigate } from "@tanstack/react-router";
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
-interface User {
+export interface User {
   cpf: string;
   nome: string;
   sobrenome: string;
@@ -65,7 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.items && response.items.length > 0) {
         const userData = response.items[0];
-        console.log("userData", userData);
+        console.log(response.items[0]["senha"] == password, password);
 
         if (response.items[0]["senha"] == password) {
           const user: User = {
@@ -86,6 +86,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
           setUser(user);
           localStorage.setItem("user", JSON.stringify(user));
+        } else {
+          throw new Error("Senha incorreta");
         }
       } else {
         throw new Error("CPF ou senha inválidos");

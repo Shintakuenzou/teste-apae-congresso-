@@ -114,9 +114,9 @@ export function SpeakersSection() {
                     .replaceAll(",", " ")
                     .split(";")
                     .map((paragraph, idx) => (
-                      <li key={idx} className="list-disc list-inside text-justify">
+                      <p key={idx} className="list-disc list-inside text-justify">
                         {paragraph.trim()}
-                      </li>
+                      </p>
                     ))}
                 </ul>
               </div>

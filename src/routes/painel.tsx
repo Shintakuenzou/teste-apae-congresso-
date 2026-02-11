@@ -66,7 +66,7 @@ function PainelPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-4 gap-6">
           {/* Menu Lateral */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 col-span-4">
             <Card>
               <CardContent className="p-2">
                 <nav className="space-y-1">

@@ -50,7 +50,7 @@ function RouteComponent() {
   };
 
   return (
-    <div className="col-span-3">
+    <div className="col-span-4 lg:col-span-3">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between pb-4">
           <div>
@@ -60,7 +60,7 @@ function RouteComponent() {
             </p>
           </div>
           {!isEditing ? (
-            <Button variant="outline" size="sm" onClick={() => setIsEditing(true)} className="bg-transparent">
+            <Button variant="outline" size="sm" onClick={() => setIsEditing(true)} className="bg-transparent hidden">
               <Pencil className="h-4 w-4 mr-2" />
               Editar
             </Button>

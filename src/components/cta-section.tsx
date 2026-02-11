@@ -34,14 +34,14 @@ export function CTASection() {
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
                 </a>
               </Button>
-              <Button
+              {/* <Button
                 asChild
                 size="lg"
                 variant="outline"
                 className="border-2 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10 h-14 px-8 bg-transparent"
               >
                 <a href="/quem-somos">Saiba mais</a>
-              </Button>
+              </Button> */}
             </div>
           </div>
 

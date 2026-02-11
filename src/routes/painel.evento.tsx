@@ -68,7 +68,7 @@ function RouteComponent() {
   console.log("atividadesFiltradas: ", atividadesFiltradas);
 
   return (
-    <div className="space-y-6 col-span-3">
+    <div className="space-y-6 col-span-4 lg:col-span-3">
       {eventoSelecionado ? (
         <div className="space-y-6">
           <Button variant="ghost" className="cursor-pointer" onClick={() => setEventoSelecionado(null)}>
@@ -141,6 +141,7 @@ function RouteComponent() {
                         hora_inicio={atividade.hora_inicio}
                         palestrantes={atividade.palestrantes}
                         data_inicio={atividade.data_inicio}
+                        hora_fim={atividade.hora_fim}
                       />
                     );
                   })

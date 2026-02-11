@@ -20,10 +20,10 @@ const navItems = linkOptions([
     to: "/palestras",
     label: "Programação",
   },
-  {
-    to: "/sub-trabalho",
-    label: "Submissão de Trabalhos",
-  },
+  // {
+  //   to: "/sub-trabalho",
+  //   label: "Submissão de Trabalhos",
+  // },
   {
     to: "/galeria",
     label: "Galeria",

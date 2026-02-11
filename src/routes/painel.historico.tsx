@@ -18,7 +18,7 @@ function RouteComponent() {
   return (
     <>
       {!compraSelecionada && (
-        <Card className="col-span-3">
+        <Card className="col-span-4 lg:col-span-3">
           <CardHeader>
             <CardTitle className="text-xl">Histórico de Compras</CardTitle>
             <p className="text-sm text-muted-foreground">Acompanhe todas as suas compras e status de pagamento</p>

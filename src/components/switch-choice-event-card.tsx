@@ -13,9 +13,10 @@ interface SwitchChoiceCardProps {
   hora_inicio: string;
   data_inicio: string;
   eixo: string;
+  hora_fim: string;
 }
 
-export function SwitchChoiceCard({ titulo, descricao, eixo, hora_inicio, palestrantes, data_inicio, documentId }: SwitchChoiceCardProps) {
+export function SwitchChoiceCard({ titulo, descricao, eixo, hora_inicio, palestrantes, data_inicio, documentId, hora_fim }: SwitchChoiceCardProps) {
   return (
     <FieldGroup className="w-full">
       <FieldLabel htmlFor={documentId}>
@@ -23,14 +24,17 @@ export function SwitchChoiceCard({ titulo, descricao, eixo, hora_inicio, palestr
           <FieldContent className="cursor-pointer">
             <div className="flex flex-col lg:flex-row">
               <div className="lg:w-48 flex-shrink-0 bg-muted p-6 flex flex-col justify-center items-center">
-                <div className="flex items-center gap-2 text-secondary font-semibold mb-1">
+                <div className="flex flex-col items-center gap-2 text-secondary font-semibold mb-1">
                   <Clock className="h-4 w-4" />
                   <span>{format(`${data_inicio}T${hora_inicio}`, "dd/MM/yyyy")}</span>
+                  <span className="leading-relaxed text-sm font-medium">
+                    {hora_inicio} até {hora_fim}
+                  </span>
                 </div>
                 <Badge className="w-fit mt-2 border-secondary/50 text-white">{eixo}</Badge>
               </div>
 
-              <div className="flex-1 p-6">
+              <div className="flex-1 p-6 space-y-2">
                 <h3 className="text-xl font-semibold text-foreground mb-2">{titulo}</h3>
                 <p className="text-muted-foreground mb-4 text-sm">{descricao}</p>
 

@@ -17,7 +17,7 @@ function RouteComponent() {
   const { user } = useAuth();
   return (
     <>
-      <Card className="col-span-3">
+      <Card className="col-span-4 lg:col-span-3">
         <CardHeader>
           <CardTitle className="text-xl">Meu Ingresso</CardTitle>
         </CardHeader>

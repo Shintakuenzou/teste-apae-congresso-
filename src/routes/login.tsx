@@ -11,6 +11,8 @@ import BgLogin from "../../public/login-bg.png";
 import { formatCPF } from "@/utils/format-cpf";
 import { useEffect } from "react";
 import { useAuth } from "@/context/auth-context";
+import { Toaster } from "@/components/ui/sonner";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
@@ -52,23 +54,23 @@ function LoginPage() {
       const cpfLimpo = formData.cpf.replace(/\D/g, "");
 
       if (cpfLimpo.length !== 11) {
-        setError("CPF inválido");
+        setError("CPF inválido. Por favor, digite o CPF corretamente para continuar.");
         setIsLoading(false);
         return;
       }
 
       if (!formData.password || formData.password.length < 6) {
-        setError("Senha inválida");
+        setError("Senha incorreta. Por favor, digite a senha correta para continuar.");
         setIsLoading(false);
         return;
       }
 
       // ✅ Fazer login
       await login(cpfLimpo, formData.password);
-
-      console.log("✅ Login concluído com sucesso!");
     } catch (err: unknown) {
       console.error("❌ Erro no login:", err);
+
+      toast.error(error, { position: "top-right" });
 
       if (err instanceof Error) {
         setError(err.message);
@@ -82,6 +84,7 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen flex">
+      <Toaster richColors />
       {/* Lado esquerdo - Imagem de fundo */}
       <div className="hidden lg:flex lg:w-1/2 xl:w-3/5 relative">
         <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${BgLogin})` }} />
@@ -140,13 +143,6 @@ function LoginPage() {
             <Card className="border-0 shadow-xl">
               <CardContent className="p-8">
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  {/* ✅ Mensagem de erro */}
-                  {error && (
-                    <div className="p-3 rounded-lg bg-red-50 border border-red-200">
-                      <p className="text-sm text-red-600">{error}</p>
-                    </div>
-                  )}
-
                   <div className="space-y-2">
                     <Label htmlFor="cpf" className="text-sm font-medium">
                       CPF

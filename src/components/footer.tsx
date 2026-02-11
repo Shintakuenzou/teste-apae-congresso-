@@ -2,6 +2,8 @@ import { Mail, Phone, MapPin } from "lucide-react";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import LogoApae from "../../public/logo-transparente.png";
 import { Link } from "@tanstack/react-router";
+import { useEvents } from "@/hooks/useEvents";
+import { formatThreeDayRange } from "@/utils/formatThreeDayRange";
 
 const socialLinks = [
   { icon: "facebook", href: "https://www.facebook.com/apaebrasil/", label: "Facebook" },
@@ -18,6 +20,9 @@ const quickLinks = [
 ];
 
 export function Footer() {
+  const { formatedDataEvento } = useEvents();
+  console.log("formatedDataEvento: ", formatedDataEvento);
+
   return (
     <footer className="bg-foreground text-background">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -97,24 +102,24 @@ export function Footer() {
 
           <div>
             <h3 className="font-semibold text-lg mb-6">Local do Evento</h3>
-            <div className="bg-background/5 rounded-xl p-5 border border-background/10">
-              <div className="font-medium mb-2">Centro de Convencoes Ulysses Guimaraes</div>
-              <p className="text-sm text-background/70 mb-4">
-                Setor de Divulgacao Cultural
-                <br />
-                Brasilia - DF
-              </p>
-              <div className="text-sm">
-                <span className="text-background/60">Data:</span>
-                <br />
-                <span className="font-medium">15 a 18 de Agosto, 2026</span>
+            {formatedDataEvento?.map((item) => (
+              <div className="bg-background/5 rounded-xl p-5 border border-background/10">
+                <div className="font-medium mb-2">{item.fields.local_evento}</div>
+                <p className="text-sm text-background/70 mb-4">
+                  {item.fields.cidade} - {item.fields.estado}
+                </p>
+                <div className="text-sm">
+                  <span className="text-background/60">Data:</span>
+                  <br />
+                  <span className="font-medium">{formatThreeDayRange(item.fields.data_inicio, item.fields.data_fim)}</span>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
         </div>
 
         <div className="py-6 border-t border-background/10">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <p className="text-sm text-background/60 text-center">2026 Federacao Nacional das APAEs. Todos os direitos reservados.</p>
           </div>
         </div>
