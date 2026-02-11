@@ -1,25 +1,25 @@
-import { fetchDataset } from "@/services/fetch-dataset";
+import { fetchDataset, type DatasetConstraint } from "@/services/fetch-dataset";
 import type { PalestranteFields } from "@/services/form-service";
 import { useQuery } from "@tanstack/react-query";
 
-export function usePalestrantes(event_id: string) {
-  console.log("event_id: ", event_id);
+export function usePalestrantes(event_id?: string) {
+  const constraints: DatasetConstraint[] = [];
+  if (event_id) {
+    constraints.push({
+      fieldName: "id_evento",
+      initialValue: event_id,
+      finalValue: event_id,
+      constraintType: "MUST",
+    });
+  }
 
   const { data: palestrantes } = useQuery({
-    queryKey: ["palestrantes", event_id],
+    queryKey: ["palestrantes"],
     queryFn: async () =>
       await fetchDataset<PalestranteFields>({
         datasetId: "cadPalestranteCN",
-        constraints: [
-          {
-            fieldName: "id_evento",
-            initialValue: event_id,
-            finalValue: event_id,
-            constraintType: "MUST",
-          },
-        ],
+        constraints,
       }),
-    enabled: !!event_id,
   });
 
   return { palestrantes };

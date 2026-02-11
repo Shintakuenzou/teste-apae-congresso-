@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/auth-context";
 import { createFileRoute } from "@tanstack/react-router";
-import { Calendar, Download, MapPin, QrCode, Ticket } from "lucide-react";
+import { Calendar, MapPin, QrCode, Ticket } from "lucide-react";
 import LogoApae from "../../public/logo-transparente.png";
 
 export const Route = createFileRoute("/painel/ingresso")({
@@ -82,14 +82,6 @@ function RouteComponent() {
                     </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Ações */}
-              <div className="flex flex-col sm:flex-row gap-3">
-                <Button className="flex-1">
-                  <Download className="h-4 w-4 mr-2" />
-                  Baixar Ingresso (PDF)
-                </Button>
               </div>
             </div>
           ) : (

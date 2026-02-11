@@ -1,26 +1,69 @@
-import { useState } from "react";
-import { format } from "date-fns";
+import { useMemo, useState } from "react";
+import { eachDayOfInterval, format, isSameDay, isWithinInterval, parseISO } from "date-fns";
 import { useLotes } from "@/hooks/useLotes";
 import { createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, Calendar, Hourglass, MapPin, ShoppingCart, Users } from "lucide-react";
+import { ArrowRight, Calendar, Clock, Filter, Hourglass, ShoppingCart, User, Users } from "lucide-react";
 import type { LoteFields } from "@/services/form-service";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { useAtividade } from "@/hooks/useAtividade";
-import { Switch } from "@/components/ui/switch";
-import { Field, FieldContent, FieldLabel } from "@/components/ui/field";
 import { Separator } from "@/components/ui/separator";
+import { useVinculo } from "@/hooks/useVinculo";
+import { useEvents } from "@/hooks/useEvents";
+import { Badge } from "@/components/ui/badge";
+import { ptBR } from "date-fns/locale";
 
 export const Route = createFileRoute("/painel/evento")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const [selectedCategory, setSelectedCategory] = useState("Todos");
   const { formatedDataLote } = useLotes();
-  const [eventoSelecionado, setEventoSelecionado] = useState<LoteFields | null>();
-
   const id_lote = formatedDataLote ? formatedDataLote[formatedDataLote.length - 1].cardId : "";
-  const { atividade } = useAtividade(id_lote.toString());
+  const [eventoSelecionado, setEventoSelecionado] = useState<LoteFields | null>();
+  const { atividades } = useAtividade(id_lote.toString());
+  const { vinculo } = useVinculo();
+
+  const { formatedDataEvento } = useEvents();
+
+  const eventoDatas = useMemo(() => {
+    if (!formatedDataEvento || formatedDataEvento.length === 0) return [];
+
+    const evento = formatedDataEvento[0];
+    const dates = eachDayOfInterval({
+      start: parseISO(`${evento.fields.data_inicio}`),
+      end: parseISO(`${evento.fields.data_fim}`),
+    });
+
+    return dates;
+  }, [formatedDataEvento]);
+
+  const [selectedDate, setSelectedDate] = useState<Date | null>(eventoDatas[0]);
+
+  const atividadeComPalestrantes = useMemo(() => {
+    if (!atividades?.items || !vinculo?.items) return [];
+
+    return atividades?.items.map((atividade) => ({ ...atividade, palestrantes: vinculo.items.filter((v) => v.id_atividade === atividade.documentid) }));
+  }, [atividades, vinculo]);
+
+  const atividadesFiltradas = useMemo(() => {
+    if (!atividadeComPalestrantes.length) return [];
+
+    return atividadeComPalestrantes.filter((atividade) => {
+      const mesmaData = selectedDate ? isWithinInterval(selectedDate, { start: `${atividade.data_inicio}`, end: `${atividade.data_fim}T${atividade.hora_fim}` }) : true;
+
+      const mesmaCategoria = selectedCategory === "Todos" || atividade.eixo === selectedCategory;
+
+      return mesmaData && mesmaCategoria;
+    });
+  }, [atividadeComPalestrantes, selectedDate, selectedCategory]);
+
+  const atividadeCategorias = useMemo(() => {
+    if (!atividadeComPalestrantes.length) return [];
+
+    return [...new Set(atividadeComPalestrantes.map((atividade) => atividade.eixo))];
+  }, [atividadeComPalestrantes]);
 
   return (
     <div className="space-y-6 col-span-3">
@@ -37,10 +80,9 @@ function RouteComponent() {
                 <div className="flex items-start justify-between gap-4 mb-2">
                   <h2 className="text-2xl font-bold text-foreground">{eventoSelecionado?.nome}</h2>
                 </div>
-                <p className="text-muted-foreground">{eventoSelecionado?.descricao}</p>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
+              {/* <div className="grid sm:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 p-4 bg-muted/50 rounded-lg">
                   <Calendar className="h-5 w-5 text-primary" />
                   <div>
@@ -57,22 +99,88 @@ function RouteComponent() {
                     <p className="font-medium">Salvador - BA</p>
                   </div>
                 </div>
+              </div> */}
+
+              <div className="flex flex-wrap gap-2 mb-8">
+                {eventoDatas?.map((data, index) => {
+                  const estaSelecionado = selectedDate ? isSameDay(data, selectedDate) : false;
+                  return (
+                    <Button
+                      key={index}
+                      variant={estaSelecionado ? "default" : "outline"}
+                      onClick={() => setSelectedDate(data)}
+                      className={`cursor-pointer ${estaSelecionado ? "bg-primary text-primary-foreground" : ""}`}
+                    >
+                      <Calendar className="h-4 w-4 mr-2" />
+                      <span className="hidden sm:inline">{format(data, "PPP", { locale: ptBR })}</span>
+                      <span className="sm:hidden">{format(data, "PPP", { locale: ptBR })}</span>
+                    </Button>
+                  );
+                })}
               </div>
 
-              <div>
-                <h3 className="font-semibold mb-3">O que esta incluso:</h3>
-                <ul className="space-y-2">
-                  {atividade?.items?.map((beneficio, index) => (
-                    <li key={index} className="flex items-center gap-2 text-muted-foreground">
-                      <Switch id="{beneficio.titulo}" />
-                      <Field orientation="horizontal" className="max-w-sm">
-                        <FieldContent>
-                          <FieldLabel htmlFor="{beneficio.titulo}">{beneficio.titulo}</FieldLabel>
-                        </FieldContent>
-                      </Field>
-                    </li>
-                  ))}
-                </ul>
+              <div className="flex flex-wrap items-center gap-2 mb-10 pb-6 border-b border-border">
+                <Filter className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm text-muted-foreground mr-2">Filtrar:</span>
+                <Badge
+                  variant={selectedCategory === "Todos" ? "default" : "outline"}
+                  className={`cursor-pointer transition-colors ${selectedCategory === "Todos" ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : "hover:bg-muted"}`}
+                  onClick={() => setSelectedCategory("Todos")}
+                >
+                  Todos
+                </Badge>
+                {atividadeCategorias.map((category) => (
+                  <Badge
+                    key={category}
+                    variant={selectedCategory === category ? "default" : "outline"}
+                    className={`cursor-pointer transition-colors ${selectedCategory === category ? "bg-secondary text-secondary-foreground hover:bg-secondary/90" : "hover:bg-muted"}`}
+                    onClick={() => setSelectedCategory(category)}
+                  >
+                    {category}
+                  </Badge>
+                ))}
+              </div>
+
+              <div className="space-y-4">
+                {atividadesFiltradas.length === 0 ? (
+                  <div className="text-center py-12">
+                    <p className="text-muted-foreground">Nenhuma atividade encontrada para este filtro.</p>
+                  </div>
+                ) : (
+                  atividadesFiltradas.map((atividade, index) => {
+                    return (
+                      <Card key={index} className="border-border hover:border-secondary/50 hover:shadow-lg transition-all duration-300 overflow-hidden">
+                        <CardContent className="p-0">
+                          <div className="flex flex-col lg:flex-row">
+                            <div className="lg:w-48 flex-shrink-0 bg-muted p-6 flex flex-col justify-center items-center">
+                              <div className="flex items-center gap-2 text-secondary font-semibold mb-1">
+                                <Clock className="h-4 w-4" />
+                                <span>{format(`${atividade.data_inicio}T${atividade.hora_inicio}`, "dd/MM/yyyy")}</span>
+                              </div>
+                              <Badge className="w-fit mt-2 border-secondary/50 text-white">{atividade.eixo}</Badge>
+                            </div>
+
+                            <div className="flex-1 p-6">
+                              <h3 className="text-xl font-semibold text-foreground mb-2">{atividade.titulo}</h3>
+                              <p className="text-muted-foreground mb-4 text-sm">{atividade.descricao}</p>
+
+                              <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                                <div className="flex items-center gap-2">
+                                  {atividade.palestrantes?.map((palestrante) => (
+                                    <div className="flex items-center gap-2">
+                                      <User className="h-4 w-4 text-secondary" />
+                                      <span>{palestrante.palestrante}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  })
+                )}
               </div>
 
               <Separator />

@@ -7,18 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { usePalestrantes } from "@/hooks/usePalestrantes";
 import { Instagram, Linkedin } from "lucide-react";
 import { EmptyState } from "@/components/empty-state";
-import { useEvents } from "@/hooks/useEvents";
 
 export const Route = createFileRoute("/palestrantes")({
   component: PalestrantesPage,
 });
 
 function PalestrantesPage() {
-  const { formatedDataEvento } = useEvents();
-
-  const event_id = formatedDataEvento ? formatedDataEvento[formatedDataEvento.length - 1].cardId.toString() : "";
-
-  const { palestrantes } = usePalestrantes(event_id);
+  const { palestrantes } = usePalestrantes();
+  console.log("palestrantes: ", palestrantes);
 
   return (
     <main className="min-h-screen bg-background">

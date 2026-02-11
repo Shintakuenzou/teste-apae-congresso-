@@ -64,11 +64,6 @@ function PainelPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold text-foreground">Minha Conta</h1>
-          <p className="text-muted-foreground mt-1">Gerencie seus dados e acompanhe sua inscrição</p>
-        </div>
-
         <div className="grid lg:grid-cols-4 gap-6">
           {/* Menu Lateral */}
           <div className="lg:col-span-1">

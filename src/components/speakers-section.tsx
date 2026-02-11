@@ -12,11 +12,12 @@ import { useEvents } from "@/hooks/useEvents";
 
 export function SpeakersSection() {
   const { formatedDataEvento } = useEvents();
-  console.log("formatedDataEvento: ", formatedDataEvento);
 
   const event_id = formatedDataEvento ? formatedDataEvento[formatedDataEvento.length - 1].cardId.toString() : "";
 
   const { palestrantes } = usePalestrantes(event_id);
+
+  console.log("palestrantes: ", palestrantes);
 
   const [selectedImage, setSelectedImage] = useState<number | null>(null);
 

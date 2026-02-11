@@ -1,6 +1,7 @@
 import type { AxiosError } from "axios";
 import { axiosApi } from "./api-root";
 import axios from "axios";
+import type { VinculoFields } from "@/hooks/useVinculo";
 
 interface SendParticipantData {
   documentId: string;
@@ -70,6 +71,7 @@ export interface EventoFields {
   pais: string;
   tipo_evento: string;
   titulo: string;
+  datas: string[];
 }
 
 export interface LoteFields {
@@ -89,8 +91,10 @@ export interface LoteFields {
 }
 
 export interface ActivityFields {
+  documentid: string;
   anonymization_date: string | null;
   anonymization_user_id: string | null;
+  cardid: string;
   criado_em: string;
   criado_por: string;
   descricao: string;
@@ -104,6 +108,12 @@ export interface ActivityFields {
   titulo: string;
   url_foto: string;
   vagas_disponiveis: string;
+  palestrantes: VinculoFields[];
+  hora_fim: string;
+  hora_inicio: string;
+  data_fim: string;
+  data_inicio: string;
+  eixo: string;
 }
 
 export interface Palestrante<T = PalestranteFields> {

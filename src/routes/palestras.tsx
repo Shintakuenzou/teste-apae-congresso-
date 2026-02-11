@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -8,205 +8,60 @@ import { Badge } from "@/components/ui/badge";
 
 import { Link } from "@tanstack/react-router";
 import { Clock, User, MapPin, Calendar, ArrowRight, Filter } from "lucide-react";
+import { useAtividade } from "@/hooks/useAtividade";
+import { useVinculo } from "@/hooks/useVinculo";
+import { useEvents } from "@/hooks/useEvents";
+import { eachDayOfInterval, format, isSameDay, isWithinInterval, parseISO } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 export const Route = createFileRoute("/palestras")({
   component: PalestrasPage,
 });
 
-const days = [
-  { id: "dia1", label: "29 de Novembro", shortLabel: "Dia 1" },
-  { id: "dia2", label: "30 de Novembro", shortLabel: "Dia 2" },
-  { id: "dia3", label: "01 de Dezembro", shortLabel: "Dia 3" },
-];
-
-const categories = ["Todos", "Cerimonia", "Palestra Magna", "Mesa de rodas"];
-
-const schedule: Record<
-  string,
-  Array<{
-    time: string;
-    title: string;
-    speaker: string;
-    location: string;
-    category: string;
-    description: string;
-  }>
-> = {
-  dia1: [
-    {
-      time: "08:00 - 09:00",
-      title: "Credenciamento e Recepcao",
-      speaker: "Equipe de Organizacao",
-      location: "Hall Principal",
-      category: "Credenciamento",
-      description: "Retirada de crachas e materiais do evento.",
-    },
-    {
-      time: "09:00 - 10:30",
-      title: "Abertura Oficial do Congresso",
-      speaker: "Presidente da Federacao Nacional das APAEs",
-      location: "Auditorio Principal",
-      category: "Cerimonia",
-      description: "Cerimonia de abertura com autoridades e representantes do movimento apaeano.",
-    },
-    {
-      time: "11:00 - 12:30",
-      title: "Politicas Publicas e Inclusao Social",
-      speaker: "Ministerio da Cidadania",
-      location: "Auditorio Principal",
-      category: "Palestra Magna",
-      description: "Panorama das politicas publicas para pessoas com deficiencia no Brasil.",
-    },
-    {
-      time: "14:00 - 15:30",
-      title: "Inovacoes em Educacao Especial",
-      speaker: "Dra. Maria Santos",
-      location: "Sala 1",
-      category: "Palestra",
-      description: "Novas metodologias e tecnologias aplicadas a educacao especial.",
-    },
-    {
-      time: "14:00 - 15:30",
-      title: "Gestao de Recursos em APAEs",
-      speaker: "Conselho Fiscal Fenapaes",
-      location: "Sala 2",
-      category: "Workshop",
-      description: "Boas praticas de gestao financeira e captacao de recursos.",
-    },
-    {
-      time: "16:00 - 17:30",
-      title: "Tecnologias Assistivas: Tendencias e Aplicacoes",
-      speaker: "Prof. Joao Silva",
-      location: "Sala 1",
-      category: "Workshop",
-      description: "Demonstracao pratica de tecnologias assistivas para inclusao.",
-    },
-  ],
-  dia2: [
-    {
-      time: "09:00 - 10:30",
-      title: "Saude Mental e Bem-estar",
-      speaker: "Dr. Carlos Mendes",
-      location: "Auditorio Principal",
-      category: "Palestra",
-      description: "Abordagens integradas para saude mental de pessoas com deficiencia.",
-    },
-    {
-      time: "11:00 - 12:30",
-      title: "Empregabilidade e Inclusao no Mercado de Trabalho",
-      speaker: "Ana Paula Ferreira",
-      location: "Auditorio Principal",
-      category: "Palestra Magna",
-      description: "Cases de sucesso e estrategias para inclusao profissional.",
-    },
-    {
-      time: "14:00 - 15:30",
-      title: "Praticas Pedagogicas Inclusivas",
-      speaker: "Profa. Lucia Oliveira",
-      location: "Sala 1",
-      category: "Workshop",
-      description: "Metodologias ativas para educacao inclusiva.",
-    },
-    {
-      time: "14:00 - 15:30",
-      title: "Comunicacao Alternativa",
-      speaker: "Fonoaudiologa Rita Campos",
-      location: "Sala 2",
-      category: "Workshop",
-      description: "Tecnicas e recursos de comunicacao alternativa aumentativa.",
-    },
-    {
-      time: "16:00 - 17:30",
-      title: "Direitos da Pessoa com Deficiencia",
-      speaker: "Dr. Roberto Almeida",
-      location: "Auditorio Principal",
-      category: "Palestra",
-      description: "Aspectos juridicos e defesa de direitos.",
-    },
-  ],
-  dia3: [
-    {
-      time: "09:00 - 10:30",
-      title: "Familia e Rede de Apoio",
-      speaker: "Psicologa Fernanda Costa",
-      location: "Auditorio Principal",
-      category: "Palestra",
-      description: "O papel da familia no desenvolvimento e inclusao social.",
-    },
-    {
-      time: "11:00 - 12:30",
-      title: "Gestao de APAEs: Desafios e Solucoes",
-      speaker: "Conselho Administrativo",
-      location: "Auditorio Principal",
-      category: "Painel",
-      description: "Debate sobre gestao, sustentabilidade e inovacao nas APAEs.",
-    },
-    {
-      time: "14:00 - 15:30",
-      title: "Arte e Cultura como Ferramentas de Inclusao",
-      speaker: "Artistas Convidados",
-      location: "Espaco Cultural",
-      category: "Apresentacao",
-      description: "Apresentacoes artisticas e debate sobre arte inclusiva.",
-    },
-    {
-      time: "16:00 - 17:30",
-      title: "Esporte Paralimpico: Historias de Superacao",
-      speaker: "Atletas Paralimpicos",
-      location: "Auditorio Principal",
-      category: "Painel",
-      description: "Depoimentos e reflexoes sobre esporte e inclusao.",
-    },
-  ],
-  dia4: [
-    {
-      time: "09:00 - 10:30",
-      title: "Acessibilidade Digital",
-      speaker: "Especialistas em TI",
-      location: "Sala 1",
-      category: "Workshop",
-      description: "Como tornar ambientes digitais acessiveis para todos.",
-    },
-    {
-      time: "09:00 - 10:30",
-      title: "Envelhecimento e Deficiencia",
-      speaker: "Dra. Patricia Lima",
-      location: "Sala 2",
-      category: "Palestra",
-      description: "Desafios e cuidados no envelhecimento de pessoas com deficiencia.",
-    },
-    {
-      time: "11:00 - 12:30",
-      title: "Futuro da Inclusao no Brasil",
-      speaker: "Painel de Especialistas",
-      location: "Auditorio Principal",
-      category: "Painel",
-      description: "Perspectivas e tendencias para os proximos anos.",
-    },
-    {
-      time: "14:00 - 15:30",
-      title: "Assembleia Geral da Federacao",
-      speaker: "Membros Federados",
-      location: "Auditorio Principal",
-      category: "Assembleia",
-      description: "Deliberacoes e eleicoes da Fenapaes.",
-    },
-    {
-      time: "16:00 - 17:30",
-      title: "Encerramento e Premiacoes",
-      speaker: "Diretoria Executiva",
-      location: "Auditorio Principal",
-      category: "Cerimonia",
-      description: "Cerimonia de encerramento com premiacoes e agradecimentos.",
-    },
-  ],
-};
-
 function PalestrasPage() {
-  const [selectedDay, setSelectedDay] = useState("dia1");
   const [selectedCategory, setSelectedCategory] = useState("Todos");
 
-  const filteredSchedule = schedule[selectedDay].filter((event) => selectedCategory === "Todos" || event.category === selectedCategory);
+  const { atividades } = useAtividade();
+  const { vinculo } = useVinculo();
+  const { formatedDataEvento } = useEvents();
+
+  const eventoDatas = useMemo(() => {
+    if (!formatedDataEvento || formatedDataEvento.length === 0) return [];
+
+    const evento = formatedDataEvento[0];
+    const dates = eachDayOfInterval({
+      start: parseISO(`${evento.fields.data_inicio}`),
+      end: parseISO(`${evento.fields.data_fim}`),
+    });
+
+    return dates;
+  }, [formatedDataEvento]);
+
+  const [selectedDate, setSelectedDate] = useState<Date | null>(eventoDatas[0]);
+
+  const atividadeComPalestrantes = useMemo(() => {
+    if (!atividades?.items || !vinculo?.items) return [];
+
+    return atividades?.items.map((atividade) => ({ ...atividade, palestrantes: vinculo.items.filter((v) => v.id_atividade === atividade.documentid) }));
+  }, [atividades, vinculo]);
+
+  const atividadesFiltradas = useMemo(() => {
+    if (!atividadeComPalestrantes.length) return [];
+
+    return atividadeComPalestrantes.filter((atividade) => {
+      const mesmaData = selectedDate ? isWithinInterval(selectedDate, { start: `${atividade.data_inicio}`, end: `${atividade.data_fim}T${atividade.hora_fim}` }) : true;
+
+      const mesmaCategoria = selectedCategory === "Todos" || atividade.eixo === selectedCategory;
+
+      return mesmaData && mesmaCategoria;
+    });
+  }, [atividadeComPalestrantes, selectedDate, selectedCategory]);
+
+  const atividadeCategorias = useMemo(() => {
+    if (!atividadeComPalestrantes.length) return [];
+
+    return [...new Set(atividadeComPalestrantes.map((atividade) => atividade.eixo))];
+  }, [atividadeComPalestrantes]);
 
   return (
     <main className="min-h-screen">
@@ -227,25 +82,28 @@ function PalestrasPage() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           {/* Day Tabs */}
           <div className="flex flex-wrap gap-2 mb-8">
-            {days.map((day) => (
-              <Button
-                key={day.id}
-                variant={selectedDay === day.id ? "default" : "outline"}
-                onClick={() => setSelectedDay(day.id)}
-                className={`cursor-pointer ${selectedDay === day.id ? "bg-primary text-primary-foreground" : ""}`}
-              >
-                <Calendar className="h-4 w-4 mr-2" />
-                <span className="hidden sm:inline">{day.label}</span>
-                <span className="sm:hidden">{day.shortLabel}</span>
-              </Button>
-            ))}
+            {eventoDatas?.map((data, index) => {
+              const estaSelecionado = selectedDate ? isSameDay(data, selectedDate) : false;
+              return (
+                <Button
+                  key={index}
+                  variant={estaSelecionado ? "default" : "outline"}
+                  onClick={() => setSelectedDate(data)}
+                  className={`cursor-pointer ${estaSelecionado ? "bg-primary text-primary-foreground" : ""}`}
+                >
+                  <Calendar className="h-4 w-4 mr-2" />
+                  <span className="hidden sm:inline">{format(data, "PPP", { locale: ptBR })}</span>
+                  <span className="sm:hidden">{format(data, "PPP", { locale: ptBR })}</span>
+                </Button>
+              );
+            })}
           </div>
 
           {/* Category Filter */}
           <div className="flex flex-wrap items-center gap-2 mb-10 pb-6 border-b border-border">
             <Filter className="h-4 w-4 text-muted-foreground" />
             <span className="text-sm text-muted-foreground mr-2">Filtrar:</span>
-            {categories.map((category) => (
+            {atividadeCategorias.map((category) => (
               <Badge
                 key={category}
                 variant={selectedCategory === category ? "default" : "outline"}
@@ -259,44 +117,50 @@ function PalestrasPage() {
 
           {/* Schedule List */}
           <div className="space-y-4">
-            {filteredSchedule.length === 0 ? (
+            {atividadesFiltradas.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">Nenhuma atividade encontrada para este filtro.</p>
               </div>
             ) : (
-              filteredSchedule.map((event, index) => (
-                <Card key={index} className="border-border hover:border-secondary/50 hover:shadow-lg transition-all duration-300 overflow-hidden">
-                  <CardContent className="p-0">
-                    <div className="flex flex-col lg:flex-row">
-                      <div className="lg:w-48 flex-shrink-0 bg-muted p-6 flex flex-col justify-center">
-                        <div className="flex items-center gap-2 text-secondary font-semibold mb-1">
-                          <Clock className="h-4 w-4" />
-                          <span>{event.time}</span>
-                        </div>
-                        <Badge variant="outline" className="w-fit mt-2 border-secondary/50 text-secondary">
-                          {event.category}
-                        </Badge>
-                      </div>
-
-                      <div className="flex-1 p-6">
-                        <h3 className="text-xl font-semibold text-foreground mb-2">{event.title}</h3>
-                        <p className="text-muted-foreground mb-4">{event.description}</p>
-
-                        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-2">
-                            <User className="h-4 w-4 text-secondary" />
-                            <span>{event.speaker}</span>
+              atividadesFiltradas.map((atividade, index) => {
+                return (
+                  <Card key={index} className="border-border hover:border-secondary/50 hover:shadow-lg transition-all duration-300 overflow-hidden">
+                    <CardContent className="p-0">
+                      <div className="flex flex-col lg:flex-row">
+                        <div className="lg:w-48 flex-shrink-0 bg-muted p-6 flex flex-col justify-center">
+                          <div className="flex items-center gap-2 text-secondary font-semibold mb-1">
+                            <Clock className="h-4 w-4" />
+                            <span>{format(`${atividade.data_inicio}T${atividade.hora_inicio}`, "dd/MM/yyyy")}</span>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4 text-secondary" />
-                            <span>{event.location}</span>
+                          <Badge variant="outline" className="w-fit mt-2 border-secondary/50 text-secondary">
+                            {atividade.eixo}
+                          </Badge>
+                        </div>
+
+                        <div className="flex-1 p-6">
+                          <h3 className="text-xl font-semibold text-foreground mb-2">{atividade.titulo}</h3>
+                          <p className="text-muted-foreground mb-4 text-sm">{atividade.descricao}</p>
+
+                          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+                            <div className="flex items-center gap-2">
+                              {atividade.palestrantes?.map((palestrante) => (
+                                <div className="flex items-center gap-2">
+                                  <User className="h-4 w-4 text-secondary" />
+                                  <span>{palestrante.palestrante}</span>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <MapPin className="h-4 w-4 text-secondary" />
+                              <span>{atividade.sala}</span>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
+                    </CardContent>
+                  </Card>
+                );
+              })
             )}
           </div>
 

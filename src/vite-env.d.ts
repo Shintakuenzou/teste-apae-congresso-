@@ -11,6 +11,7 @@ interface ImportMetaEnv {
   readonly VITE_FORM_EVENTO?: string;
   readonly VITE_FORM_LOTES?: string;
   readonly VITE_FORM_ATIVIDADE?: string;
+  readonly VITE_FORM_VINCULO_PALESTRANTE_ATIVIDADE?: string;
 }
 interface ImportMeta {
   readonly env: ImportMetaEnv;
