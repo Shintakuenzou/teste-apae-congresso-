@@ -8,7 +8,7 @@ export interface User {
   nome: string;
   sobrenome: string;
   email: string;
-  dataNascimento: string;
+  data_nascimento: string;
   uf: string;
   municipio: string;
   telefone: string;
@@ -75,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             nome: userData.nome as string,
             sobrenome: userData.sobrenome as string,
             email: userData.email as string,
-            dataNascimento: userData.data_nascimento as string,
+            data_nascimento: userData.data_nascimento as string,
             uf: userData.uf as string,
             municipio: userData.municipio as string,
             telefone: userData.telefone_contato as string,
