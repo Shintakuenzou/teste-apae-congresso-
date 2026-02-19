@@ -21,7 +21,7 @@ export const Route = createFileRoute("/login")({
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+
   const [formData, setFormData] = useState({
     cpf: "",
     password: "",
@@ -47,35 +47,27 @@ function LoginPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setError("");
 
     try {
       // ✅ Validações
       const cpfLimpo = formData.cpf.replace(/\D/g, "");
 
       if (cpfLimpo.length !== 11) {
-        setError("CPF inválido. Por favor, digite o CPF corretamente para continuar.");
         setIsLoading(false);
-        return;
+        throw new Error("CPF inválido. Por favor, digite o CPF corretamente para continuar.");
       }
 
       if (!formData.password || formData.password.length < 6) {
-        setError("Senha incorreta. Por favor, digite a senha correta para continuar.");
         setIsLoading(false);
-        return;
+        throw new Error("Senha incorreta. Por favor, digite a senha correta para continuar.");
       }
 
       // ✅ Fazer login
       await login(cpfLimpo, formData.password);
-    } catch (err: unknown) {
-      console.error("❌ Erro no login:", err);
-
-      toast.error(error, { position: "top-right" });
-
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("Erro desconhecido ao fazer login");
+    } catch (error: unknown) {
+      console.error("❌ Erro no login:", error);
+      if (error instanceof Error) {
+        toast.error(error.message, { position: "top-right" });
       }
     } finally {
       setIsLoading(false);

@@ -41,7 +41,13 @@ function RouteComponent() {
     return dates;
   }, [formatedDataEvento]);
 
-  const [selectedDate, setSelectedDate] = useState<Date | null>(eventoDatas[0]);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(() => {
+    if (!eventoDatas[0]) {
+      return null;
+    }
+
+    return eventoDatas[0];
+  });
 
   const atividadeComPalestrantes = useMemo(() => {
     if (!atividades?.items || !vinculo?.items) return [];
@@ -66,9 +72,8 @@ function RouteComponent() {
 
     return [...new Set(atividadeComPalestrantes.map((atividade) => atividade.eixo))];
   }, [atividadeComPalestrantes]);
-  console.log("atividadesFiltradas: ", atividadesFiltradas);
 
-  const isSelectDate = selectedDate ? selectedDate : "";
+  console.log("selectedDate: ", selectedDate, eventoDatas.length);
 
   return (
     <div className="space-y-6 col-span-4 lg:col-span-3">
@@ -136,7 +141,7 @@ function RouteComponent() {
                   atividadesFiltradas.map((atividade, index) => {
                     return (
                       <div key={atividade.documentid}>
-                        {isSelectDate ? (
+                        {eventoDatas.length > 0 ? (
                           <SwitchChoiceCard
                             key={index}
                             titulo={atividade.titulo}
@@ -147,7 +152,7 @@ function RouteComponent() {
                             palestrantes={atividade.palestrantes}
                             data_inicio={atividade.data_inicio}
                             hora_fim={atividade.hora_fim}
-                            eventoDatas={isSelectDate}
+                            eventoDatas={eventoDatas}
                           />
                         ) : (
                           <SkeletonCard />

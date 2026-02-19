@@ -60,7 +60,7 @@ function RouteComponent() {
             </p>
           </div>
           {!isEditing ? (
-            <Button variant="outline" size="sm" onClick={() => setIsEditing(true)} className="bg-transparent hidden">
+            <Button variant="outline" size="sm" onClick={() => setIsEditing(true)} className="bg-transparent">
               <Pencil className="h-4 w-4 mr-2" />
               Editar
             </Button>

@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, ExternalLink } from "lucide-react";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import LogoApae from "../../public/logo-transparente.png";
 import { Link } from "@tanstack/react-router";
@@ -12,115 +12,143 @@ const socialLinks = [
   { icon: "linkedin", href: "https://www.linkedin.com/company/apaebrasil/posts/?feedView=all", label: "LinkedIn" },
 ];
 
-const quickLinks = [
-  { label: "Home", href: "/" },
-  { label: "Quem Somos", href: "/quem-somos" },
-  { label: "Palestras", href: "/palestras" },
-  { label: "Inscricao", href: "/inscricao" },
-];
+/* ─── Card wrapper padronizado ───────────────────────────────────── */
+function FooterCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <div className={`bg-background/5 border border-background/10 rounded-2xl p-6 flex flex-col gap-5 ${className}`}>{children}</div>;
+}
 
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return <p className="text-xs font-semibold uppercase tracking-widest text-secondary/80 text-center">{children}</p>;
+}
+
+/* ─── Footer ─────────────────────────────────────────────────────── */
 export function Footer() {
   const { formatedDataEvento } = useEvents();
 
   return (
     <footer className="bg-foreground text-background">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="py-16 grid md:grid-cols-2 lg:grid-cols-4 gap-12">
-          <div className="lg:col-span-1">
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 flex items-center justify-center">
-                <img src={LogoApae} className="size-14 object-cover rounded-full p-1" alt="logo apae" />
-              </div>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+        {/* ── Grade principal ── */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {/* Card 1 – Identidade */}
+          <FooterCard className="lg:col-span-1 justify-between">
+            {/* Logo + nome */}
+            <div className="flex items-center gap-3 justify-center">
+              <img src={LogoApae} className="w-12 h-12 object-cover rounded-full ring-2 ring-background/20 p-0.5 bg-background/10 flex-shrink-0" alt="Logo APAE" />
             </div>
-            <p className="text-background/70 text-sm leading-relaxed mb-6">
+
+            {/* Tagline */}
+            <p className="text-sm text-background/65 leading-relaxed text-justify flex">
               O maior evento de inclusão social do Brasil. Transformando vidas por meio da educação, da saúde e da cidadania.
             </p>
-            <div className="flex gap-3">
-              {socialLinks.map((social, index) => (
-                <Link
-                  key={index}
-                  to={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 bg-background/10 hover:bg-secondary rounded-full flex items-center justify-center transition-colors group"
-                  aria-label={social.label}
-                >
-                  <DynamicIcon name={social.icon as IconName} className="h-5 w-5 group-hover:text-secondary-foreground transition-colors" />
-                </Link>
-              ))}
-            </div>
-          </div>
 
-          <div>
-            <h3 className="font-semibold text-lg mb-6">Links Rapidos</h3>
-            <ul className="space-y-3">
-              {quickLinks.map((link, index) => (
-                <li key={index}>
-                  <Link to={link.href} className="text-background/70 hover:text-secondary transition-colors text-sm">
-                    {link.label}
+            {/* Redes sociais */}
+            <div className="flex justify-center flex-col items-center">
+              <SectionLabel>Redes Sociais</SectionLabel>
+              <div className="flex gap-2 mt-3">
+                {socialLinks.map((social) => (
+                  <Link
+                    key={social.label}
+                    to={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={social.label}
+                    className="w-9 h-9 rounded-xl bg-background/10 hover:bg-secondary hover:text-secondary-foreground flex items-center justify-center transition-all duration-200 hover:scale-105"
+                  >
+                    <DynamicIcon name={social.icon as IconName} className="h-4 w-4" />
                   </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-6">Contato</h3>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3">
-                <Mail className="h-5 w-5 text-secondary mt-0.5 flex-shrink-0" />
-                <div>
-                  <div className="text-sm text-background/70">E-mail</div>
-                  <a href="mailto:contato@nebus.com.br" className="text-sm hover:text-secondary transition-colors">
-                    fenapaes@apaebrasil.org.br
-                  </a>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <Phone className="h-5 w-5 text-secondary mt-0.5 flex-shrink-0" />
-                <div>
-                  <div className="text-sm text-background/70">Telefone</div>
-                  <a href="tel:+556133211234" className="text-sm hover:text-secondary transition-colors">
-                    (61)3224-9922
-                  </a>
-                </div>
-              </li>
-              <li className="flex items-start gap-3">
-                <MapPin className="h-5 w-5 text-secondary mt-0.5 flex-shrink-0" />
-                <div>
-                  <div className="text-sm text-background/70">Endereco</div>
-                  <span className="text-sm">
-                    SDS Venâncio IV - Cobertura - CEP: 70393-903
-                    <br />
-                    Brasília - Distrito Federal
-                  </span>
-                </div>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h3 className="font-semibold text-lg mb-6">Local do Evento</h3>
-            {formatedDataEvento?.map((item) => (
-              <div className="bg-background/5 rounded-xl p-5 border border-background/10">
-                <div className="font-medium mb-2">{item.fields.local_evento}</div>
-                <p className="text-sm text-background/70 mb-4">
-                  {item.fields.cidade} - {item.fields.estado}
-                </p>
-                <div className="text-sm">
-                  <span className="text-background/60">Data:</span>
-                  <br />
-                  <span className="font-medium">{formatThreeDayRangeSimple(item.fields.data_inicio, item.fields.data_fim)}</span>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          </FooterCard>
+
+          {/* Card 2 – Contato */}
+          <FooterCard>
+            <SectionLabel>Contato</SectionLabel>
+
+            <ul className="flex flex-col gap-4">
+              {/* E-mail */}
+              <li>
+                <div className="flex items-center gap-2 mb-1">
+                  <Mail className="h-4 w-4 text-secondary flex-shrink-0" />
+                  <span className="text-xs text-background/50 uppercase tracking-wide font-medium">E-mail</span>
+                </div>
+                <a
+                  href="mailto:fenapaes@apaebrasil.org.br"
+                  className="text-sm hover:text-secondary transition-colors underline underline-offset-2 decoration-background/20 hover:decoration-secondary pl-6"
+                >
+                  fenapaes@apaebrasil.org.br
+                </a>
+              </li>
+
+              {/* Telefone */}
+              <li className="border-t border-background/10 pt-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <Phone className="h-4 w-4 text-secondary flex-shrink-0" />
+                  <span className="text-xs text-background/50 uppercase tracking-wide font-medium">Telefone</span>
+                </div>
+                <a href="tel:+556132249922" className="text-sm hover:text-secondary transition-colors pl-6">
+                  (61) 3224-9922
+                </a>
+              </li>
+
+              {/* Endereço */}
+              {/* <li className="border-t border-background/10 pt-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <MapPin className="h-4 w-4 text-secondary flex-shrink-0" />
+                  <span className="text-xs text-background/50 uppercase tracking-wide font-medium">Endereço</span>
+                </div>
+                <address className="not-italic text-sm text-background/75 leading-relaxed pl-6">
+                  SDS Venâncio IV — Cobertura
+                  <br />
+                  CEP: 70393-903
+                  <br />
+                  Brasília — Distrito Federal
+                </address>
+              </li> */}
+            </ul>
+          </FooterCard>
+
+          {/* Card 3 – Local do Evento */}
+          <FooterCard>
+            <SectionLabel>Local do Evento</SectionLabel>
+
+            {formatedDataEvento?.length ? (
+              <div className="flex flex-col gap-4">
+                {formatedDataEvento.map((item, index) => (
+                  <div key={index} className="bg-background/5 border border-background/10 rounded-xl p-4 flex flex-col gap-3">
+                    {/* Nome do local */}
+                    <p className="font-semibold text-sm leading-snug">{item.fields.local_evento}</p>
+
+                    {/* Cidade/Estado */}
+                    <div className="flex items-center gap-1.5 text-background/60 text-xs">
+                      <MapPin className="h-3.5 w-3.5 flex-shrink-0" />
+                      <span>
+                        {item.fields.cidade} — {item.fields.estado}
+                      </span>
+                    </div>
+
+                    {/* Data */}
+                    <div className="border-t border-background/10 pt-3">
+                      <p className="text-xs text-background/50 mb-0.5 uppercase tracking-wide font-medium">Data</p>
+                      <p className="text-sm font-semibold text-secondary">{formatThreeDayRangeSimple(item.fields.data_inicio, item.fields.data_fim)}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-background/40 italic">Nenhum evento cadastrado.</p>
+            )}
+          </FooterCard>
         </div>
 
-        <div className="py-6 border-t border-background/10">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <p className="text-sm text-background/60 text-center">2026 Federacao Nacional das APAEs. Todos os direitos reservados.</p>
-          </div>
+        {/* ── Rodapé inferior ── */}
+        <div className="mt-10 pt-6 border-t border-background/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-background/40">
+          <p>© {new Date().getFullYear()} Federação Nacional das APAEs. Todos os direitos reservados.</p>
+          <p className="flex items-center gap-1">
+            Desenvolvido pela Equipe de TI da Apae Brasil
+            <ExternalLink className="h-3 w-3 opacity-60" />
+          </p>
         </div>
       </div>
     </footer>

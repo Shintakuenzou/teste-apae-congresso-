@@ -15,7 +15,7 @@ export const Route = createFileRoute("/painel")({
 
     if (location.pathname == "/painel" || location.pathname === "/painel/") {
       throw redirect({
-        to: "/painel/data",
+        to: "/painel/evento",
         replace: true,
       });
     }
@@ -71,19 +71,6 @@ function PainelPage() {
               <CardContent className="p-2">
                 <nav className="space-y-1">
                   <Link
-                    to="/painel/data"
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors hover:bg-muted"
-                    activeProps={{
-                      className: "bg-zinc-500/20 font-bold",
-                    }}
-                    activeOptions={{
-                      exact: true,
-                    }}
-                  >
-                    <User className="h-5 w-5" />
-                    <span className="font-medium">Dados Cadastrais</span>
-                  </Link>
-                  <Link
                     to="/painel/evento"
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors hover:bg-muted"
                     activeProps={{
@@ -96,6 +83,20 @@ function PainelPage() {
                     <ShoppingCart className="h-5 w-5" />
                     <span className="font-medium">Comprar Eventos</span>
                   </Link>
+                  <Link
+                    to="/painel/data"
+                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors hover:bg-muted"
+                    activeProps={{
+                      className: "bg-zinc-500/20 font-bold",
+                    }}
+                    activeOptions={{
+                      exact: true,
+                    }}
+                  >
+                    <User className="h-5 w-5" />
+                    <span className="font-medium">Dados Cadastrais</span>
+                  </Link>
+
                   <Link
                     to="/painel/historico"
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors hover:bg-muted"

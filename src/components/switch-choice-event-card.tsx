@@ -1,7 +1,7 @@
 import { Field, FieldContent, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import type { VinculoFields } from "@/hooks/useVinculo";
-import { format } from "date-fns";
+import { format, type EachDayOfIntervalResult } from "date-fns";
 import { Clock, User } from "lucide-react";
 import { Badge } from "./ui/badge";
 
@@ -14,11 +14,17 @@ interface SwitchChoiceCardProps {
   data_inicio: string;
   eixo: string;
   hora_fim: string;
-  eventoDatas: Date | null;
+  eventoDatas: EachDayOfIntervalResult<
+    {
+      start: Date;
+      end: Date;
+    },
+    undefined
+  >;
 }
 
 export function SwitchChoiceCard({ titulo, descricao, eixo, hora_inicio, palestrantes, documentId, hora_fim, eventoDatas }: SwitchChoiceCardProps) {
-  const isSelectDate = eventoDatas ? eventoDatas : "";
+  console.log("eventoDatas: ", eventoDatas);
 
   return (
     <FieldGroup className="w-full">
@@ -29,7 +35,7 @@ export function SwitchChoiceCard({ titulo, descricao, eixo, hora_inicio, palestr
               <div className="lg:w-48 flex-shrink-0 bg-muted p-6 flex flex-col justify-center items-center">
                 <div className="flex flex-col items-center gap-2 text-secondary font-semibold mb-1">
                   <Clock className="h-4 w-4" />
-                  <span>{format(isSelectDate, "dd/MM/yyyy")}</span>
+                  <span>{format(eventoDatas[0], "dd/MM/yyyy")}</span>
                   <span className="leading-relaxed text-sm font-medium">
                     {hora_inicio} até {hora_fim}
                   </span>
