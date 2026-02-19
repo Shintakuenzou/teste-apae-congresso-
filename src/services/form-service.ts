@@ -261,16 +261,10 @@ export async function handleUpdateFormParticipant({
     throw new Error("documentId é obrigatório e não pode ser undefined");
   }
 
-  console.log("values: ", values);
-
   try {
     const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards/${cardId}`;
 
     const url = import.meta.env.DEV ? fluigPath : `?endpoint=${encodeURIComponent(fluigPath)}&method=PUT`;
-
-    console.log("📤 Enviando PUT para:", url);
-    console.log("📤 documentId:", documentId);
-    console.log("📤 cardId:", cardId);
 
     const response = await axiosApi.put<{ activeVersion: boolean; cardId: number; children: []; companyId: number; parentDocumentId: number; values: [] }>(url, { values });
 

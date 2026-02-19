@@ -25,16 +25,16 @@ function RouteComponent() {
   const handleSave = async () => {
     setIsSaving(true);
 
-    const isPutValueFormData = formData ? formData : "";
-
-    const formatedPutFormData = Object.entries(isPutValueFormData).map(([key, value]) => {
-      return {
-        fieldId: key,
-        value: value,
-      };
-    });
-
     try {
+      const isPutValueFormData = formData ? formData : "";
+
+      const formatedPutFormData = Object.entries(isPutValueFormData).map(([key, value]) => {
+        return {
+          fieldId: key,
+          value: value,
+        };
+      });
+
       const updateResponse = await handleUpdateFormParticipant({
         documentId: import.meta.env.VITE_FORM_PARTICIPANTE as string,
         cardId: formData?.documentid,
@@ -43,9 +43,9 @@ function RouteComponent() {
 
       console.log(updateResponse);
 
-      localStorage.setItem("user", JSON.stringify(formData));
-
-      setIsEditing(false);
+      if (updateResponse && updateResponse.values.length > 0) {
+        setIsEditing(false);
+      }
     } catch (error) {
       console.error("Erro ao salvar:", error);
     } finally {
