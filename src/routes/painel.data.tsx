@@ -23,29 +23,25 @@ function RouteComponent() {
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSave = async () => {
+    if (!formData?.cardid) {
+      console.error("cardid não encontrado no usuário:", formData);
+      return;
+    }
+
     setIsSaving(true);
-    console.log("formData " + formData);
-    console.log("formData!.documentid " + formData!.documentid);
-
     try {
-      const isPutValueFormData = formData ? formData : "";
-
-      const formatedPutFormData = Object.entries(isPutValueFormData).map(([key, value]) => {
-        return {
-          fieldId: key,
-          value: value,
-        };
-      });
+      const formatedPutFormData = Object.entries(formData).map(([key, value]) => ({
+        fieldId: key,
+        value: value as string,
+      }));
 
       const updateResponse = await handleUpdateFormParticipant({
         documentId: import.meta.env.VITE_FORM_PARTICIPANTE as string,
-        cardId: formData!.documentid,
-        values: [...formatedPutFormData],
+        cardId: formData.cardid, // ✅ campo correto
+        values: formatedPutFormData,
       });
 
-      console.log(updateResponse);
-
-      if (updateResponse && updateResponse.values.length > 0) {
+      if (updateResponse?.values?.length > 0) {
         setIsEditing(false);
       }
     } catch (error) {
