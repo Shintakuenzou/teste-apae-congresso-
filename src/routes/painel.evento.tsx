@@ -142,6 +142,7 @@ function RouteComponent() {
                         palestrantes={atividade.palestrantes}
                         data_inicio={atividade.data_inicio}
                         hora_fim={atividade.hora_fim}
+                        eventoDatas={eventoDatas}
                       />
                     );
                   })
