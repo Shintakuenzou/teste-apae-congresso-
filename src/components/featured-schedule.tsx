@@ -3,6 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin, ArrowRight, Star } from "lucide-react";
 import { useEvents } from "@/hooks/useEvents";
+import { Link } from "@tanstack/react-router";
 
 export function FeaturedSchedule() {
   const { formatedDataEvento } = useEvents();
@@ -20,10 +21,10 @@ export function FeaturedSchedule() {
             <p className="mt-3 text-muted-foreground max-w-xl">Confira os principais eventos do primeiro dia do congresso</p>
           </div>
           <Button asChild variant="outline" className="self-start sm:self-auto group bg-transparent">
-            <a href="/palestras">
+            <Link to="/palestras">
               Ver programação completa
               <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-            </a>
+            </Link>
           </Button>
         </div>
 
