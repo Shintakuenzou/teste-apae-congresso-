@@ -6,7 +6,7 @@ import LogoApae from "/logo-transparente.png";
 import { useAuth } from "@/context/auth-context";
 
 export const Route = createFileRoute("/painel")({
-  beforeLoad: ({ context }) => {
+  beforeLoad: ({ context, location }) => {
     if (!context.auth.isAuthenticated) {
       throw redirect({
         to: "/login",
