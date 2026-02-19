@@ -13,6 +13,7 @@ import { useEvents } from "@/hooks/useEvents";
 import { Badge } from "@/components/ui/badge";
 import { ptBR } from "date-fns/locale";
 import { SwitchChoiceCard } from "@/components/switch-choice-event-card";
+import { SkeletonCard } from "@/components/skelton-card";
 
 export const Route = createFileRoute("/painel/evento")({
   component: RouteComponent,
@@ -66,6 +67,8 @@ function RouteComponent() {
     return [...new Set(atividadeComPalestrantes.map((atividade) => atividade.eixo))];
   }, [atividadeComPalestrantes]);
   console.log("atividadesFiltradas: ", atividadesFiltradas);
+
+  const isSelectDate = selectedDate ? selectedDate : "";
 
   return (
     <div className="space-y-6 col-span-4 lg:col-span-3">
@@ -132,18 +135,24 @@ function RouteComponent() {
                 ) : (
                   atividadesFiltradas.map((atividade, index) => {
                     return (
-                      <SwitchChoiceCard
-                        key={index}
-                        titulo={atividade.titulo}
-                        documentId={atividade.documentid}
-                        descricao={atividade.descricao}
-                        eixo={atividade.eixo}
-                        hora_inicio={atividade.hora_inicio}
-                        palestrantes={atividade.palestrantes}
-                        data_inicio={atividade.data_inicio}
-                        hora_fim={atividade.hora_fim}
-                        eventoDatas={selectedDate}
-                      />
+                      <div key={atividade.documentid}>
+                        {isSelectDate ? (
+                          <SwitchChoiceCard
+                            key={index}
+                            titulo={atividade.titulo}
+                            documentId={atividade.documentid}
+                            descricao={atividade.descricao}
+                            eixo={atividade.eixo}
+                            hora_inicio={atividade.hora_inicio}
+                            palestrantes={atividade.palestrantes}
+                            data_inicio={atividade.data_inicio}
+                            hora_fim={atividade.hora_fim}
+                            eventoDatas={isSelectDate}
+                          />
+                        ) : (
+                          <SkeletonCard />
+                        )}
+                      </div>
                     );
                   })
                 )}

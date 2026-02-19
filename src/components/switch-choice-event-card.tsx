@@ -18,7 +18,7 @@ interface SwitchChoiceCardProps {
 }
 
 export function SwitchChoiceCard({ titulo, descricao, eixo, hora_inicio, palestrantes, documentId, hora_fim, eventoDatas }: SwitchChoiceCardProps) {
-  const isEventoDate = eventoDatas ? eventoDatas : "";
+  const isSelectDate = eventoDatas ? eventoDatas : "";
 
   return (
     <FieldGroup className="w-full">
@@ -29,7 +29,7 @@ export function SwitchChoiceCard({ titulo, descricao, eixo, hora_inicio, palestr
               <div className="lg:w-48 flex-shrink-0 bg-muted p-6 flex flex-col justify-center items-center">
                 <div className="flex flex-col items-center gap-2 text-secondary font-semibold mb-1">
                   <Clock className="h-4 w-4" />
-                  <span>{format(isEventoDate, "dd/MM/yyyy")}</span>
+                  <span>{format(isSelectDate, "dd/MM/yyyy")}</span>
                   <span className="leading-relaxed text-sm font-medium">
                     {hora_inicio} até {hora_fim}
                   </span>

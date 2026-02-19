@@ -27,7 +27,6 @@ export function Hero({ formatedDataEvento }: HeroProps) {
 
     description = formatedDataEvento[idx].fields.descricao;
     date = formatThreeDayRangeSimple(formatedDataEvento[idx].fields.data_inicio, formatedDataEvento[idx].fields.data_fim);
-    console.log("date: ", date);
 
     location = `${formatedDataEvento[idx].fields.cidade}-${formatedDataEvento[idx].fields.estado}`;
   } else {
