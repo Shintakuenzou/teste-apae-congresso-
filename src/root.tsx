@@ -12,7 +12,7 @@ const router = createRouter({
   },
   defaultPreload: "intent",
   scrollRestoration: true,
-  
+  basepath: "/",
 });
 
 // Register the router instance for type safety
