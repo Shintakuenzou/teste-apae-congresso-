@@ -68,7 +68,7 @@ export function Header() {
                 size="lg"
                 className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold shadow-md hover:shadow-lg transition-all flex items-center"
               >
-                <Link to="/painel">
+                <Link to="/painel/data">
                   <PanelLeft className="size-4" />
                   <span>Meu painel</span>
                 </Link>
