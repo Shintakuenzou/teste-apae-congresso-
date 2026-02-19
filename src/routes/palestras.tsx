@@ -14,6 +14,7 @@ import { useEvents } from "@/hooks/useEvents";
 import { eachDayOfInterval, format, isSameDay, isWithinInterval, parseISO } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { LoadingScreen } from "@/components/loading";
+import { useAuth } from "@/context/auth-context";
 
 export const Route = createFileRoute("/palestras")({
   component: PalestrasPage,
@@ -21,6 +22,8 @@ export const Route = createFileRoute("/palestras")({
 
 function PalestrasPage() {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
+
+  const { isAuthenticated } = useAuth();
 
   const { atividades } = useAtividade();
   const { vinculo } = useVinculo();
@@ -182,7 +185,7 @@ function PalestrasPage() {
           <div className="mt-16 text-center">
             <p className="text-muted-foreground mb-6">Garanta sua vaga e participe de todas as atividades do congresso.</p>
             <Button asChild size="lg" className="group">
-              <Link to="/login">
+              <Link to={isAuthenticated ? "/painel" : "/login"}>
                 Inscreva-se Agora
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>

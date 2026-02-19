@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Users, Building, Calendar, Globe } from "lucide-react";
 
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { DynamicIcon, type IconName } from "lucide-react/dynamic";
+import { useAuth } from "@/context/auth-context";
 
 export const Route = createFileRoute("/quem-somos")({
   component: QuemSomosPage,
@@ -75,6 +76,8 @@ const timeline = [
 ];
 
 function QuemSomosPage() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <main className="min-h-screen bg-background">
       <Header />
@@ -152,7 +155,7 @@ function QuemSomosPage() {
 
           <Accordion type="single" collapsible className="w-full space-y-5">
             <AccordionItem value="movimento" className="bg-card border border-border rounded-lg px-6">
-              <AccordionTrigger className="text-lg font-semibold text-foreground hover:no-underline">Movimento Apaeano</AccordionTrigger>
+              <AccordionTrigger className="text-lg font-semibold text-foreground hover:no-underline cursor-pointer">Movimento Apaeano</AccordionTrigger>
               <AccordionContent className="text-muted-foreground leading-relaxed pb-6">
                 <p>
                   O movimento apaeano é uma grande rede constituída por pais, amigos, pessoas com deficiência, voluntários, profissionais e instituições parceiras – públicas e
@@ -167,7 +170,7 @@ function QuemSomosPage() {
             </AccordionItem>
 
             <AccordionItem value="fenapaes" className="bg-card border border-border rounded-lg px-6">
-              <AccordionTrigger className="text-lg font-semibold text-foreground hover:no-underline">Federação Nacional das Apaes (Apae Brasil)</AccordionTrigger>
+              <AccordionTrigger className="text-lg font-semibold text-foreground hover:no-underline cursor-pointer">Federação Nacional das Apaes (Apae Brasil)</AccordionTrigger>
               <AccordionContent className="text-muted-foreground leading-relaxed pb-6">
                 <p>
                   A Federação Nacional das Apaes, ou Apae Brasil, é uma organização social sem fins lucrativos, reconhecida como de utilidade pública federal e certificada como
@@ -180,7 +183,7 @@ function QuemSomosPage() {
             </AccordionItem>
 
             <AccordionItem value="feapaes" className="bg-card border border-border rounded-lg px-6">
-              <AccordionTrigger className="text-lg font-semibold text-foreground hover:no-underline">Federação das Apaes do Estado (Feapaes)</AccordionTrigger>
+              <AccordionTrigger className="text-lg font-semibold text-foreground hover:no-underline cursor-pointer">Federação das Apaes do Estado (Feapaes)</AccordionTrigger>
               <AccordionContent className="text-muted-foreground leading-relaxed pb-6">
                 <p>
                   A Federação das Apaes do Estado é uma associação civil, beneficente de assistência social, de assessoramento, de defesa e garantia de direitos com foco no
@@ -197,7 +200,7 @@ function QuemSomosPage() {
             </AccordionItem>
 
             <AccordionItem value="apae" className="bg-card border border-border rounded-lg px-6">
-              <AccordionTrigger className="text-lg font-semibold text-foreground hover:no-underline">Apae</AccordionTrigger>
+              <AccordionTrigger className="text-lg font-semibold text-foreground hover:no-underline cursor-pointer">Apae</AccordionTrigger>
               <AccordionContent className="text-muted-foreground leading-relaxed pb-6">
                 <p>
                   A Apae (Associação de Pais e Amigos dos Excepcionais) nasceu em 1954, na cidade do Rio de Janeiro. Caracteriza-se por ser uma organização social, cujo objetivo
@@ -318,7 +321,7 @@ function QuemSomosPage() {
             de todo o país.
           </p>
           <Button asChild size="lg" className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold">
-            <a href="/login">Inscreva-se Agora</a>
+            <Link to={isAuthenticated ? "/painel" : "/login"}>Inscreva-se Agora</Link>
           </Button>
         </div>
       </section>
