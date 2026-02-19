@@ -21,7 +21,6 @@ const quickLinks = [
 
 export function Footer() {
   const { formatedDataEvento } = useEvents();
-  console.log("formatedDataEvento: ", formatedDataEvento);
 
   return (
     <footer className="bg-foreground text-background">
@@ -57,9 +56,9 @@ export function Footer() {
             <ul className="space-y-3">
               {quickLinks.map((link, index) => (
                 <li key={index}>
-                  <a href={link.href} className="text-background/70 hover:text-secondary transition-colors text-sm">
+                  <Link to={link.href} className="text-background/70 hover:text-secondary transition-colors text-sm">
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
