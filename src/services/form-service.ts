@@ -261,6 +261,11 @@ export async function handleUpdateFormParticipant({
     throw new Error("documentId é obrigatório e não pode ser undefined");
   }
 
+  if (!cardId || cardId === "undefined") {
+    console.error("❌ documentId inválido:", cardId);
+    throw new Error("cardId é obrigatório e não pode ser undefined");
+  }
+
   try {
     const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards/${cardId}`;
 
