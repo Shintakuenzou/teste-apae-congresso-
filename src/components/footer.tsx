@@ -3,7 +3,7 @@ import { DynamicIcon, type IconName } from "lucide-react/dynamic";
 import LogoApae from "../../public/logo-transparente.png";
 import { Link } from "@tanstack/react-router";
 import { useEvents } from "@/hooks/useEvents";
-import { formatThreeDayRange } from "@/utils/formatThreeDayRange";
+import { formatThreeDayRangeSimple } from "@/utils/formatThreeDayRange";
 
 const socialLinks = [
   { icon: "facebook", href: "https://www.facebook.com/apaebrasil/", label: "Facebook" },
@@ -111,7 +111,7 @@ export function Footer() {
                 <div className="text-sm">
                   <span className="text-background/60">Data:</span>
                   <br />
-                  <span className="font-medium">{formatThreeDayRange(item.fields.data_inicio, item.fields.data_fim)}</span>
+                  <span className="font-medium">{formatThreeDayRangeSimple(item.fields.data_inicio, item.fields.data_fim)}</span>
                 </div>
               </div>
             ))}

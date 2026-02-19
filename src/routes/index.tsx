@@ -18,7 +18,7 @@ function App() {
   console.log(isLoading);
 
   if (isLoading) {
-    return <LoadingScreen />;
+    return <LoadingScreen  />;
   }
 
   return (

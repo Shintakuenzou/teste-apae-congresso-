@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import type { EventoCard } from "@/services/form-service";
-import { formatThreeDayRange } from "@/utils/formatThreeDayRange";
+import { formatThreeDayRangeSimple } from "@/utils/formatThreeDayRange";
 import { Link } from "@tanstack/react-router";
 
 import { Calendar, MapPin, ArrowRight, Users, Mic2, Building } from "lucide-react";
@@ -16,6 +16,8 @@ export function Hero({ formatedDataEvento }: HeroProps) {
   let date;
   let location;
 
+  console.log(formatedDataEvento);
+
   if (formatedDataEvento && formatedDataEvento.length > 0) {
     const idx = formatedDataEvento.length - 1;
     const tituloRaw = formatedDataEvento[idx]?.fields?.titulo ?? "";
@@ -24,7 +26,9 @@ export function Hero({ formatedDataEvento }: HeroProps) {
     lastTitle = tituloRaw.replaceAll(" ", ",").split(",").slice(2).join(" ") as string;
 
     description = formatedDataEvento[idx].fields.descricao;
-    date = formatThreeDayRange(formatedDataEvento[idx].fields.data_inicio, formatedDataEvento[idx].fields.data_fim);
+    date = formatThreeDayRangeSimple(formatedDataEvento[idx].fields.data_inicio, formatedDataEvento[idx].fields.data_fim);
+    console.log("date: ", date);
+
     location = `${formatedDataEvento[idx].fields.cidade}-${formatedDataEvento[idx].fields.estado}`;
   } else {
     firstTitle = "" as string;
