@@ -17,6 +17,8 @@ export interface User {
   apaeFiliada: string;
   inscricao: string;
   dataInscricao: string;
+  cardid: string;
+  documentid: string;
 }
 
 export interface AuthContextType {
@@ -65,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       if (response.items && response.items.length > 0) {
         const userData = response.items[0];
-        console.log(response.items[0]["senha"] == password, password);
+        console.log("userData: ", userData);
 
         if (response.items[0]["senha"] == password) {
           const user: User = {
@@ -82,6 +84,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             apaeFiliada: userData.apae_filiada as string,
             inscricao: userData.inscricao as string,
             dataInscricao: (userData.criado_em as string) || (userData.criado_em as string),
+            cardid: userData.cardid as string,
+            documentid: userData.documentid as string,
           };
 
           setUser(user);

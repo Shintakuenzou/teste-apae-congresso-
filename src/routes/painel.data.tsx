@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 import { escolaridades, estados } from "@/constants";
 import { useAuth } from "@/context/auth-context";
+import { handleUpdateFormParticipant } from "@/services/form-service";
 import { formatPhone } from "@/utils/format-phone";
 import { createFileRoute } from "@tanstack/react-router";
 import { Pencil, X, Save } from "lucide-react";
@@ -23,8 +24,24 @@ function RouteComponent() {
 
   const handleSave = async () => {
     setIsSaving(true);
+
+    const isPutValueFormData = formData ? formData : "";
+
+    const formatedPutFormData = Object.entries(isPutValueFormData).map(([key, value]) => {
+      return {
+        fieldId: key,
+        value: value,
+      };
+    });
+
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      const updateResponse = await handleUpdateFormParticipant({
+        documentId: import.meta.env.VITE_FORM_PARTICIPANTE as string,
+        cardId: formData?.documentid,
+        values: [...formatedPutFormData],
+      });
+
+      console.log(updateResponse);
 
       localStorage.setItem("user", JSON.stringify(formData));
 

@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -70,7 +70,6 @@ function InscricaoPage() {
     handleSubmit,
     control,
     formState: { errors },
-    reset,
     watch,
     setValue,
   } = useForm<FormData>({
@@ -163,15 +162,8 @@ function InscricaoPage() {
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-4">Inscricao Realizada!</h1>
 
-            <Button
-              onClick={() => {
-                setSubmitted(false);
-                reset();
-              }}
-              variant="outline"
-              size="lg"
-            >
-              Nova inscricao
+            <Button type="button" variant="outline" size="lg" asChild>
+              <Link to="/login">Fazer Login</Link>
             </Button>
           </div>
         </section>
@@ -274,7 +266,7 @@ function InscricaoPage() {
       <section className="pt-32 pb-20">
         <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12 space-y-5">
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">Garanta sua Vaga</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">Inscrição</h1>
             <p className="text-muted-foreground text-lg">Preencha seus dados para participar do Congresso Nacional APAE Brasil 2026</p>
           </div>
 
@@ -563,13 +555,15 @@ function InscricaoPage() {
 
                     <Field className="md:col-span-2">
                       <FieldLabel htmlFor="area_atuacao">Area de Atuação</FieldLabel>
-                      <Input id="area_atuacao" placeholder="Qual sua area de atuacao?" {...register("area_atuacao")} className="h-11" />
+                      <Input id="area_atuacao" placeholder="Qual sua area de atuação?" {...register("area_atuacao")} className="h-11" />
                     </Field>
 
-                    <Field className="col-span-2">
-                      <FieldLabel htmlFor="coordenacao">Coordenação</FieldLabel>
-                      <Input id="coordenacao" placeholder="Coordenacao" {...register("coordenacao")} className="h-11" />
-                    </Field>
+                    {watch("presidente_apae") === "Nao" && (
+                      <Field className="col-span-2">
+                        <FieldLabel htmlFor="coordenacao">Coordenação</FieldLabel>
+                        <Input id="coordenacao" placeholder="Digite sua coordenação" {...register("coordenacao")} className="h-11" />
+                      </Field>
+                    )}
                   </FieldGroup>
                 </FieldSet>
               </CardContent>

@@ -5,6 +5,7 @@ import type { VinculoFields } from "@/hooks/useVinculo";
 
 interface SendParticipantData {
   documentId: string;
+  cardId?: string;
   values?: { fieldId: string; value: string | null }[];
   queryParams?: string;
 }
@@ -215,6 +216,66 @@ export async function handleGetFormParticipant({ documentId, queryParams }: Send
 
     return response.data;
   } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const errorData = error.response?.data;
+
+      console.error("❌ Erro detalhado:", {
+        status,
+        documentId,
+        url: error.config?.url,
+        errorData,
+      });
+
+      // Tratamento específico por código de status
+      switch (status) {
+        case 404:
+          throw new Error(`Documento ${documentId} não encontrado`);
+
+        case 403:
+          throw new Error(`Sem permissão para acessar o documento ${documentId}`);
+
+        case 500:
+          // Erro interno do servidor
+          if (errorData?.code === "java.lang.NullPointerException") {
+            throw new Error(`Erro ao processar documento ${documentId}. ` + `O documento pode estar corrompido ou sem dados obrigatórios.`);
+          }
+          throw new Error(`Erro interno no servidor ao buscar documento ${documentId}. ` + `Tente novamente em alguns instantes.`);
+
+        default:
+          throw new Error(`Erro ao buscar documento: ${error.message}`);
+      }
+    }
+
+    throw error;
+  }
+}
+
+export async function handleUpdateFormParticipant({
+  documentId,
+  cardId,
+  values,
+}: SendParticipantData): Promise<{ activeVersion: boolean; cardId: number; children: []; companyId: number; parentDocumentId: number; values: [] }> {
+  if (!documentId || documentId === "undefined") {
+    console.error("❌ documentId inválido:", documentId);
+    throw new Error("documentId é obrigatório e não pode ser undefined");
+  }
+
+  console.log("values: ", values);
+
+  try {
+    const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards/${cardId}`;
+
+    const url = import.meta.env.DEV ? fluigPath : `?endpoint=${encodeURIComponent(fluigPath)}&method=PUT`;
+
+    console.log("📤 Enviando PUT para:", url);
+    console.log("📤 documentId:", documentId);
+    console.log("📤 cardId:", cardId);
+
+    const response = await axiosApi.put<{ activeVersion: boolean; cardId: number; children: []; companyId: number; parentDocumentId: number; values: [] }>(url, { values });
+
+    return response.data;
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const errorData = error.response?.data;
