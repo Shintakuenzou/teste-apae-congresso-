@@ -41,6 +41,8 @@ function RouteComponent() {
         values: formatedPutFormData,
       });
 
+      console.log(updateResponse);
+
       if (updateResponse?.values?.length > 0) {
         setIsEditing(false);
       }
