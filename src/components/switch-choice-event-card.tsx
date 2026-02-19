@@ -1,7 +1,7 @@
 import { Field, FieldContent, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Switch } from "@/components/ui/switch";
 import type { VinculoFields } from "@/hooks/useVinculo";
-import { format, type EachDayOfIntervalResult } from "date-fns";
+import { format } from "date-fns";
 import { Clock, User } from "lucide-react";
 import { Badge } from "./ui/badge";
 
