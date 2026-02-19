@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/auth-context";
 import type { EventoCard } from "@/services/form-service";
 import { formatThreeDayRangeSimple } from "@/utils/formatThreeDayRange";
 import { Link } from "@tanstack/react-router";
@@ -10,6 +11,7 @@ interface HeroProps {
 }
 
 export function Hero({ formatedDataEvento }: HeroProps) {
+  const { isAuthenticated } = useAuth();
   let firstTitle;
   let lastTitle;
   let description;
@@ -57,7 +59,7 @@ export function Hero({ formatedDataEvento }: HeroProps) {
               size="lg"
               className="bg-secondary hover:bg-secondary/90 text-secondary-foreground text-lg px-8 h-14 font-semibold shadow-lg hover:shadow-xl transition-all group"
             >
-              <Link to="/login">
+              <Link to={isAuthenticated ? "/painel" : "/login"}>
                 Garanta sua vaga
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Link>
