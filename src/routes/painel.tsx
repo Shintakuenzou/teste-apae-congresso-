@@ -6,19 +6,19 @@ import LogoApae from "/logo-transparente.png";
 import { useAuth } from "@/context/auth-context";
 
 export const Route = createFileRoute("/painel")({
-  beforeLoad: ({ context, location }) => {
+  beforeLoad: ({ context }) => {
     if (!context.auth.isAuthenticated) {
       throw redirect({
         to: "/login",
       });
     }
 
-    if (location.pathname == "/painel") {
-      throw redirect({
-        to: "/painel/data",
-        replace: true,
-      });
-    }
+    // if (location.pathname == "/painel") {
+    //   throw redirect({
+    //     to: "/painel/data",
+    //     replace: true,
+    //   });
+    // }
   },
   component: PainelPage,
 });
