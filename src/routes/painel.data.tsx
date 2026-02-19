@@ -107,7 +107,7 @@ function RouteComponent() {
               <div className="space-y-2">
                 <Label className="text-muted-foreground">Data de Nascimento</Label>
                 {isEditing ? (
-                  <Input type="date" value={formData?.data_nascimento} onChange={(e) => handleInputChange("dataNascimento", e.target.value)} />
+                  <Input type="date" value={formData?.data_nascimento} onChange={(e) => handleInputChange("data_nascimento", e.target.value)} />
                 ) : (
                   <Input value={new Date(formData!.data_nascimento as string).toLocaleDateString("pt-BR")} disabled className="bg-muted/50" />
                 )}
