@@ -30,6 +30,8 @@ function PalestrasPage() {
     if (!formatedDataEvento || formatedDataEvento.length === 0) return [];
 
     const evento = formatedDataEvento[0];
+    console.log("evento.fields.data_inicio: ", evento.fields.data_inicio);
+    console.log("evento.fields.data_fim: ", evento.fields.data_fim);
     const dates = eachDayOfInterval({
       start: parseISO(`${evento.fields.data_inicio}`),
       end: parseISO(`${evento.fields.data_fim}`),
@@ -142,7 +144,7 @@ function PalestrasPage() {
                         <div className="lg:w-48 flex-shrink-0 bg-muted p-6 flex flex-col justify-center">
                           <div className="flex items-center gap-2 text-secondary font-semibold mb-1">
                             <Clock className="h-4 w-4" />
-                            <span>{format(`${atividade.data_inicio}T${atividade.hora_inicio}`, "dd/MM/yyyy")}</span>
+                            <span>{format(`${selectedDate}`, "dd/MM/yyyy")}</span>
                           </div>
                           <Badge variant="outline" className="w-fit mt-2 border-secondary/50 text-secondary">
                             {atividade.eixo}
