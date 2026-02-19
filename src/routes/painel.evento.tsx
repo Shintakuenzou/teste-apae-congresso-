@@ -69,7 +69,7 @@ function RouteComponent() {
 
   return (
     <div className="space-y-6 col-span-4 lg:col-span-3">
-      {eventoSelecionado && selectedDate ? (
+      {eventoSelecionado ? (
         <div className="space-y-6">
           <Button variant="ghost" className="cursor-pointer" onClick={() => setEventoSelecionado(null)}>
             <ArrowRight className="h-4 w-4 mr-2 rotate-180" />
