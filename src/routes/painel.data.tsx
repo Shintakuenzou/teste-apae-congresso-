@@ -24,6 +24,7 @@ function RouteComponent() {
 
   const handleSave = async () => {
     setIsSaving(true);
+    console.log("formData " + formData);
     console.log("formData!.documentid " + formData!.documentid);
 
     try {
