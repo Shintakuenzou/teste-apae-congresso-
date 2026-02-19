@@ -13,12 +13,26 @@ export const Route = createFileRoute("/painel")({
       });
     }
 
-    // if (location.pathname == "/painel") {
-    //   throw redirect({
-    //     to: "/painel/data",
-    //     replace: true,
-    //   });
-    // }
+    if (location.pathname == "/painel") {
+      throw redirect({
+        to: "/painel/data",
+        replace: true,
+      });
+    }
+
+    if (location.pathname == "/painel/evento") {
+      throw redirect({
+        to: "/painel/evento",
+        replace: true,
+      });
+    }
+
+    if (location.pathname == "/painel/ingresso") {
+      throw redirect({
+        to: "/painel/ingresso",
+        replace: true,
+      });
+    }
   },
   component: PainelPage,
 });
