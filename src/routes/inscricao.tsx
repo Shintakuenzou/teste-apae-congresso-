@@ -14,7 +14,7 @@ import { CheckCircle, Mail, MapPinned, User, Lock, Briefcase, Heart, Loader2 } f
 import { handlePostFormParticipant } from "@/services/form-service";
 import { formatCPF } from "@/utils/format-cpf";
 import { formatPhone } from "@/utils/format-phone";
-import { DISABILITY_OPTIONS, escolaridades, estados, opcao_apoio, tamanhosCamisa } from "@/constants";
+import { escolaridades, estados, tamanhosCamisa } from "@/constants";
 import { fetchDataset } from "@/services/fetch-dataset";
 import type { AxiosError } from "axios";
 import axios from "axios";
@@ -558,12 +558,12 @@ function InscricaoPage() {
                       <Input id="area_atuacao" placeholder="Qual sua area de atuação?" {...register("area_atuacao")} className="h-11" />
                     </Field>
 
-                    {watch("presidente_apae") === "Nao" && (
+                    {/* {watch("presidente_apae") === "Nao" && (
                       <Field className="col-span-2">
                         <FieldLabel htmlFor="coordenacao">Coordenação</FieldLabel>
                         <Input id="coordenacao" placeholder="Digite sua coordenação" {...register("coordenacao")} className="h-11" />
                       </Field>
-                    )}
+                    )} */}
                   </FieldGroup>
                 </FieldSet>
               </CardContent>
@@ -603,7 +603,27 @@ function InscricaoPage() {
                       />
                     </Field>
 
-                    {watch("possui_deficiencia") === "Sim" && (
+                    <Field>
+                      <FieldLabel htmlFor="necessita_apoio">Necessita de Apoio Especial?</FieldLabel>
+
+                      <Controller
+                        name="necessita_apoio"
+                        control={control}
+                        render={({ field }) => (
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <SelectTrigger id="necessita_apoio" className="!h-11 w-full">
+                              <SelectValue placeholder="Selecione" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="Sim">Sim</SelectItem>
+                              <SelectItem value="Nao">Nao</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
+                    </Field>
+
+                    {/* {watch("possui_deficiencia") === "Sim" && (
                       <>
                         <Field>
                           <FieldLabel htmlFor="tipo_deficiencia">Tipo de Deficiencia</FieldLabel>
@@ -624,26 +644,6 @@ function InscricaoPage() {
                                       </SelectItem>
                                     );
                                   })}
-                                </SelectContent>
-                              </Select>
-                            )}
-                          />
-                        </Field>
-
-                        <Field>
-                          <FieldLabel htmlFor="necessita_apoio">Necessita de Apoio Especial?</FieldLabel>
-
-                          <Controller
-                            name="necessita_apoio"
-                            control={control}
-                            render={({ field }) => (
-                              <Select onValueChange={field.onChange} value={field.value}>
-                                <SelectTrigger id="necessita_apoio" className="!h-11 w-full">
-                                  <SelectValue placeholder="Selecione" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="Sim">Sim</SelectItem>
-                                  <SelectItem value="Nao">Nao</SelectItem>
                                 </SelectContent>
                               </Select>
                             )}
@@ -688,7 +688,7 @@ function InscricaoPage() {
                           render={({ field }) => <Input id="outros_apoio" placeholder="Descreva o tipo de apoio" {...field} className="h-11" />}
                         />
                       </Field>
-                    )}
+                    )} */}
                   </FieldGroup>
                 </FieldSet>
               </CardContent>

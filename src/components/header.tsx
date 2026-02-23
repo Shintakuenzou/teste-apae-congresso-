@@ -81,7 +81,7 @@ export function Header() {
               >
                 <Link to="/login">
                   <User className="size-4" />
-                  <span>Login</span>
+                  <span>Minha área</span>
                 </Link>
               </Button>
             )}

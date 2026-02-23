@@ -37,6 +37,7 @@ export interface PalestranteFields {
   criado_por: string;
   descricao: string;
   email: string;
+  eixo: string
   empresa_faculdade: string;
   id_atividade: string;
   id_evento: string;

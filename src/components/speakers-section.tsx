@@ -33,19 +33,21 @@ export function SpeakersSection() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {palestrantes?.items?.map((speaker, index) => (
-            <Card key={index} className="group border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300 overflow-hidden hover:scale-105 cursor-pointer ">
-              <CardContent className="p-0" onClick={() => setSelectedImage(index)}>
-                <div className="aspect-[4/5] bg-muted relative overflow-hidden">
-                  <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${speaker.url_foto})` }} />
-                  <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-transparent to-transparent z-10"></div>
-
-                  {/* Info */}
-                  <div className="absolute bottom-0 left-0 right-0 p-6 z-20">
-                    <h3 className="text-lg font-semibold text-background mb-1 uppercase">{speaker.nome}</h3>
-                    <p className="text-sm text-background/80 mb-1 capitalize">{speaker.empresa_faculdade}</p>
-                    <p className="text-[11px] text-background/80 lowercase">{speaker.email}</p>
-                  </div>
+            <Card key={index} className="group border-border hover:border-primary/30 hover:shadow-lg transition-all duration-300 overflow-hidden hover:scale-105 cursor-pointer bg-zinc-100/10">
+              <CardContent className="p-5 flex flex-col items-center text-center gap-3 h-full" onClick={() => setSelectedImage(index)}>
+                <div className="w-40 h-40 rounded-full overflow-hidden ring-4 ring-primary/10 shadow-md shrink-0">
+                  <img src={speaker.url_foto || "/placeholder.svg"} alt={speaker.nome} className="w-full h-full object-cover" />
                 </div>
+
+                {/* Informações */}
+                <div className="space-y-1 flex-1">
+                  <h3 className="text-sm font-semibold text-foreground uppercase leading-tight">{speaker.nome}</h3>
+                  <p className="text-xs text-muted-foreground capitalize">{speaker.empresa_faculdade}</p>
+                </div>
+
+                <Badge variant="secondary" className="text-[10px] mt-auto">
+                  Palestrante
+                </Badge>
               </CardContent>
             </Card>
           ))}

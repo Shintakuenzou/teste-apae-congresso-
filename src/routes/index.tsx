@@ -8,6 +8,7 @@ import { SpeakersSection } from "@/components/speakers-section";
 import { GallerySection } from "@/components/galery";
 import { useEvents } from "@/hooks/useEvents";
 import { LoadingScreen } from "@/components/loading";
+import { SponsorsSection } from "@/components/sponsor-section";
 
 export const Route = createFileRoute("/")({
   component: App,
@@ -18,13 +19,14 @@ function App() {
   console.log(isLoading);
 
   if (isLoading) {
-    return <LoadingScreen  />;
+    return <LoadingScreen />;
   }
 
   return (
     <main className="min-h-screen">
       <Header />
       <Hero formatedDataEvento={formatedDataEvento} />
+      <SponsorsSection />
       <SpeakersSection />
       <FeaturedSchedule />
       <GallerySection />

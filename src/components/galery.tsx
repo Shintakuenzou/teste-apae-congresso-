@@ -24,9 +24,9 @@ export function GallerySection() {
         {/* Gallery Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           {photos.slice(0, 6).map((image, index) => (
-            <button key={image.id} className={`relative overflow-hidden rounded-xl group cursor-auto ${index === 0 ? "col-span-2 row-span-2" : ""}`}>
-              <div className={`bg-primary/90 ${index === 0 ? "aspect-square" : "aspect-square"}`}>
-                <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/50  group-hover:opacity-80 transition-opacity">
+            <button key={image.id} className={`relative overflow-hidden rounded-xl group cursor-auto ${index === 0 ? "col-span-2 row-span-2" : ""} ring-2 ring-blue-300`}>
+              <div className={`bg-primary/90 ${index === 0 ? "h-52" : "h-44"}`}>
+                <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/50  group-hover:opacity-80 transition-opacity ">
                   <img src={image.src || "/placeholder.svg"} alt={image.title} className="w-full h-full object-cover" />
                 </div>
               </div>

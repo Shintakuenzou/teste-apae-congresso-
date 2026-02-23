@@ -17,7 +17,7 @@ export const Route = createFileRoute("/painel/data")({
 });
 
 function RouteComponent() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [formData, setFormData] = useState(user);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -45,6 +45,7 @@ function RouteComponent() {
 
       if (updateResponse?.values?.length > 0) {
         setIsEditing(false);
+        updateUser(formData);
       }
     } catch (error) {
       console.error("Erro ao salvar:", error);
