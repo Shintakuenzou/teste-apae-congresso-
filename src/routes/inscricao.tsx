@@ -24,6 +24,9 @@ import { toast } from "sonner";
 import { Toaster } from "@/components/ui/sonner";
 import { SecurityService } from "@/services/ryptoService";
 import { format } from "date-fns";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
+import { useQuery } from "@tanstack/react-query";
 
 export const Route = createFileRoute("/inscricao")({
   component: InscricaoPage,
@@ -103,6 +106,27 @@ function InscricaoPage() {
       tamanho_camiseta: "",
     },
   });
+
+  const { data: apaes } = useQuery({
+    queryKey: ["apaes"],
+    queryFn: () =>
+      fetchDataset({
+        datasetId: "dsConsultaApaesFeapaes",
+        constraints: watch("uf")
+          ? [
+              {
+                fieldName: "lastname",
+                initialValue: watch("uf") ?? "",
+                finalValue: watch("uf") ?? "",
+                constraintType: "MUST",
+              },
+            ]
+          : [],
+      }),
+    enabled: !!watch("uf"),
+  });
+
+  console.log(apaes);
 
   const onSubmit = async (data: FormData) => {
     setIsSubmitting(true);
@@ -522,8 +546,15 @@ function InscricaoPage() {
                   <FieldGroup className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Field className="md:col-span-2">
                       <FieldLabel htmlFor="apaeFiliada">APAE Filiada *</FieldLabel>
-                      <Input id="apaeFiliada" placeholder="Nome da APAE onde voce atua" {...register("apaeFiliada")} className="h-11" />
-                      {errors.apaeFiliada && <p className="text-sm text-destructive mt-1">{errors.apaeFiliada.message}</p>}
+                      <Autocomplete
+                        disablePortal
+                        options={apaes?.items?.map((apae) => apae.firstName) || []}
+                        sx={{ width: "100%" }}
+                        renderInput={(params) => <TextField {...params} label="Apae Filiada" />}
+                        onChange={(event, value) => {
+                          setValue("apaeFiliada", (value as string) || "");
+                        }}
+                      />
                     </Field>
 
                     <Field>

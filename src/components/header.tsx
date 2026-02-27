@@ -1,38 +1,15 @@
 import { useState } from "react";
 
-import { Button } from "@/components/ui/button";
-import { Menu, PanelLeft, User, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { linkOptions } from "@tanstack/react-router";
 import LogoApae from "../../public/logo-transparente.png";
-import { useAuth } from "@/context/auth-context";
 
-const navItems = linkOptions([
-  {
-    to: "/quem-somos",
-    label: "Quem Somos",
-  },
-  {
-    to: "/palestrantes",
-    label: "Palestrantes",
-  },
-  {
-    to: "/palestras",
-    label: "Programação",
-  },
-  // {
-  //   to: "/sub-trabalho",
-  //   label: "Submissão de Trabalhos",
-  // },
-  {
-    to: "/galeria",
-    label: "Galeria",
-  },
-]);
+import { HeaderNav } from "./header-nav";
+import { HeaderActions } from "./header-actions";
+import { HeaderMobileMenu } from "./header-mobile-menu";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { isAuthenticated } = useAuth();
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-primary shadow-lg border-b-2 border-primary-foreground/25">
@@ -44,48 +21,9 @@ export function Header() {
             </div>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
-            {navItems.map((item) => {
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all text-white"
-                  activeProps={{
-                    className: "bg-white/20 font-bold",
-                  }}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-          </nav>
+          <HeaderNav />
 
-          <div className="hidden md:flex items-center">
-            {isAuthenticated ? (
-              <Button
-                asChild
-                size="lg"
-                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold shadow-md hover:shadow-lg transition-all flex items-center"
-              >
-                <Link to="/painel/data">
-                  <PanelLeft className="size-4" />
-                  <span>Meu painel</span>
-                </Link>
-              </Button>
-            ) : (
-              <Button
-                asChild
-                size="lg"
-                className="bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold shadow-md hover:shadow-lg transition-all flex items-center"
-              >
-                <Link to="/login">
-                  <User className="size-4" />
-                  <span>Minha área</span>
-                </Link>
-              </Button>
-            )}
-          </div>
+          <HeaderActions />
 
           <button
             type="button"
@@ -98,37 +36,7 @@ export function Header() {
         </div>
       </div>
 
-      {mobileMenuOpen && (
-        <div className="md:hidden bg-primary border-t border-primary-foreground/10 shadow-xl">
-          <div className="px-4 py-6 space-y-2">
-            {navItems.map((item) => {
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  className="block px-4 py-3 rounded-lg text-sm font-medium transition-all text-white"
-                  onClick={() => setMobileMenuOpen(false)}
-                  activeProps={{
-                    className: "bg-red-500/20 font-bold",
-                  }}
-                  activeOptions={{
-                    exact: true,
-                  }}
-                >
-                  {item.label}
-                </Link>
-              );
-            })}
-            <div className="pt-4">
-              <Button asChild size="lg" className="w-full bg-secondary hover:bg-secondary/90 text-secondary-foreground font-semibold">
-                <a href="/inscricao" onClick={() => setMobileMenuOpen(false)}>
-                  Inscreva-se
-                </a>
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      <HeaderMobileMenu isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
     </header>
   );
 }
