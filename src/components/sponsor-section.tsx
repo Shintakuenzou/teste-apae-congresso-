@@ -5,19 +5,6 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchDataset } from "@/services/fetch-dataset";
 import { useLotes } from "@/hooks/useLotes";
 
-interface Sponsor {
-  name: string;
-  initial: string;
-  category: string;
-  description: string;
-  site: string;
-  bg: string;
-  ring: string;
-  text: string;
-  badge: string;
-  avatar: string;
-}
-
 const autoScrollPlugin = AutoScroll({
   speed: 1,
   stopOnInteraction: false, // continua após drag
@@ -67,7 +54,7 @@ export function SponsorsSection() {
   );
 
   // Para/retoma o scroll quando o modal abre/fecha
-  const autoScroll = emblaApi?.plugins()?.autoScroll;
+  // const autoScroll = emblaApi?.plugins()?.autoScroll;
 
   // const openModal = useCallback(
   //   (sponsor: Sponsor) => {
