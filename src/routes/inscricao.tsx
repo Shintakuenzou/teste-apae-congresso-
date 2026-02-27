@@ -551,7 +551,7 @@ function InscricaoPage() {
                         options={apaes?.items?.map((apae) => apae.firstName) || []}
                         sx={{ width: "100%" }}
                         renderInput={(params) => <TextField {...params} label="Apae Filiada" />}
-                        onChange={(event, value) => {
+                        onChange={(_, value) => {
                           setValue("apaeFiliada", (value as string) || "");
                         }}
                       />
