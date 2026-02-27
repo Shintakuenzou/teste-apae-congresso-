@@ -38,7 +38,7 @@ export function SponsorsSection() {
   console.log(sponsorsData);
 
   // Embla — loop: true habilita o loop infinito real sem duplicar itens manualmente
-  const [emblaRef, emblaApi] = useEmblaCarousel(
+  const [emblaRef] = useEmblaCarousel(
     {
       loop: true,
       dragFree: true,
