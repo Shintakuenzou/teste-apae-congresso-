@@ -6,7 +6,7 @@ import { Link } from "@tanstack/react-router";
 
 import { Calendar, MapPin, ArrowRight, Users, Mic2, Building } from "lucide-react";
 
-interface HeroProps {
+export interface HeroProps {
   formatedDataEvento: EventoCard[] | undefined;
 }
 

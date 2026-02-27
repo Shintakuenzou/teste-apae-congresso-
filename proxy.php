@@ -83,7 +83,8 @@ function buildOAuthHeader($baseUrl, $method, $allParams, $config)
             foreach ($value as $v) {
                 $paramString[] = rawurlencode($key) . '=' . rawurlencode($v);
             }
-        } else {
+        }
+        else {
             $paramString[] = rawurlencode($key) . '=' . rawurlencode($value);
         }
     }
@@ -136,7 +137,8 @@ try {
     http_response_code($httpCode);
     echo $response;
 
-} catch (Exception $e) {
+}
+catch (Exception $e) {
     http_response_code(500);
     echo json_encode([
         'error' => 'Erro no proxy',

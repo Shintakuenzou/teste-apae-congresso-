@@ -33,8 +33,6 @@ function PalestrasPage() {
     if (!formatedDataEvento || formatedDataEvento.length === 0) return [];
 
     const evento = formatedDataEvento[0];
-    console.log("evento.fields.data_inicio: ", evento.fields.data_inicio);
-    console.log("evento.fields.data_fim: ", evento.fields.data_fim);
     const dates = eachDayOfInterval({
       start: parseISO(`${evento.fields.data_inicio}`),
       end: parseISO(`${evento.fields.data_fim}`),

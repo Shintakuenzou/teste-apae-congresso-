@@ -37,7 +37,7 @@ export interface PalestranteFields {
   criado_por: string;
   descricao: string;
   email: string;
-  eixo: string
+  eixo: string;
   empresa_faculdade: string;
   id_atividade: string;
   id_evento: string;
@@ -90,6 +90,7 @@ export interface LoteFields {
   preco: string;
   publico_privado: string;
   quantidade: string;
+  id_evento: string;
 }
 
 export interface ActivityFields {
@@ -206,7 +207,6 @@ export async function handleGetFormParticipant({ documentId, queryParams }: Send
   if (!documentId || documentId === "undefined") {
     throw new Error("documentId é obrigatório e não pode ser undefined");
   }
-  console.log(queryParams);
 
   try {
     const fluigPath = `/ecm-forms/api/v2/cardindex/${documentId}/cards?filter=id_evento eq ${queryParams}`;
